@@ -2,15 +2,17 @@
 
 #https://hackersandslackers.com/configure-flask-applications/\
 #https://flask.palletsprojects.com/en/1.1.x/config/
+#https://realpython.com/flask-by-example-part-1-project-setup/
+
 
 import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
 
     ####### DATABASE SETTINGs ############
     SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:Sd40dash2@localhost/Vessel-test' 
-    basedir = os.path.abspath(os.path.dirname(__file__))
    
 
     ########### DROPZONE #############
@@ -25,8 +27,3 @@ class Config:
     DROPZONE_UPLOAD_MULTIPLE=True
     DROPZONE_PARALLEL_UPLOADS = 3 
   
-
-    ##### UPLOAD SETTINGS $$$$$$$$
-    UPLOADED_PHOTOS_DEST = os.getcwd() + 'static/uploads_files'
-    ALLOWED_EXTENSIONS = {'dcm'}
-    ALLOWED_IMAGE_EXTENSIONS = ALLOWED_EXTENSIONS
