@@ -11,7 +11,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
 
     ####### DATABASE SETTINGs ############
-    SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
+    #SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:Sd40dash2@localhost/Vessel-test' 
    
 
