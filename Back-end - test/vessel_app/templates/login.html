@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div></div>
+    <div class="login-dark"> <!--- css -->
+        <form method="POST">
+            {{form.hidden_tag() }}
+    
+    <fieldset class="form-group">
+            <h2 class="sr-only">Login Form</h2>
+            <div class="illustration">
+                <i class="icon ion-ios-locked-outline"></i></div>
+
+
+ <div class="form-group" class="form-control" type="email" name="email" placeholder="Email">
+ <!---    <input class="form-control" type="email" name="email" placeholder="Email"> --->
+    {{ form.email.label(class="form-control-label") }}
+    {% if form.email.errors %}
+        {{ form.email(class="form-control form-control-lg is-invalid") }}
+        
+        <div class="invalid-feedback">
+            {% for error in form.email.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ form.email(class="form-control form-control-lg") }}
+    {% endif %}
+</div>
+
+            <div class="form-group">
+                {{ form.password.label(class="form-control-label") }}
+                {% if form.password.errors %}
+                    {{ form.password(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-check">
+                {{ form.remember(class="form-check-input") }}
+                {{ form.remember.label(class="form-check-label") }}
+            </div>
+
+    <!--- <input class="form-control" type="password" name="password" placeholder="Password"></div> --->
+           
+            <div class="form-group">
+  <!--<button class="btn btn-primary btn-block" type="submit">Log In</button></div>--->  
+    <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+</fieldset>
+    <a class="forgot" href="#">Forgot your email or password?</a>
+
+
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
+<div class="g-recaptcha" data-sitekey="client_key"></div>
+
+<script>
+window.onload = function() {
+    var $recaptcha = document.querySelector('#g-recaptcha-response');
+
+    if($recaptcha) {
+        $recaptcha.setAttribute("required", "required");
+    }
+};
+</script>
+<style>
+#g-recaptcha-response {
+    display: block !important;
+    position: absolute;
+    margin: -78px 0 0 0 !important;
+    width: 302px !important;
+    height: 76px !important;
+    z-index: -999999;
+    opacity: 0;
+}
+</style></form>
+    </div>
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/js/Scroll-To-Top-Button.js"></script>
+    <script src="static/js/Scroll-to-top.js"></script>
+
+
+{% endblock content %}

@@ -29,11 +29,10 @@
     <link rel="stylesheet" href="static/css/Testimonials.css">
 <!--  
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-	
+			Dropzone reference or include 
+		     {{ dropzone.load_css(css_url='/static/dropzone.css') }}  
 			 --> 
-            	<!--  Dropzone reference or include --> 
-		     {{ dropzone.load_css(css_url='/static/css/dropzone.css') }} 
-             
+			 
     {% if title %}
         <title>Vessel - {{ title }}</title>
     {% else %}
