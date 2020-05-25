@@ -1,5 +1,16 @@
+{% if current_user.is_authenticated %}
+{% extends "user_layout.html" %}
+{% else %}
 {% extends "layout.html" %}
+{% endif %}
 
 {% block content %}
+
+<h1>This is the browser page</h1>
+<div class='grid-container'>
+    {% for d in data %}
+        <div> {{ d }} <img src="{{ url_for('static', filename='profile_pics/3a98d4867622ed05.jpg') }}" alt='diacom'></div>
+    {%endfor%} 
+</div>
 
 {% endblock content %}

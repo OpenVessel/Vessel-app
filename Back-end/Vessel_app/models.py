@@ -20,7 +20,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     ## upload is the main attribute of the user and download in the future 
     ## the upload attribute looks back at the 'Upload' model 
-    
     upload = db.relationship('Upload', backref='author', lazy=True)
     
     ## methods or magic methods printout
@@ -37,5 +36,25 @@ class Upload(db.Model):
         def __repr__(self):
             return f"upload('{self.title}', '{self.date_uploaded}')"
  
-def init_db():
-    db.create_all()
+class Dicom(db.Model):
+        
+        ## data unqine id 
+        id = db.Column(db.Integer, primary_key=True) 
+        study_name = db.Column(db.String(300) , nullable=False)  
+        
+        # user id
+        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+       ## add sumbit button
+        #title_of_upload = db.Column(db.String(100), nullable=False)
+        ## date uploaded, pixel data
+        date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+       
+       ## DICOM binaray stack
+        dicom_stack = db.Column(db.LargeBinary, nullable=False)
+        ## 
+       
+        def __repr__(self):
+            return f"upload( '{self.date_uploaded}')"
+
+

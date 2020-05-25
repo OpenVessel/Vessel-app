@@ -53,17 +53,20 @@
                         <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">Dropdown </a>
                             <div class="dropdown-menu" role="menu">
                                 <a class="dropdown-item" role="presentation" href="{{ url_for('index')}}">Home</a> 
-                                <a class="dropdown-item" role="presentation" href="{{ url_for('doc')}}">Documentation</a>
-                                
+                                <a class="dropdown-item" role="presentation" href="{{ url_for('doc') }}">Documentation</a>
+                                <a class="dropdown-item" role="presentation" href="{{ url_for('upload')}}">Upload</a>
+                                <a class="dropdown-item" role="presentation" href="{{ url_for('browser')}}">Browser</a>
+                                <a class="dropdown-item" role="presentation" href="{{ url_for('account')}}">Account</a>
+                    
                             </div>
                         </li>
                     </ul>
                     <form class="form-inline mr-auto" target="_self">
                         <div class="form-group"><label for="search-field"><i class="fa fa-search"></i></label><input class="form-control search-field" type="search" id="search-field" name="search"></div>
                     </form><span class="navbar-text"> 
-                        <a class="login" href="{{url_for('register')}}">Sign Up</a></span>
                    
-                    <a class="btn btn-light action-button" role="button" href="{{url_for('login')}}">Log In</a>
+                        <a class="btn btn-light action-button" href="{{ url_for('logout') }}">Logout</a>
+                   
                   
                 </div>
             </div>
