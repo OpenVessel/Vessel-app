@@ -7,3 +7,5 @@
 vessel_env/Lib/site-packages/alembic-1.4.2.dist-info/INSTALLER
 vessel_env/Lib/site-packages/alembic-1.4.2.dist-info/LICENSE
 vessel_env/*
+site.db
+.vscode
