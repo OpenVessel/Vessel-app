@@ -1,6 +1,8 @@
 import os
 import secrets
 import pydicom
+import matplotlib.pyplot as plt
+from PIL import Image
 
 from PIL import Image
 from pydicom import dcmread
@@ -12,6 +14,7 @@ from flask import render_template, url_for, flash, redirect, request, session
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Upload, Dicom
+from vessel_app.graph import graphing
 
 from flask_login import login_user, current_user, logout_user, login_required
 from io import BytesIO
@@ -49,7 +52,7 @@ def register():
     form = RegistrationForm()
     print("form var sett")
     if form.validate_on_submit():
-        print("failed")
+        
         ## hashed password
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
         user = User(username=form.username.data, email=form.email.data, password=hashed_password) 
@@ -102,7 +105,6 @@ def account():
 
 @app.route("/documentation")
 def doc():
-       
     return render_template('documentation.html')
     
 
@@ -114,39 +116,48 @@ def upload():
             print('No file part')
             return redirect(request.url)
 
-        files = request.files.getlist("file")
+        files = request.files.getlist("file") # list of FileStorage objects
+        binary_files = [file.read() for file in files] # list of bytes objects
+        binary_blob = pickle.dumps(binary_files) # binary blob
 
-        file_list = []
-        for file in files:
-            file_list.append(file.read())
-            print("it works")
-       # PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
-      #  with open(PIK, "wb") as f:
-            test = pickle.dumps(file_list)
-            filename = "file name"
-            ## database upload
-            batch = Dicom( user_id=current_user.id, study_name=filename, dicom_stack = test ) 
-            db.session.add(batch) 
-            db.session.commit()
-                
+        ### generate thumbnail
+        data = pickle.loads(binary_blob) 
+        dicom_list = []
+        for byte_file in data: # list of all dicom files in binary
+            raw = DicomBytesIO(byte_file)
+            dicom_list.append(dcmread(raw))
+
+        # find median dicom file to generate thumbnail
+        median_i = len(dicom_list)//2
+        median_dicom = dicom_list[median_i]
+
+        tn = graphing([median_dicom])
+
+        size = (300, 300)
+        tn.thumbnail(size)
+
+        # convert thumbnail to bytes
+
+        def imgToBytes(img):
+            img_bytes = BytesIO()
+            img.save(img_bytes, format='PNG')
+            img_bytes = img_bytes.getvalue()
+
+            return img_bytes
+        
+        tn_bytes = imgToBytes(tn)
+
+        filename = "file name"
+
+        ## database upload
+        batch = Dicom( user_id=current_user.id, study_name=filename, dicom_stack = binary_blob, thumbnail = tn_bytes)
+        db.session.add(batch) 
+        db.session.commit()
+
         return redirect(url_for('browser'))
 
     return render_template('upload.html')
 
-@app.route('/results')
-def results():
-        # redirect to home if no images to display
-   
-        
-    if "file_urls" not in session or session['file_urls'] == []:
-        return redirect(url_for('upload'))
-        
-    # set the file_urls and remove the session variable
-    file_urls = session['file_urls']
-    session.pop('file_urls', None)
-    
-    return render_template('results.html', file_urls=file_urls)
-    
 @app.route('/browser')
 def browser():
 
@@ -155,18 +166,12 @@ def browser():
     master_list = []
 
     for k in dicom_data: #k is each row in the query
-            data = pickle.loads(k.dicom_stack) 
+            data = pickle.loads(k.dicom_stack)
             dicom_list = []
             for byte_file in data: # list of all dicom files in binary
-              raw = DicomBytesIO(byte_file)
-              dicom_list.append(dcmread(raw))
+                raw = DicomBytesIO(byte_file)
+                dicom_list.append(dcmread(raw))
             master_list.append(dicom_list)
-
-    ### Generate Thumbnail display 
-    for i in master_list:
-        master_list[i]
-
-
 
     PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
     with open(PIK, "rb") as f:

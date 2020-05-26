@@ -17,18 +17,18 @@ class Config:
     #SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:Sd40dash2@localhost/Vessel-test' 
     
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
-    SQLALCHEMY_DATABASE_URI = r'sqlite:///D:\Openvessel\vessel-app\Back-end\site.db'
+    SQLALCHEMY_DATABASE_URI = r'sqlite:///C:\Users\grego\Documents\GitHub\Vessel-app\Back-end\site.db'
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
 
     ########### DROPZONE #############
 
-     # Dropzone settings
+    # Dropzone settings
     UPLOAD_FOLDER = os.getcwd() + r'\vessel_app\static\uploads'
     DROPZONE_ALLOWED_FILE_TYPE='.dcm',
     DROPZONE_MAX_FILE_SIZE=20,
-    DROPZONE_MAX_FILES=30,
-    DROPZONE_PARALLEL_UPLOADS=20,  # set parallel amount
+    DROPZONE_MAX_FILES=500,
+    DROPZONE_PARALLEL_UPLOADS=500,  # set parallel amount
     DROPZONE_UPLOAD_MULTIPLE=True,  # enable upload multiple
 
     ########## reCAPtcha ########### 
