@@ -60,5 +60,5 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('Email is taken.')
 
-#class uploadform(): 
+#class dicomform(): 
     

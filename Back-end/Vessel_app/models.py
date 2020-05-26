@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     ## upload is the main attribute of the user and download in the future 
     ## the upload attribute looks back at the 'Upload' model 
     upload = db.relationship('Upload', backref='author', lazy=True)
-    
+  #   dicom = db.relationship('Dicom', backref='user', lazy=True)
     ## methods or magic methods printout
     def __repr__(self):
         return f"User('{self.username}','{self.email}', '{self.image_file}')"

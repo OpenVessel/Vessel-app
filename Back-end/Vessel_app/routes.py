@@ -4,6 +4,7 @@ import pydicom
 
 from PIL import Image
 from pydicom import dcmread
+from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from flask import render_template, url_for, flash, redirect, request, session
 
@@ -119,9 +120,15 @@ def upload():
         for file in files:
             file_list.append(file.read())
             print("it works")
-        PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
-        with open(PIK, "wb") as f:
-            pickle.dump(file_list, f)
+       # PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
+      #  with open(PIK, "wb") as f:
+            test = pickle.dumps(file_list)
+            filename = "file name"
+            ## database upload
+            batch = Dicom( user_id=current_user.id, study_name=filename, dicom_stack = test ) 
+            db.session.add(batch) 
+            db.session.commit()
+                
         return redirect(url_for('browser'))
 
     return render_template('upload.html')
@@ -142,6 +149,25 @@ def results():
     
 @app.route('/browser')
 def browser():
+
+    ###### Query Database and Indexing ######
+    dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
+    master_list = []
+
+    for k in dicom_data: #k is each row in the query
+            data = pickle.loads(k.dicom_stack) 
+            dicom_list = []
+            for byte_file in data: # list of all dicom files in binary
+              raw = DicomBytesIO(byte_file)
+              dicom_list.append(dcmread(raw))
+            master_list.append(dicom_list)
+
+    ### Generate Thumbnail display 
+    for i in master_list:
+        master_list[i]
+
+
+
     PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
     with open(PIK, "rb") as f:
         data = pickle.load(f)
