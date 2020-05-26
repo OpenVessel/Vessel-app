@@ -52,7 +52,8 @@ class Dicom(db.Model):
        
        ## DICOM binaray stack
         dicom_stack = db.Column(db.LargeBinary, nullable=False)
-        ## 
+        thumbnail = db.Column(db.LargeBinary, nullable=False)
+    
        
         def __repr__(self):
             return f"upload( '{self.date_uploaded}')"

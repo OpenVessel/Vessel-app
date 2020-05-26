@@ -1,6 +1,8 @@
 import os
 import secrets
 import pydicom
+import matplotlib.pyplot as plt
+from PIL import Image
 
 from PIL import Image
 from pydicom import dcmread
@@ -12,6 +14,7 @@ from flask import render_template, url_for, flash, redirect, request, session
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Upload, Dicom
+from vessel_app.graph import graphing
 
 from flask_login import login_user, current_user, logout_user, login_required
 from io import BytesIO
@@ -49,7 +52,7 @@ def register():
     form = RegistrationForm()
     print("form var sett")
     if form.validate_on_submit():
-        print("failed")
+        
         ## hashed password
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
         user = User(username=form.username.data, email=form.email.data, password=hashed_password) 
@@ -119,15 +122,23 @@ def upload():
         file_list = []
         for file in files:
             file_list.append(file.read())
-            print("it works")
-       # PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
-      #  with open(PIK, "wb") as f:
-            test = pickle.dumps(file_list)
-            filename = "file name"
-            ## database upload
-            batch = Dicom( user_id=current_user.id, study_name=filename, dicom_stack = test ) 
-            db.session.add(batch) 
-            db.session.commit()
+
+        # find median dicom file to generate thumbnail
+        median_i = len(files)//2
+        dicom_median = files[median_i]
+        photos = graphing([dicom_median])
+        
+        size = (300, 300)
+        tn = photos.thumbnail(size)
+
+        stream = pickle.dumps(file_list)
+        
+        filename = "file name"
+        ## database upload
+        batch = Dicom( user_id=current_user.id,
+             study_name=filename, dicom_stack = stream, thumbnail = tn)
+        db.session.add(batch) 
+        db.session.commit()
                 
         return redirect(url_for('browser'))
 
@@ -163,11 +174,20 @@ def browser():
             master_list.append(dicom_list)
 
     ### Generate Thumbnail display 
-    for i in master_list:
-        master_list[i]
+    median_dicom_list = []
+
+    for upload in master_list:      
+        median_i = len(upload)//2
+        dicom_median = upload[median_i]
+        median_dicom_list.append(dicom_median)
+    
 
 
-
+    photos = graphing(median_dicom_list)
+    size = 300, 300
+    photos.thumbnail(size)
+   
+    
     PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
     with open(PIK, "rb") as f:
         data = pickle.load(f)

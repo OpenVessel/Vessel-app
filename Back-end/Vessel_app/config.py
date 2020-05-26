@@ -27,8 +27,8 @@ class Config:
     UPLOAD_FOLDER = os.getcwd() + r'\vessel_app\static\uploads'
     DROPZONE_ALLOWED_FILE_TYPE='.dcm',
     DROPZONE_MAX_FILE_SIZE=20,
-    DROPZONE_MAX_FILES=30,
-    DROPZONE_PARALLEL_UPLOADS=20,  # set parallel amount
+    DROPZONE_MAX_FILES=500,
+    DROPZONE_PARALLEL_UPLOADS=500,  # set parallel amount
     DROPZONE_UPLOAD_MULTIPLE=True,  # enable upload multiple
 
     ########## reCAPtcha ########### 
