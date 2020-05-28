@@ -53,6 +53,7 @@ class Dicom(db.Model):
        ## DICOM binaray stack
         dicom_stack = db.Column(db.LargeBinary, nullable=False)
         thumbnail = db.Column(db.LargeBinary, nullable=False)
+        file_count = db.Column(db.Integer, nullable=True) 
     
        
         def __repr__(self):

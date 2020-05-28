@@ -1,0 +1,31 @@
+{% if current_user.is_authenticated %}
+{% extends "user_layout.html" %}
+{% else %}
+{% extends "layout.html" %}
+{% endif %}
+
+{% block content %}
+
+<div class='container'>
+
+    <div class="row">
+        <div class="col-8">col-8</div>
+       
+       
+        <div class="col-4">col-4
+            <div class="dropdown">
+                <button class="dropbtn">Dropdown</button>
+                <div class="dropdown-content">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+                </div>
+              </div>
+
+        </div>
+        
+    </div>
+ 
+
+</div>
+{% endblock content %}

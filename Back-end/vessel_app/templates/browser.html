@@ -6,11 +6,43 @@
 
 {% block content %}
 
-<h1>This is the browser page</h1>
-<div class='grid-container'>
-    {% for d in data %}
-        <div> {{ d }} <img src="{{ url_for('static', filename='profile_pics/3a98d4867622ed05.jpg') }}" alt='diacom'></div>
-    {%endfor%} 
+<div class='browser' style='display: grid; grid-template-columns: auto;'>
+    {% for study in data %}
+    <div class='card' style='margin: 3%; background: whitesmoke;'>
+        <div class='container'>
+                <div class="broswer_card">
+                    
+                    <table> 
+                    <img src="{{images}}" alt="Forest" style="width:150px">
+                    </table>
+
+                    <table> 
+                    <tr>
+                        <strong>
+                            <th> Patient Sex   </th>    
+                            <th>  Modality   </th>
+                            <th>  SOP Class UID     </th>
+                            <th>   X-Ray Tube Current  </th>
+                            <th>   File count  </th>
+                        </strong>
+                    </tr>
+                    <tr>
+                        <td>  {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study['X-Ray Tube Current'].iloc[0].value.decode("utf-8") }} </td>
+                    </tr>
+                    </table>
+                    <table> 
+                        <a href="{{url_for('job')}}"> 
+                    <button class="btn btn-success">  Process </button> </a>
+                    </table>
+                 </div>
+      
+      
+        </div>  <!--- container options-->
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock content %}

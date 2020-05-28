@@ -2,12 +2,14 @@ import os
 import secrets
 import pydicom
 import matplotlib.pyplot as plt
+import pandas as pd
 from PIL import Image
-
+from io import BytesIO
 from PIL import Image
 from pydicom import dcmread
 from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
+from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session
 
 ## DO NOT forget to import app session from init
@@ -45,12 +47,12 @@ def login():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    print("connect to reg page")
+
     if current_user.is_authenticated:
         return redirect(url_for('index'))
 
     form = RegistrationForm()
-    print("form var sett")
+  
     if form.validate_on_submit():
         
         ## hashed password
@@ -61,7 +63,7 @@ def register():
         print('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('login'))
     else:
-        print("failed")
+        print("failed to validate or create a account")
         
     return render_template('register.html', title='Register', form=form)
 
@@ -117,6 +119,7 @@ def upload():
             return redirect(request.url)
 
         files = request.files.getlist("file") # list of FileStorage objects
+        file_count = len(files)
         binary_files = [file.read() for file in files] # list of bytes objects
         binary_blob = pickle.dumps(binary_files) # binary blob
 
@@ -132,7 +135,7 @@ def upload():
         median_dicom = dicom_list[median_i]
 
         tn = graphing([median_dicom])
-
+        
         size = (300, 300)
         tn.thumbnail(size)
 
@@ -150,7 +153,11 @@ def upload():
         filename = "file name"
 
         ## database upload
-        batch = Dicom( user_id=current_user.id, study_name=filename, dicom_stack = binary_blob, thumbnail = tn_bytes)
+        batch = Dicom( user_id=current_user.id,
+        study_name=filename, 
+        dicom_stack = binary_blob, 
+        thumbnail = tn_bytes,
+        file_count= file_count )
         db.session.add(batch) 
         db.session.commit()
 
@@ -163,17 +170,41 @@ def browser():
 
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
-    master_list = []
+
+#FileDataset part pydicom
+    all_studies = []
+
+######  DICOM data to dataframes function ######
 
     for k in dicom_data: #k is each row in the query
-            data = pickle.loads(k.dicom_stack)
-            dicom_list = []
-            for byte_file in data: # list of all dicom files in binary
-                raw = DicomBytesIO(byte_file)
-                dicom_list.append(dcmread(raw))
-            master_list.append(dicom_list)
+        data = pickle.loads(k.dicom_stack)
 
-    PIK = os.path.join(app.config['UPLOAD_FOLDER'], 'dicom_bin.dat')
-    with open(PIK, "rb") as f:
-        data = pickle.load(f)
-        return render_template('browser.html', data=data)
+       # image = pickle.loads(k.thumbnail)
+        image = Image.open(BytesIO((k.thumbnail)))
+        print(type(image))
+        all_rows_in_study = [] # [{}, {}, {}]
+        cols = [] # list of list of each column for each 
+        for byte_file in data: # list of all dicom files in binary
+            raw = DicomBytesIO(byte_file)
+            dicom_dict = dict([(dd(k),v) for k,v in dcmread(raw).items()])
+            all_rows_in_study.append(dicom_dict)
+            cols.append(list(dicom_dict.keys()))
+            # encompassing generates set 
+        all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
+        study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)    
+        all_studies.append(study_df)
+
+    
+    #print(all_studies[0].columns )
+    #image[0].show()
+    #####3
+
+    #print 
+    #   {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }}
+    ## drop down option 
+
+    return render_template('browser.html', data=all_studies, images = image)
+
+@app.route('/job')
+def job():
+    return render_template('job_submit.html')
