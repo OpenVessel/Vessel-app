@@ -3,6 +3,8 @@ import secrets
 import pydicom
 import matplotlib.pyplot as plt
 import pandas as pd
+import tempfile 
+
 from PIL import Image
 from io import BytesIO
 from PIL import Image
@@ -11,6 +13,7 @@ from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session
+from base64 import b64encode
 
 ## DO NOT forget to import app session from init
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
@@ -168,20 +171,40 @@ def upload():
 @app.route('/browser')
 def browser():
 
+
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
 
 #FileDataset part pydicom
     all_studies = []
+    images_list_path = []
+
+ 
+#### Thumbnail test code
+    temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\"
+    temp_user_dir = tempfile.TemporaryDirectory(prefix="user_" + str( current_user.id) + "_",dir=temp_dir)
+    pathway = temp_user_dir.name
+    print(pathway)
 
 ######  DICOM data to dataframes function ######
-
+    i = 0
     for k in dicom_data: #k is each row in the query
         data = pickle.loads(k.dicom_stack)
 
        # image = pickle.loads(k.thumbnail)
         image = Image.open(BytesIO((k.thumbnail)))
-        print(type(image))
+        #print(type(image))
+        
+        i =  1 + i
+        photopath = str(pathway) + "\\" + str(k.study_name) + str(i)
+        fp = str(photopath) + ".png"
+        print(fp)
+        image.save(fp = fp)
+
+        #test_lol = b64encode(k.thumbnail).decode("utf-8")
+        #print(type(test_lol))
+        images_list_path.append(fp)
+
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each 
         for byte_file in data: # list of all dicom files in binary
@@ -193,17 +216,16 @@ def browser():
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
         study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)    
         all_studies.append(study_df)
+        
 
     
     #print(all_studies[0].columns )
     #image[0].show()
     #####3
-
-    #print 
-    #   {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }}
+    print(len(images_list_path))
     ## drop down option 
 
-    return render_template('browser.html', data=all_studies, images = image)
+    return render_template('browser.html', data=all_studies, images_list = images_list_path)
 
 @app.route('/job')
 def job():

@@ -8,12 +8,13 @@
 
 <div class='browser' style='display: grid; grid-template-columns: auto;'>
     {% for study in data %}
+    
     <div class='card' style='margin: 3%; background: whitesmoke;'>
         <div class='container'>
                 <div class="broswer_card">
                     
                     <table> 
-                    <img src="{{images}}" alt="Forest" style="width:150px">
+                    <img src="{{ images_list[loop.index] }}">
                     </table>
 
                     <table> 
@@ -42,6 +43,8 @@
       
         </div>  <!--- container options-->
     </div>
+    
+  
     {% endfor %}
 </div>
 
