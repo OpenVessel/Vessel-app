@@ -7,14 +7,13 @@
 {% block content %}
 
 <div class='browser' style='display: grid; grid-template-columns: auto;'>
-    {% for study in data %}
-    
+    {% for study in all_studies%}
     <div class='card' style='margin: 3%; background: whitesmoke;'>
         <div class='container'>
                 <div class="broswer_card">
                     
                     <table> 
-                    <img src="{{ images_list[loop.index] }}">
+                    <img src="{{ url_for('static', filename=study[1]) }}" alt="text">
                     </table>
 
                     <table> 
@@ -28,10 +27,10 @@
                         </strong>
                     </tr>
                     <tr>
-                        <td>  {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
-                        <td>  {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
-                        <td>  {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
-                        <td>  {{ study['X-Ray Tube Current'].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                        <td>  {{ study[0]['X-Ray Tube Current'].iloc[0].value.decode("utf-8") }} </td>
                     </tr>
                     </table>
                     <table> 
@@ -43,8 +42,6 @@
       
         </div>  <!--- container options-->
     </div>
-    
-  
     {% endfor %}
 </div>
 

@@ -4,6 +4,8 @@ import pydicom
 import matplotlib.pyplot as plt
 import pandas as pd
 import tempfile 
+import base64
+import shutil
 
 from PIL import Image
 from io import BytesIO
@@ -12,7 +14,7 @@ from pydicom import dcmread
 from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, after_this_request
 from base64 import b64encode
 
 ## DO NOT forget to import app session from init
@@ -20,10 +22,14 @@ from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Upload, Dicom
 from vessel_app.graph import graphing
+from vessel_app.get_image import extract_image
 
 from flask_login import login_user, current_user, logout_user, login_required
 from io import BytesIO
 import pickle
+
+############
+
 
 @app.route("/")
 @app.route('/home')
@@ -168,6 +174,7 @@ def upload():
 
     return render_template('upload.html')
 
+
 @app.route('/browser')
 def browser():
 
@@ -179,31 +186,11 @@ def browser():
     all_studies = []
     images_list_path = []
 
- 
-#### Thumbnail test code
-    temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\"
-    temp_user_dir = tempfile.TemporaryDirectory(prefix="user_" + str( current_user.id) + "_",dir=temp_dir)
-    pathway = temp_user_dir.name
-    print(pathway)
-
 ######  DICOM data to dataframes function ######
-    i = 0
-    for k in dicom_data: #k is each row in the query
+    
+    for file_num, k in enumerate(dicom_data): #k is each row in the query database
         data = pickle.loads(k.dicom_stack)
-
-       # image = pickle.loads(k.thumbnail)
-        image = Image.open(BytesIO((k.thumbnail)))
-        #print(type(image))
-        
-        i =  1 + i
-        photopath = str(pathway) + "\\" + str(k.study_name) + str(i)
-        fp = str(photopath) + ".png"
-        print(fp)
-        image.save(fp = fp)
-
-        #test_lol = b64encode(k.thumbnail).decode("utf-8")
-        #print(type(test_lol))
-        images_list_path.append(fp)
+        raw_image = BytesIO(k.thumbnail).read()
 
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each 
@@ -215,18 +202,36 @@ def browser():
             # encompassing generates set 
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
         study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)    
-        all_studies.append(study_df)
         
-
     
-    #print(all_studies[0].columns )
-    #image[0].show()
-    #####3
-    print(len(images_list_path))
-    ## drop down option 
 
-    return render_template('browser.html', data=all_studies, images_list = images_list_path)
+        image_64= base64.b64encode(raw_image)
+        imgdata = base64.b64decode(image_64)
+        filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
+        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
+  
+
+        with open(filespec, 'wb') as f:
+            f.write(imgdata)
+            
+        
+        all_studies.append([study_df,filename])
+        
+       
+      
+    return render_template('browser.html', all_studies=all_studies, temp_user_dir = temp_user_dir)
 
 @app.route('/job')
 def job():
-    return render_template('job_submit.html')
+
+    @after_this_request
+    def per_request_callbacks(response):
+        shutil.rmtree(temp_user_dir)
+
+        for func in getattr(g, 'call_after_resquest', ()):
+            response = func(response)
+        
+        return response
+
+
+    return render_template('job_submit.html') 
