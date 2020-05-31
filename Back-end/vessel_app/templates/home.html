@@ -1,5 +1,8 @@
+{% if current_user.is_authenticated %}
+{% extends "user_layout.html" %}
+{% else %}
 {% extends "layout.html" %}
-
+{% endif %}
 {% block content %}
 <div class="header-blue">
 <div class="container hero">
@@ -10,6 +13,7 @@
     </div>
 </div>
 </div>
+
 <div class="features-blue">
     <div class="container">
         <div class="intro">

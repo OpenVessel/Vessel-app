@@ -1,21 +1,18 @@
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, AnyOf
 
 from vessel_app.models import User
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=255)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=2, max=45)])
+    password = PasswordField('Password', validators=[DataRequired()]) ## dont forgot change length of password to 10
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')
     
     def validate_username(self, username):
         
@@ -38,7 +35,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
+    recaptcha = RecaptchaField()
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
@@ -61,7 +58,7 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             
             if user:
-                raise ValidationError('email is taken.')
+                raise ValidationError('Email is taken.')
 
-#class uploadform(): 
+#class dicomform(): 
     
