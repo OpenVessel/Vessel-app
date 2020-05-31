@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>XTK Lesson 15 (get buffer from typedArray)</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="//get.goxtk.com/xtk_edge.js"
+
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+  <style id="compiled-css" type="text/css">
+      html, body {
+  background-color:#000;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden !important;
+}
+
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    <input type="file" id="file_inp" webkitdirectory>
+
+  <!-- TODO: Missing CoffeeScript 2 -->
+
+  <script type="text/javascript">//<![CDATA[
+
+
+var files = [];
+var _dataArray = [];
+var _filenames = [];
+
+$(document).ready(function() {
+  $("#file_inp").change(function() {
+    files = document.getElementById("file_inp").files;
+
+    // create a new test_renderer
+    var r = new X.renderer3D();
+    r.bgColor = [0.2, 0.25, 0.4];
+    r.init();
+    r.camera.position = [0, 300, 0];
+
+    // we create the X.volume container and attach all DICOM files
+    var v = new X.volume();
+
+    //v.file = urls;
+
+    var counter = files.length;
+    var reader = new FileReader();
+
+    recursiveLoading(0, r, v, reader, counter);
+
+  });
+});
+
+function recursiveLoading(idx, r, v, reader, counter) {
+  if (counter > 0) {
+    reader.onload = function(file) {
+      var arrayBuffer = reader.result;
+      var byteArray = new Uint8Array(arrayBuffer);
+      _filenames[idx] = file.name + ".DCM";
+      _dataArray[idx] = arrayBuffer; // _dataArray[idx] = byteArray.buffer; // Alternative!
+      //_filenames.push(file.name + ".DCM");
+      //_dataArray.push(arrayBuffer);
+      counter--;
+
+      recursiveLoading(idx + 1, r, v, reader, counter);
+    };
+    reader.readAsArrayBuffer(files[idx]);
+  } else {
+    v.file = _filenames;
+    v.filedata = _dataArray;
+    // add the volume
+    r.add(v);
+
+    // .. and render it
+    r.render();
+
+    r.onShowtime = function() {
+
+      // activate volume rendering
+      v.volumeRendering = true;
+      v.lowerThreshold = 80;
+      v.windowLower = 115;
+      v.windowHigh = 360;
+      v.minColor = [0, 0.06666666666666667, 1];
+      v.maxColor = [0.5843137254901961, 1, 0];
+      v.opacity = 0.2;
+
+    };
+
+    volume = v;
+  }
+}
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "chb61a0f"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
