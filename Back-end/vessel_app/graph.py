@@ -47,7 +47,7 @@ def graphing(files):
         # a3.set_aspect(cor_aspect)
         #plt.show()   
         #  
-        plt.savefig('testplot.jpg')
+#        plt.savefig('testplot.jpg')
         im = Image.open('testplot.jpg')
 
         return im

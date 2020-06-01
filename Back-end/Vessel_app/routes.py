@@ -1,4 +1,5 @@
 import os
+import os.path
 import secrets
 import pydicom
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session, after_this_request
 from base64 import b64encode
-
+from os import path
 ## DO NOT forget to import app session from init
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
@@ -174,10 +175,10 @@ def upload():
 
     return render_template('upload.html')
 
-
 @app.route('/browser')
 def browser():
 
+   
 
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
@@ -185,6 +186,11 @@ def browser():
 #FileDataset part pydicom
     all_studies = []
     images_list_path = []
+
+    temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
+    os.mkdir(path = temp_dir + "user_1")
+    temp_user_dir = "user_" + str(current_user.id)
+
 
 ######  DICOM data to dataframes function ######
     
@@ -223,15 +229,6 @@ def browser():
 
 @app.route('/job')
 def job():
-
-    @after_this_request
-    def per_request_callbacks(response):
-        shutil.rmtree(temp_user_dir)
-
-        for func in getattr(g, 'call_after_resquest', ()):
-            response = func(response)
-        
-        return response
 
 
     return render_template('job_submit.html') 
