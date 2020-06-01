@@ -121,6 +121,10 @@ def doc():
 @app.route("/upload",  methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
+
+        log.info(request.form)
+        log.info(request.files)
+
         # check if the post request has the file part
         if 'file' not in request.files:
             print('No file part')
@@ -175,35 +179,32 @@ def upload():
 
 @app.before_request
 def before_request_func(): 
-    temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
-    temp_user_dir = "user_" + str(current_user.id)
-    print(temp_dir)
-    print(temp_user_dir)
-    current_user_dir = temp_dir + temp_user_dir
-    state = os.path.isdir(current_user_dir)
-    print(state)
-    if state == True:
-        shutil.rmtree(current_user_dir)
-    elif state == False:
-        print("user temp file")
-    return 
+    if current_user.is_authenticated and request.endpoint == 'job':
+        temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
+        temp_user_dir = "user_" + str(current_user.id)
+        current_user_dir = temp_dir + temp_user_dir
+        state = os.path.isdir(current_user_dir)
+        print("Does it exist?", state)
 
+        if state == True:
+            shutil.rmtree(current_user_dir)
+            print("Current user was deleted" )
+        elif state == False:
+            print("User temp Does not exist!")
+        return 
+ 
 @app.route('/browser')
 def browser():
-
-   
-
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
 
-#FileDataset part pydicom
+#FileDataset part pydicoms
     all_studies = []
     images_list_path = []
 
     temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
-    os.mkdir(path = temp_dir + "user_1")
+    os.mkdir(path = temp_dir + "user_" + str(current_user.id))
     temp_user_dir = "user_" + str(current_user.id)
-
 
 ######  DICOM data to dataframes function ######
     
