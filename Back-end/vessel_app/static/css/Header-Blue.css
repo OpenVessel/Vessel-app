@@ -150,7 +150,7 @@
 
 @media (min-width:768px) {
   .header-blue .hero {
-    margin-top: 60px;
+    margin-top: 0px;
     text-align: left;
   }
 }
