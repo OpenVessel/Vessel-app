@@ -30,5 +30,5 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch = patch_request_class(app) 
 
-from vessel_app import routes
+from vessel_app import routes, errors
 
