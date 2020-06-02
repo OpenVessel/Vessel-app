@@ -10,22 +10,24 @@
       
 
             <div class="content-section-upload">
-                <fieldset class="form-group">    <h2> Drag or Drop DICOM   </h2>
+                <fieldset class="form-group">   
+        <div class="font_headers">
+            <h2 > Drag or Drop DICOM   </h2>
+        </div>                  
             
-                {{ dropzone.style('border: 2px dashed #0087F7; margin: 10%; min-height: 400px; width:85%;') }}
+    {{ dropzone.style('border: 10px dashed #0087F7; margin: 10%; min-height: 400px; width:85%;') }}
+    
+    <!-- {{ dropzone.create(action='upload') }} -->
+    <form class="dropzone" id="my-dropzone" 
+    enctype="multipart/form-data" method="POST">
+
+        <div class="fallback">
+        <input name="file" type="file" multiple />
+    </div>
                 
-                <!-- {{ dropzone.create(action='upload') }} -->
-                <form class="dropzone" id="my-dropzone" enctype="multipart/form-data" method="POST">
-                   
-                   
-                   
-                 <div class="fallback">
-                 <input name="file" type="file" multiple />
-                </div>
+        <div algin="right">
                 
-                <div algin="right">
-                
-                    <input type="submit" id="submit-all" value="Submit">
+        <input type="submit" id="submit-all" value="Submit">
                    
                 </div>
               

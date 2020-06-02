@@ -179,7 +179,8 @@ def upload():
 
 @app.before_request
 def before_request_func(): 
-    if current_user.is_authenticated and request.endpoint == 'job':
+    webpages = ['job','account', 'upload', 'home', 'index', 'doc']
+    if current_user.is_authenticated and any(request.endpoint == w for w in webpages):
         temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
         temp_user_dir = "user_" + str(current_user.id)
         current_user_dir = temp_dir + temp_user_dir
@@ -188,10 +189,10 @@ def before_request_func():
 
         if state == True:
             shutil.rmtree(current_user_dir)
-            print("Current user was deleted" )
+          #  print("Current user was deleted" )
         elif state == False:
-            print("User temp Does not exist!")
-        return 
+          #  print("User temp Does not exist!")
+            return 
  
 @app.route('/browser')
 def browser():
