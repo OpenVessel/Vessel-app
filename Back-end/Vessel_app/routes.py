@@ -119,11 +119,7 @@ def doc():
 
 @app.route("/upload",  methods=['GET', 'POST'])
 def upload():
-    if request.method == 'POST':
-
-        log.info(request.form)
-        log.info(request.files)
-
+    def upload_files():
         # check if the post request has the file part
         if 'file' not in request.files:
             print('No file part')
@@ -172,6 +168,8 @@ def upload():
         db.session.add(batch) 
         db.session.commit()
 
+    if request.method == 'POST':
+        upload_files()
         return redirect(url_for('browser'))
 
     return render_template('upload.html')
@@ -192,7 +190,7 @@ def before_request_func():
         elif state == False:
         #  print("User temp Does not exist!")
             return 
- 
+
 @app.route('/browser')
 def browser():
     ###### Query Database and Indexing ######
