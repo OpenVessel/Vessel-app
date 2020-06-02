@@ -24,7 +24,6 @@ from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Upload, Dicom
 from vessel_app.graph import graphing
-from vessel_app.get_image import extract_image
 
 from flask_login import login_user, current_user, logout_user, login_required
 from io import BytesIO
@@ -227,7 +226,8 @@ def browser():
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
+        filespec = r"C:\Users\grego\Documents\GitHub\Vessel-app\Back-end\vessel_app\static" + filename
+        # filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
         print(filespec)
         with open(filespec, 'wb') as f:
             f.write(imgdata)
@@ -235,8 +235,6 @@ def browser():
         
         all_studies.append([study_df,filename])
         
-       
-      
     return render_template('browser.html', all_studies=all_studies, temp_user_dir = temp_user_dir)
 
 @app.route('/job')
