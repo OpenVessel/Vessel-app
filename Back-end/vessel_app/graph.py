@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import base64
+
 from PIL import Image
 from io import BytesIO
+
 
 def graphing(files):
         # skip files with no SliceLocation (eg scout views)
@@ -44,7 +47,7 @@ def graphing(files):
         # a3.set_aspect(cor_aspect)
         #plt.show()   
         #  
-        plt.savefig('testplot.jpg')
+#        plt.savefig('testplot.jpg')
         im = Image.open('testplot.jpg')
 
         return im

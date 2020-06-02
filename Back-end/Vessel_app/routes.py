@@ -1,8 +1,13 @@
 import os
+import os.path
 import secrets
 import pydicom
 import matplotlib.pyplot as plt
 import pandas as pd
+import tempfile 
+import base64
+import shutil
+
 from PIL import Image
 from io import BytesIO
 from PIL import Image
@@ -10,13 +15,16 @@ from pydicom import dcmread
 from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, after_this_request
+from base64 import b64encode
+from os import path
 
 ## DO NOT forget to import app session from init
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Upload, Dicom
 from vessel_app.graph import graphing
+from vessel_app.get_image import extract_image
 
 from flask_login import login_user, current_user, logout_user, login_required
 from io import BytesIO
@@ -113,6 +121,10 @@ def doc():
 @app.route("/upload",  methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
+
+        log.info(request.form)
+        log.info(request.files)
+
         # check if the post request has the file part
         if 'file' not in request.files:
             print('No file part')
@@ -165,23 +177,41 @@ def upload():
 
     return render_template('upload.html')
 
+@app.before_request
+def before_request_func(): 
+    if current_user.is_authenticated and request.endpoint == 'job':
+        temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
+        temp_user_dir = "user_" + str(current_user.id)
+        current_user_dir = temp_dir + temp_user_dir
+        state = os.path.isdir(current_user_dir)
+        print("Does it exist?", state)
+
+        if state == True:
+            shutil.rmtree(current_user_dir)
+            print("Current user was deleted" )
+        elif state == False:
+            print("User temp Does not exist!")
+        return 
+ 
 @app.route('/browser')
 def browser():
-
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
 
-#FileDataset part pydicom
+#FileDataset part pydicoms
     all_studies = []
+    images_list_path = []
+
+    temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
+    os.mkdir(path = temp_dir + "user_" + str(current_user.id))
+    temp_user_dir = "user_" + str(current_user.id)
 
 ######  DICOM data to dataframes function ######
-
-    for k in dicom_data: #k is each row in the query
+    
+    for file_num, k in enumerate(dicom_data): #k is each row in the query database
         data = pickle.loads(k.dicom_stack)
+        raw_image = BytesIO(k.thumbnail).read()
 
-       # image = pickle.loads(k.thumbnail)
-        image = Image.open(BytesIO((k.thumbnail)))
-        print(type(image))
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each 
         for byte_file in data: # list of all dicom files in binary
@@ -192,19 +222,24 @@ def browser():
             # encompassing generates set 
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
         study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)    
-        all_studies.append(study_df)
+        
+        image_64= base64.b64encode(raw_image)
+        imgdata = base64.b64decode(image_64)
+        filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
+        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
 
-    
-    #print(all_studies[0].columns )
-    #image[0].show()
-    #####3
-
-    #print 
-    #   {{ study["Patient's Sex"].iloc[0].value.decode("utf-8") }}
-    ## drop down option 
-
-    return render_template('browser.html', data=all_studies, images = image)
+        with open(filespec, 'wb') as f:
+            f.write(imgdata)
+            
+        
+        all_studies.append([study_df,filename])
+        
+       
+      
+    return render_template('browser.html', all_studies=all_studies, temp_user_dir = temp_user_dir)
 
 @app.route('/job')
 def job():
-    return render_template('job_submit.html')
+
+
+    return render_template('job_submit.html') 

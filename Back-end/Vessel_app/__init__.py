@@ -9,7 +9,9 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from vessel_app.config import Config # config class
 
-app = Flask(__name__)
+app = Flask(__name__) ## Global Flask instance application Factory???
+
+
 app.config.from_object(Config) # reference to config.py
 ## SQL database instance, classes or called 'models' 
 db = SQLAlchemy(app)
@@ -28,5 +30,5 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 patch = patch_request_class(app) 
 
-from vessel_app import routes
+from vessel_app import routes, errors
 
