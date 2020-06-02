@@ -179,7 +179,7 @@ def upload():
 
 @app.before_request
 def before_request_func(): 
-    webpages = ['job','account', 'upload', 'home', 'index', 'doc']
+    webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
     if current_user.is_authenticated and any(request.endpoint == w for w in webpages):
         temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
         temp_user_dir = "user_" + str(current_user.id)
@@ -228,7 +228,7 @@ def browser():
         imgdata = base64.b64decode(image_64)
         filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
         filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
-
+        print(filespec)
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             

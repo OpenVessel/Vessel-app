@@ -1,8 +1,10 @@
+
 from flask import Flask
 # upload imports
 from flask_dropzone import Dropzone
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import os
+
 from flask_sqlalchemy import SQLAlchemy #URI SQLite database simply a file set as config file
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
