@@ -7,44 +7,27 @@
 
 <div class="header-blue">
     <div class="container hero">
-      
-
-            <div class="content-section-upload">
-                <fieldset class="form-group">   
-        <div class="font_headers">
-            <h2 > Drag or Drop DICOM   </h2>
-        </div>                  
-            
-    {{ dropzone.style('border: 10px dashed #0087F7; margin: 10%; min-height: 400px; width:85%;') }}
-    
-    <!-- {{ dropzone.create(action='upload') }} -->
-    <form class="dropzone" id="my-dropzone" 
-    enctype="multipart/form-data" method="POST">
-
-        <div class="fallback">
-        <input name="file" type="file" multiple />
-    </div>
-                
-        <div algin="right">
-                
-        <input type="submit" id="submit-all" value="Submit">
-                   
-                </div>
-              
+        <div class="content-section-upload">
+            <fieldset class="form-group">   
+                <div class="font_headers">
+                    <h2 > Drag or Drop DICOM   </h2>
+                </div>                  
+                {{ dropzone.style('border: 10px dashed #0087F7; margin: 10%; min-height: 400px; width:85%;') }}
+                <!-- {{ dropzone.create(action='upload') }} -->
+                <form class="dropzone" id="my-dropzone" enctype="multipart/form-data" method="POST">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple />
+                    </div>
+                    <div algin="right">
+                        <input type="submit" id="submit-all" value="Submit">
+                    </div>
                 </form>
-            
-            <!--- dropzone javascript code can be config here to change the dropzone behavior   https://www.dropzonejs.com/#configuration --->
-            <!-- dropzone's custom_init allows you to call when dropzone initializes you can add event listeners here  -->
-            <!-- {{ dropzone.load_js() }} -->
-
-            </div>
-                </div>
+                <!--- dropzone javascript code can be config here to change the dropzone behavior   https://www.dropzonejs.com/#configuration --->
+                <!-- dropzone's custom_init allows you to call when dropzone initializes you can add event listeners here  -->
+                <!-- {{ dropzone.load_js() }} -->
             </fieldset>
+        </div>
+    </div>  
 </div>
-
-</div>
-
-
-
 
 {% endblock content %}
