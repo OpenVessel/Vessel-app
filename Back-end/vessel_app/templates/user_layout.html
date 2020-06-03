@@ -29,13 +29,10 @@
     <link rel="stylesheet" href="static/css/Testimonials.css">
     <link rel="stylesheet" href="static/css/card_browser.css">
     <link rel="stylesheet" href="static/css/dropdown_job.css">
-<!--  
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-	
-			 --> 
-            	<!--  Dropzone reference or include --> 
-		     {{ dropzone.load_css(css_url='/static/css/dropzone.css') }} 
-             
+    <!--  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">--> 
+    <!--  Dropzone reference or include --> 
+    {{ dropzone.load_css(css_url='/static/css/dropzone.css') }} 
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px; width: 800px') }}
     {% if title %}
         <title>Vessel - {{ title }}</title>
     {% else %}
@@ -44,7 +41,7 @@
 </head>
 
 <header>
- <div>
+<div>
     <div class="header-blue">
         
         <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">

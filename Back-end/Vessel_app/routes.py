@@ -22,7 +22,7 @@ from os import path
 ## DO NOT forget to import app session from init
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from vessel_app.models import User, Upload, Dicom
+from vessel_app.models import User, Dicom
 from vessel_app.graph import graphing
 
 from flask_login import login_user, current_user, logout_user, login_required
@@ -125,6 +125,8 @@ def upload():
             print('No file part')
             return redirect(request.url)
 
+        study_name = request.form.get('Study Name')
+        description = request.form.get('description')
         files = request.files.getlist("file") # list of FileStorage objects
         file_count = len(files)
         binary_files = [file.read() for file in files] # list of bytes objects
@@ -161,10 +163,11 @@ def upload():
 
         ## database upload
         batch = Dicom( user_id=current_user.id,
-        study_name=filename, 
         dicom_stack = binary_blob, 
         thumbnail = tn_bytes,
-        file_count= file_count )
+        file_count= file_count,
+        study_name=study_name,
+        description=description)
         db.session.add(batch) 
         db.session.commit()
 

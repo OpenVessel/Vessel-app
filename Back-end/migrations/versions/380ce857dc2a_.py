@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c34e6a36c176
+Revision ID: 380ce857dc2a
 Revises: 
-Create Date: 2020-05-26 14:53:45.810165
+Create Date: 2020-06-03 11:57:58.487247
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c34e6a36c176'
+revision = '380ce857dc2a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,11 +30,13 @@ def upgrade():
     )
     op.create_table('dicom',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('study_name', sa.String(length=300), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('date_uploaded', sa.DateTime(), nullable=False),
     sa.Column('dicom_stack', sa.LargeBinary(), nullable=False),
     sa.Column('thumbnail', sa.LargeBinary(), nullable=False),
+    sa.Column('file_count', sa.Integer(), nullable=True),
+    sa.Column('study_name', sa.String(length=300), nullable=False),
+    sa.Column('description', sa.String(length=1000), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
