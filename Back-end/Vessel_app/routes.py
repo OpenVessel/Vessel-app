@@ -260,6 +260,8 @@ def browser():
     for file_num, k in enumerate(dicom_data): #k is each row in the query database
         data = pickle.loads(k.dicom_stack)
         raw_image = BytesIO(k.thumbnail).read()
+        file_count = (k.file_count)
+
 
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each 
@@ -273,14 +275,14 @@ def browser():
         
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
-        filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
-        #filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
+        file_thumbnail = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
+        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
+        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             
         
-        all_studies.append([study_df,filename])
+        all_studies.append([study_df,file_thumbnail,file_count])
         
     return render_template('browser.html', all_studies=all_studies, temp_user_dir = temp_user_dir)
 
