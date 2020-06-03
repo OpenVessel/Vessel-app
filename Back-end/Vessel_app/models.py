@@ -21,34 +21,45 @@ class User(db.Model, UserMixin):
     ## upload is the main attribute of the user and download in the future 
     ## the upload attribute looks back at the 'Upload' model 
     upload = db.relationship('Upload', backref='author', lazy=True)
-  #   dicom = db.relationship('Dicom', backref='user', lazy=True)
+    #   dicom = db.relationship('Dicom', backref='user', lazy=True)
     ## methods or magic methods printout
     def __repr__(self):
         return f"User('{self.username}','{self.email}', '{self.image_file}')"
     
 class Upload(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        title = db.Column(db.String(100), nullable=False)
-        date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
-        content = db.Column(db.Text, nullable=False) 
-        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-        
-        def __repr__(self):
-            return f"upload('{self.title}', '{self.date_uploaded}')"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    content = db.Column(db.Text, nullable=False) 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    def __repr__(self):
+        return f"upload('{self.title}', '{self.date_uploaded}')"
 
 class Dicom(db.Model):
-        
-        ## data unqine id 
-        id = db.Column(db.Integer, primary_key=True)  
-        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-        date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
-        dicom_stack = db.Column(db.LargeBinary, nullable=False)
-        thumbnail = db.Column(db.LargeBinary, nullable=False)
-        file_count = db.Column(db.Integer, nullable=True) 
-        study_name = db.Column(db.String(300), nullable=False) 
-        description = db.Column(db.String(1000), nullable=False)
+    
+    ## data unqine id 
+    id = db.Column(db.Integer, primary_key=True)  
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    dicom_stack = db.Column(db.LargeBinary, nullable=False)
+    thumbnail = db.Column(db.LargeBinary, nullable=False)
+    file_count = db.Column(db.Integer, nullable=True) 
+    # formData = db.relationship('DicomFormData', backref='parent', lazy=True)
 
-        def __repr__(self):
-            return f"upload( '{self.date_uploaded}')"
+    def __repr__(self):
+        return f"Dicom('{self.date_uploaded}')"
 
+class DicomFormData(db.Model):
 
+    id = db.Column(db.Integer, primary_key=True)  
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    study_name = db.Column(db.String(300), nullable=False) 
+    description = db.Column(db.String(1000), nullable=False)
+    # dicom_id = db.Column(db.Integer, db.ForeignKey('dicom.id'), nullable=False)
+
+    def __repr__(self):
+        return f"DicomFormData('{self.study_name}')"
+
+    __str__ = __repr__
