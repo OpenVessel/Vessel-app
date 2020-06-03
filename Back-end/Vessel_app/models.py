@@ -14,15 +14,12 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False )
     email = db.Column(db.String(120), unique=True, nullable=False )
-    
-    # user profile image
     image_file = db.Column(db.String(120), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
-    ## upload is the main attribute of the user and download in the future 
-    ## the upload attribute looks back at the 'Upload' model 
     upload = db.relationship('Upload', backref='author', lazy=True)
-    #   dicom = db.relationship('Dicom', backref='user', lazy=True)
-    ## methods or magic methods printout
+    dicom = db.relationship('Dicom', backref='author', lazy=True)
+    
+
     def __repr__(self):
         return f"User('{self.username}','{self.email}', '{self.image_file}')"
     
@@ -40,12 +37,14 @@ class Dicom(db.Model):
     
     ## data unqine id 
     id = db.Column(db.Integer, primary_key=True)  
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     dicom_stack = db.Column(db.LargeBinary, nullable=False)
     thumbnail = db.Column(db.LargeBinary, nullable=False)
     file_count = db.Column(db.Integer, nullable=True) 
-    # formData = db.relationship('DicomFormData', backref='parent', lazy=True)
+    session_id = db.Column(db.String(200), nullable=False)
+    formData = db.relationship('DicomFormData', backref='author', lazy=True)
+    
 
     def __repr__(self):
         return f"Dicom('{self.date_uploaded}')"
@@ -53,11 +52,10 @@ class Dicom(db.Model):
 class DicomFormData(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)  
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
     study_name = db.Column(db.String(300), nullable=False) 
     description = db.Column(db.String(1000), nullable=False)
-    # dicom_id = db.Column(db.Integer, db.ForeignKey('dicom.id'), nullable=False)
+    session_id = db.Column(db.String(200), db.ForeignKey('dicom.session_id'), nullable=False)
 
     def __repr__(self):
         return f"DicomFormData('{self.study_name}')"
