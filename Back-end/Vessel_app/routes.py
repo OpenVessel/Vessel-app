@@ -289,4 +289,9 @@ def browser():
 def job():
 
 
+    ## jab generates a Messegar to the broker for Query server 
+        ## the broker sends a message to Query server
+        ## the Query server master -> queries the database and inserst into the worker database 
+        ##
+
     return render_template('job_submit.html') 
