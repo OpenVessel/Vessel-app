@@ -12,19 +12,16 @@
                 <div class="font_headers">
                     <h2 > Drag or Drop DICOM   </h2>
                 </div>                  
-                {{ dropzone.style('border: 10px dashed #0087F7; margin: 10%; min-height: 400px; width:85%;') }}
-                <!-- {{ dropzone.create(action='upload') }} -->
-                <form class="dropzone" id="my-dropzone" enctype="multipart/form-data" method="POST">
-                    <div class="fallback">
-                        <input name="file" type="file" multiple />
-                    </div>
-                    <div algin="right">
-                        <input type="submit" id="submit-all" value="Submit">
-                    </div>
+                <form action="{{ url_for('upload') }}" enctype="multipart/form-data" method="post">
+                    <label for="Study Name">Study Name</label>
+                    <input type="text" id="Study Name" name="Study Name"/><br>
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description"/><br>
+                    {{ dropzone.create() }}
+                    <input type="submit" id="submit" value="Submit and Upload">
                 </form>
-                <!--- dropzone javascript code can be config here to change the dropzone behavior   https://www.dropzonejs.com/#configuration --->
-                <!-- dropzone's custom_init allows you to call when dropzone initializes you can add event listeners here  -->
-                <!-- {{ dropzone.load_js() }} -->
+                {{ dropzone.load_js() }}
+                {{ dropzone.config() }}
             </fieldset>
         </div>
     </div>  

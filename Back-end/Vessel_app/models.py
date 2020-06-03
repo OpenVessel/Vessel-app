@@ -35,27 +35,19 @@ class Upload(db.Model):
         
         def __repr__(self):
             return f"upload('{self.title}', '{self.date_uploaded}')"
- 
+
 class Dicom(db.Model):
         
         ## data unqine id 
-        id = db.Column(db.Integer, primary_key=True) 
-        study_name = db.Column(db.String(300) , nullable=False)  
-        
-        # user id
+        id = db.Column(db.Integer, primary_key=True)  
         user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-       ## add sumbit button
-        #title_of_upload = db.Column(db.String(100), nullable=False)
-        ## date uploaded, pixel data
         date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
-       
-       ## DICOM binaray stack
         dicom_stack = db.Column(db.LargeBinary, nullable=False)
         thumbnail = db.Column(db.LargeBinary, nullable=False)
         file_count = db.Column(db.Integer, nullable=True) 
-    
-       
+        study_name = db.Column(db.String(300), nullable=False) 
+        description = db.Column(db.String(1000), nullable=False)
+
         def __repr__(self):
             return f"upload( '{self.date_uploaded}')"
 

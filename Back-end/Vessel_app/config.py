@@ -6,6 +6,7 @@
 
 
 import os
+from flask import url_for
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -21,16 +22,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = r'sqlite:///D:\Openvessel\vessel-app\Back-end\site.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
 
-    ########### DROPZONE #############
-
-    # Dropzone settings
-    UPLOAD_FOLDER = os.getcwd() + r'\vessel_app\static\uploads'
-    DROPZONE_ALLOWED_FILE_TYPE='.dcm',
-    DROPZONE_MAX_FILE_SIZE=20,
-    DROPZONE_MAX_FILES=500,
-    DROPZONE_PARALLEL_UPLOADS=500,  # set parallel amount
-    DROPZONE_UPLOAD_MULTIPLE=True,  # enable upload multiple
-
     ########## reCAPtcha ########### 
 
     RECAPTCHA_USE_SSL= False
@@ -43,3 +34,13 @@ class Config:
     ######## UPlOAD FOLDER Need to depcreated #####
     UPLOADED_PHOTOS_DEST = os.getcwd() + 'static/uploads_files'
     ALLOWED_IMAGE_EXTENSIONS = {'dcm'}
+
+    # Flask-Dropzone config:
+    DROPZONE_ALLOWED_FILE_CUSTOM= True
+    DROPZONE_ALLOWED_FILE_TYPE='image/*, .dcm'
+    DROPZONE_MAX_FILE_SIZE=3
+    DROPZONE_MAX_FILES=30
+    DROPZONE_IN_FORM=True
+    DROPZONE_UPLOAD_ON_CLICK=True
+    DROPZONE_UPLOAD_ACTION='upload'  # URL or endpoint
+    DROPZONE_UPLOAD_BTN_ID='submit'
