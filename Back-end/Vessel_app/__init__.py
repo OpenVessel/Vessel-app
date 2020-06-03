@@ -1,5 +1,10 @@
-
 from flask import Flask
+
+##logging imports
+import logging
+from vessel_app.flask_logs import LogSetup
+from datetime import datetime as dt
+
 # upload imports
 from flask_dropzone import Dropzone
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
@@ -22,8 +27,16 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 dropzone = Dropzone(app)
 
-login_manager = LoginManager(app)
+## log info
+app.config["LOG_TYPE"] = os.environ.get("LOG_TYPE", "stream")
+app.config["LOG_LEVEL"] = os.environ.get("LOG_LEVEL", "INFO")
+app.config['LOG_DIR'] = os.environ.get("LOG_DIR", "./")
+app.config['APP_LOG_NAME'] = os.environ.get("APP_LOG_NAME", "app.log")
+app.config['WWW_LOG_NAME'] = os.environ.get("WWW_LOG_NAME", "www.log")
+logs = LogSetup()
+logs.init_app(app)
 
+login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 

@@ -8,6 +8,14 @@ import tempfile
 import base64
 import shutil
 
+
+### 
+import logging
+from vessel_app.flask_logs import LogSetup
+from datetime import datetime as dt
+
+
+
 from PIL import Image
 from io import BytesIO
 from PIL import Image
@@ -33,6 +41,28 @@ import pickle
 @app.route('/home')
 def index():
     return render_template('home.html')
+
+
+##### logging 
+@app.after_request
+def after_request(response):
+    """ Logging after every request. """
+ #   logger = logging.getLogger("app.access")
+    #logger.info(
+     #   "%s [%s] %s %s %s %s %s %s %s",
+    #    request.remote_addr,
+    #    dt.utcnow().strftime("%d/%b/%Y:%H:%M:%S.%f")[:-3],
+    #    request.method,
+     #   request.path,
+     #   request.scheme,
+     #   response.status,
+      #  response.content_length,
+     #   request.referrer,
+     #   request.user_agent,
+   # )
+    return response
+
+
 
 @app.route("/login",methods=['POST', 'GET'])
 def login():
@@ -120,12 +150,17 @@ def doc():
 @app.route("/upload",  methods=['GET', 'POST'])
 def upload():
     def upload_files():
+        
         # check if the post request has the file part
         if 'file' not in request.files:
             print('No file part')
             return redirect(request.url)
 
         files = request.files.getlist("file") # list of FileStorage objects
+
+        logging.info(request.form)
+        logging.info(request.files)
+
         file_count = len(files)
         binary_files = [file.read() for file in files] # list of bytes objects
         binary_blob = pickle.dumps(binary_files) # binary blob
@@ -224,9 +259,9 @@ def browser():
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
-        # filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
-        print(filespec)
+        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
+        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
+        #print(filespec)
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             
