@@ -32,10 +32,15 @@ from vessel_app import app, db, bcrypt, dropzone, photos, patch
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Dicom, DicomFormData
 from vessel_app.graph import graphing
+from vessel_app.utils import request_id
 
 from flask_login import login_user, current_user, logout_user, login_required
 from io import BytesIO
 import pickle
+
+# globals
+session_id = None
+
 
 @app.route("/")
 @app.route('/home')
@@ -89,7 +94,7 @@ def register():
         return redirect(url_for('index'))
 
     form = RegistrationForm()
-  
+
     if form.validate_on_submit():
         
         ## hashed password
@@ -149,77 +154,70 @@ def doc():
 
 @app.route("/upload",  methods=['GET', 'POST'])
 def upload():
-    def upload_files():
-        
-        # check if the post request has the file part
-        # if 'file' not in request.files:
-        #     print('No file part')
-        #     return redirect(request.url)
-
-        files_list = []
-        for key, f in request.files.items():
-            if key.startswith('file'):
-                print('adding file')
-                files_list.append(f)
-        # files = request.files.getlist("file") # list of FileStorage objects
-        file_count = len(files_list)
-        binary_files = [file.read() for file in files_list] # list of bytes objects
-        binary_blob = pickle.dumps(binary_files) # binary blob
-
-        ### generate thumbnail
-        data = pickle.loads(binary_blob) 
-        dicom_list = []
-        for byte_file in data: # list of all dicom files in binary
-            raw = DicomBytesIO(byte_file)
-            dicom_list.append(dcmread(raw))
-
-        # find median dicom file to generate thumbnail
-        median_i = len(dicom_list)//2
-        median_dicom = dicom_list[median_i]
-
-        tn = graphing([median_dicom])
-        
-        size = (300, 300)
-        tn.thumbnail(size)
-
-        # convert thumbnail to bytes
-
-        def imgToBytes(img):
-            img_bytes = BytesIO()
-            img.save(img_bytes, format='PNG')
-            img_bytes = img_bytes.getvalue()
-
-            return img_bytes
-        
-        tn_bytes = imgToBytes(tn)
-
-        filename = "file name"
-
-        ## database upload
-        batch = Dicom( 
-        user_id=current_user.id,
-        dicom_stack = binary_blob, 
-        thumbnail = tn_bytes,
-        file_count= file_count)
-        db.session.add(batch) 
-        db.session.commit()
-
-    if request.method == 'POST':
-        print('POST MADE TO UPLOAD')
-        upload_files()
-        return 
-
     return render_template('upload.html')
+
+
+@app.route("/dropzone_handler",  methods=['GET', 'POST'])
+def dropzone_handler():
+    files_list = []
+    for key, f in request.files.items():
+        if key.startswith('file'):
+            files_list.append(f)
+    file_count = len(files_list)
+    binary_files = [file.read() for file in files_list] # list of bytes objects
+    binary_blob = pickle.dumps(binary_files) # binary blob
+
+    ### generate thumbnail
+    data = pickle.loads(binary_blob) 
+    dicom_list = []
+    for byte_file in data: # list of all dicom files in binary
+        raw = DicomBytesIO(byte_file)
+        dicom_list.append(dcmread(raw))
+
+    # find median dicom file to generate thumbnail
+    median_i = len(dicom_list)//2
+    median_dicom = dicom_list[median_i]
+
+    tn = graphing([median_dicom])
+    
+    size = (300, 300)
+    tn.thumbnail(size)
+
+    # convert thumbnail to bytes
+
+    def imgToBytes(img):
+        img_bytes = BytesIO()
+        img.save(img_bytes, format='PNG')
+        img_bytes = img_bytes.getvalue()
+
+        return img_bytes
+    
+    tn_bytes = imgToBytes(tn)
+
+    filename = "file name"
+
+    global session_id
+    ## database upload
+    batch = Dicom( 
+    user_id=current_user.id,
+    dicom_stack = binary_blob, 
+    thumbnail = tn_bytes,
+    file_count= file_count,
+    session_id=str(session_id))
+    db.session.add(batch) 
+    db.session.commit()
+    return ''
 
 
 @app.route('/form', methods=['POST'])
 def handle_form():
     study_name = request.form.get('Study Name')
     description = request.form.get('description')
+    global session_id
     formData = DicomFormData( 
-        user_id=current_user.id,
         study_name=study_name,
-        description=description)
+        description=description,
+        session_id=str(session_id))
     db.session.add(formData) 
     db.session.commit()
     return redirect(url_for('browser'))
@@ -227,18 +225,21 @@ def handle_form():
 @app.before_request
 def before_request_func(): 
     webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
+    if current_user.is_authenticated and request.endpoint =='upload':
+        # upload id
+        global session_id
+        session_id = request_id()
+        print('SESSION_ID:', session_id)
     if current_user.is_authenticated and request.endpoint in webpages:
+        # temp file management
         temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
         temp_user_dir = "user_" + str(current_user.id)
         current_user_dir = temp_dir + temp_user_dir
         state = os.path.isdir(current_user_dir)
-        print("Does it exist?", state)
 
         if state == True:
             shutil.rmtree(current_user_dir)
-        #  print("Current user was deleted" )
         elif state == False:
-        #  print("User temp Does not exist!")
             return 
 
 @app.route('/browser')
@@ -246,7 +247,7 @@ def browser():
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
 
-#FileDataset part pydicoms
+    #FileDataset part pydicoms
     all_studies = []
     images_list_path = []
 
@@ -254,7 +255,7 @@ def browser():
     os.mkdir(path = temp_dir + "user_" + str(current_user.id))
     temp_user_dir = "user_" + str(current_user.id)
 
-######  DICOM data to dataframes function ######
+    ######  DICOM data to dataframes function ######
     
     for file_num, k in enumerate(dicom_data): #k is each row in the query database
         data = pickle.loads(k.dicom_stack)
@@ -266,17 +267,15 @@ def browser():
             raw = DicomBytesIO(byte_file)
             dicom_dict = dict([(dd(k),v) for k,v in dcmread(raw).items()])
             all_rows_in_study.append(dicom_dict)
-            cols.append(list(dicom_dict.keys()))
-            # encompassing generates set 
+            cols.append(list(dicom_dict.keys())) 
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
         study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)    
         
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         filename = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
-        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
-        #print(filespec)
+        filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
+        #filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + filename
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             
