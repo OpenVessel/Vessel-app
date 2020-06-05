@@ -1,0 +1,10 @@
+{% if current_user.is_authenticated %}
+{% extends "user_layout.html" %}
+{% else %}
+{% extends "layout.html" %}
+{% endif %}
+
+{% block content %}
+
+
+{% endblock content %}

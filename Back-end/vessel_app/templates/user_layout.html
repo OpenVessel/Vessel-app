@@ -10,25 +10,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>trying</title>
-    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
-    <link rel="stylesheet" href="static/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="static/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="static/css/Article-Clean.css">
-    <link rel="stylesheet" href="static/css/Brands.css">
-    <link rel="stylesheet" href="static/css/Features-Blue.css">
-    <link rel="stylesheet" href="static/css/Footer-Basic.css">
-    <link rel="stylesheet" href="static/css/Header-Blue.css">
-    <link rel="stylesheet" href="static/css/Login-Form-Clean.css">
-    <link rel="stylesheet" href="static/css/Login-Form-Dark.css">
-    <link rel="stylesheet" href="static/css/Registration-Form-with-Photo.css">
-    <link rel="stylesheet" href="static/css/Scroll-To-Top-Button.css">
-    <link rel="stylesheet" href="static/css/Scroll-to-top.css">
-    <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="stylesheet" href="static/css/Testimonials.css">
-    <link rel="stylesheet" href="static/css/card_browser.css">
-    <link rel="stylesheet" href="static/css/dropdown_job.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='fonts/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='fonts/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Article-Clean.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Brands.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Features-Blue.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Footer-Basic.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Header-Blue.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Login-Form-Clean.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Login-Form-Dark.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Registration-Form-with-Photo.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Scroll-To-Top-Button.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Scroll-to-top.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Testimonials.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/card_browser.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/dropdown_job.css')}}">
     <!--  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">--> 
     <!--  Dropzone reference or include --> 
     {{ dropzone.load_css(css_url='/static/css/dropzone.css') }} 
@@ -59,6 +59,9 @@
                             <a class="nav-link"role="presentation" href="{{ url_for('browser')}}">Browser</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link"role="presentation" href="{{ url_for('viewer')}}">3D viewer</a>
+                                </li>
+                            <li class="nav-item">
                             <a class="nav-link" role="presentation" href="{{ url_for('account')}}">Account</a>
                             </li>
                         </li>
@@ -82,10 +85,10 @@
 </div>
 </header>   
 
-<script src="static/js/jquery.min.js"></script>
-<script src="static/bootstrap/js/bootstrap.min.js"></script>
-<script src="static/js/Scroll-To-Top-Button.js"></script>
-<script src="static/js/Scroll-to-top.js"></script>
+<script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+<script src="{{url_for('static', filename='bootstrap/js/bootstrap.min.js' )}}"></script>
+<script src="{{url_for('static', filename='js/Scroll-To-Top-Button.js')}}"></script>
+<script src="{{url_for('static', filename='js/Scroll-to-top.js')}}"></script>
 
 </body>
 </html>
