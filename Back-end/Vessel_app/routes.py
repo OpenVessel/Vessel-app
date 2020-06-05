@@ -7,14 +7,13 @@ import pandas as pd
 import tempfile 
 import base64
 import shutil
+import pickle 
 
 
 ### 
 import logging
 from vessel_app.flask_logs import LogSetup
 from datetime import datetime as dt
-
-
 
 from PIL import Image
 from io import BytesIO
@@ -26,26 +25,57 @@ from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session, after_this_request
 from base64 import b64encode
 from os import path
+from io import BytesIO
+
 
 ## DO NOT forget to import app session from init
-from vessel_app import app, db, bcrypt, dropzone, photos, patch
+from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
+
+## From Vessel_app own functions, classes, and models
 from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Dicom, DicomFormData
 from vessel_app.graph import graphing
 from vessel_app.utils import request_id
 
 from flask_login import login_user, current_user, logout_user, login_required
-from io import BytesIO
-import pickle
 
 # globals
 session_id = None
-
 
 @app.route("/")
 @app.route('/home')
 def index():
     return render_template('home.html')
+
+####
+#### CELERY Task Queue blocks 
+
+@celery.task
+def background_task(arg1, arg2):
+    return arg1 + arg2
+######
+####  BEFORE & AFTER Requesting blocks 
+#####
+
+@app.before_request
+def before_request_func(): 
+    webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
+    if current_user.is_authenticated and request.endpoint =='upload':
+        # upload id
+        global session_id
+        session_id = request_id()
+        print('SESSION_ID:', session_id)
+    if current_user.is_authenticated and request.endpoint in webpages:
+        # temp file management
+        temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
+        temp_user_dir = "user_" + str(current_user.id)
+        current_user_dir = temp_dir + temp_user_dir
+        state = os.path.isdir(current_user_dir)
+
+        if state == True:
+            shutil.rmtree(current_user_dir)
+        elif state == False:
+            return 
 
 
 ##### logging 
@@ -222,26 +252,6 @@ def handle_form():
     db.session.commit()
     return redirect(url_for('browser'))
 
-@app.before_request
-def before_request_func(): 
-    webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
-    if current_user.is_authenticated and request.endpoint =='upload':
-        # upload id
-        global session_id
-        session_id = request_id()
-        print('SESSION_ID:', session_id)
-    if current_user.is_authenticated and request.endpoint in webpages:
-        # temp file management
-        temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
-        temp_user_dir = "user_" + str(current_user.id)
-        current_user_dir = temp_dir + temp_user_dir
-        state = os.path.isdir(current_user_dir)
-
-        if state == True:
-            shutil.rmtree(current_user_dir)
-        elif state == False:
-            return 
-
 @app.route('/browser')
 def browser():
     ###### Query Database and Indexing ######
@@ -260,7 +270,8 @@ def browser():
     for file_num, k in enumerate(dicom_data): #k is each row in the query database
         data = pickle.loads(k.dicom_stack)
         raw_image = BytesIO(k.thumbnail).read()
-        file_count = (k.file_count)
+        file_count = k.file_count
+        session_id = k.session_id
 
 
         all_rows_in_study = [] # [{}, {}, {}]
@@ -282,12 +293,26 @@ def browser():
             f.write(imgdata)
             
         
-        all_studies.append([study_df,file_thumbnail,file_count])
+        all_studies.append([study_df,file_thumbnail,file_count,session_id])
         
-    return render_template('browser.html', all_studies=all_studies, temp_user_dir = temp_user_dir)
+    return render_template('browser.html', all_studies=all_studies)
 
-@app.route('/job')
-def job():
+@app.route('/job/<session_id>')
+def job(session_id):
+    
+    dicom_data = Dicom.query.filter_by(session_id=session_id).all()
+    print(type(dicom_data))
+    #task = background_task.delay(10,20) ## delay for apply_async() 
+    #print("---------- ", task.get())
+    ## jab generates a Messegar to the broker for Query server 
+        ## the broker sends a message to Query server
+        ## the Query server master -> queries the database and inserst into the worker database 
+        ##
+
+    return render_template('job_submit.html') 
+
+@app.route('/viewer')
+def viewer():
 
 
     ## jab generates a Messegar to the broker for Query server 
@@ -295,4 +320,4 @@ def job():
         ## the Query server master -> queries the database and inserst into the worker database 
         ##
 
-    return render_template('job_submit.html') 
+    return render_template('3d_viewer.html') 

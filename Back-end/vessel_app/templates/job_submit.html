@@ -5,13 +5,18 @@
 {% endif %}
 
 {% block content %}
-
+<title>Vessel Dicom viewer React.js and Webpack</title>
     <div class="container hero">
         <div class="row">
-            <div class="col-12 col-lg-6 col-xl-5 offset-xl-1"><img class="align-content-center" src="static/img/screen-content-iphone-6.jpg"></div>
-            <div class="col"><button class="btn btn-light btn-lg text-center d-xl-flex justify-content-xl-center action-button" type="button" style="margin: 122px;">View</button><button class="btn btn-light btn-lg text-left action-button" type="button" style="margin: 122px;">Submit Job</button></div>
+            <div class="col-12 col-lg-6 col-xl-5 offset-xl-1">
+                <img class="align-content-center" src="{{url_for('static', filename='img/screen-content-iphone-6.jpg')}}">
+            </div>
+            <div class="col">
+                <button class="btn btn-light btn-lg text-center d-xl-flex justify-content-xl-center action-button" type="button" style="margin: 122px;">View</button>
+                <button class="btn btn-light btn-lg text-left action-button" type="button" style="margin: 122px;">Submit Job</button>
+            </div>
         </div>
     </div>
 
-
+    <script src="{{url_for('static', filename='js/bundle.js')}}" type="text/javascript"></script>
 {% endblock content %}
