@@ -14,8 +14,6 @@ Back-end/migrations/versions/c34e6a36c176_.py
 Back-end/migrations/versions/c34e6a36c176_.py
 Back-end/migrations/versions/c34e6a36c176_.py
 Back-end/site.db
-Back-end/site.db
-Back-end/site.db
 Back-end/testplot.jpg
 Back-end/some_image.jpg
 Back-end/testplot.jpg
@@ -28,3 +26,5 @@ Back-end/vessel_app/__pycache__/routes.cpython-38.pyc
 Back-end/vessel_app/static/media/*
 Back-end/site.db
 Back-end/vessel_app/static/node_modules/*
+Back-end/site.db
+Back-end/testplot.jpg

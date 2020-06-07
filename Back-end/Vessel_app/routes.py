@@ -209,7 +209,6 @@ def dropzone_handler():
     median_dicom = dicom_list[median_i]
 
     tn = graphing([median_dicom])
-    
     size = (300, 300)
     tn.thumbnail(size)
 
@@ -302,8 +301,10 @@ def job(session_id):
     
     dicom_data = Dicom.query.filter_by(session_id=session_id).all()
     print(type(dicom_data))
-    #task = background_task.delay(10,20) ## delay for apply_async() 
-    #print("---------- ", task.get())
+
+    task = background_task.delay(10,20).get() ## delay for apply_async() 
+    print(task)
+    
     ## jab generates a Messegar to the broker for Query server 
         ## the broker sends a message to Query server
         ## the Query server master -> queries the database and inserst into the worker database 
@@ -313,11 +314,5 @@ def job(session_id):
 
 @app.route('/viewer')
 def viewer():
-
-
-    ## jab generates a Messegar to the broker for Query server 
-        ## the broker sends a message to Query server
-        ## the Query server master -> queries the database and inserst into the worker database 
-        ##
 
     return render_template('3d_viewer.html') 
