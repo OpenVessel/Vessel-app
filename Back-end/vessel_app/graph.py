@@ -48,6 +48,7 @@ def graphing(files):
         # plt.imshow(img3d[img_shape[0]//2, :, :].T)
         # a3.set_aspect(cor_aspect)
         #plt.show()
+        plt.axis('off')
         filename = url_for('static', filename='media/testplot.jpg')
         plt.savefig(filename, bbox_inches='tight')
         im = Image.open(filename)
