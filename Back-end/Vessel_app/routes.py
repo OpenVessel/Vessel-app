@@ -286,8 +286,8 @@ def browser():
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         file_thumbnail = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + filename
-        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
+        filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + file_thumbnail
+        #filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             
