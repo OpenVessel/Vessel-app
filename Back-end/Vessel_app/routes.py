@@ -311,8 +311,15 @@ def job(session_id):
         ##
 
     return render_template('job_submit.html') 
+    
+@app.route('/dicom_viewer<session_id>')
+def dicom_viewer(session_id):
+    dicom_data = Dicom.query.filter_by(session_id=session_id).all()
+    print(type(dicom_data))
 
-@app.route('/viewer')
+    return render_template('dicom_viewer.html') 
+
+@app.route('/3d_viewer')
 def viewer():
 
     return render_template('3d_viewer.html') 

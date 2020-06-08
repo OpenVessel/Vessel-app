@@ -21,6 +21,7 @@ from vessel_app.config import Config # config class
 
 app = Flask(__name__) ## Global Flask instance application Factory???
 
+## python-dot-env 
 
 app.config.from_object(Config) # reference to config.py
 ## SQL database instance, classes or called 'models' 
@@ -31,8 +32,9 @@ dropzone = Dropzone(app)
 
 #### Flask + Celery 
 app.config['CELERY_BROKER_URL'] = 'amqp://guest:guest@localhost:5672/' ## Input IP to direct messages to BROKER 
-app.config['CELERY_RESULT_BACKEND'] = 'amqp://guest:guest@localhost:5672/'
+#app.config['CELERY_RESULT_BACKEND'] = 'amqp://guest:guest@localhost:5672/'
 #app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/1'
+app.config['CELERY_RESULT_BACKEND'] = 'rpc://'
 
  ### response will be sent back to RabbitMQ queue 
 

@@ -9,16 +9,20 @@
     <div class="container hero">
         <div class="content-section-upload">
             <fieldset class="form-group">   
-                <div class="font_headers">
+                <div class="font_headers"> <!-- found in styles.css -->
                     <h2 > Drag or Drop DICOM   </h2>
-                </div>                  
+                </div>                     <div class="center_dropbox"> <!-- found in styles.css -->
                 <form action="{{ url_for('handle_form') }}" enctype="multipart/form-data" method="post">
-                    <label for="Study Name">Study Name</label>
-                    <input type="text" id="Study Name" name="Study Name"/><br>
-                    <label for="description">Description</label>
-                    <input type="text" id="description" name="description"/><br>
-                    {{ dropzone.create() }}
-                    <input type="submit" id="submit" value="Submit and Upload">
+                    <div class = "font_input"> <!-- found in styles.css -->
+                        <label for="Study Name">Study Name</label>
+                        <input type="text" id="Study Name" name="Study Name"/><br>
+                        <label for="description">Description</label>
+                        <input type="text" id="description" name="description"/><br>
+                         
+                                {{ dropzone.create() }} <!-- dropzone.css -->
+                            
+                        <input type="submit" id="submit" value="Submit and Upload">
+                    </div></div>
                 </form>
                 {{ dropzone.load_js() }}
                 {{ dropzone.config() }}

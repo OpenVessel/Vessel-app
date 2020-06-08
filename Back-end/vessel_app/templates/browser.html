@@ -20,6 +20,8 @@
                     </td>
                     </tr>
                     </table>
+
+                
                     <table>
                     <tr>
                         <strong>
@@ -38,13 +40,20 @@
                         <td> file count {{ study[2] }} </td>
                     </tr>
                     </table>
+                
+
                     <table> 
                         <a href="{{url_for('job', session_id=study[3]) }}"> 
-                    <button class="btn btn-success">  Process </button> </a>
+                        <button class="btn btn-success">  Process </button> </a>
                     </table>
-                 </div>
-      
-      
+         
+               
+                    <table> 
+                        <a href="{{url_for('dicom_viewer', session_id=study[3]) }}"> 
+                        <button class="btn btn-success">  DICOM Viewer </button> </a>
+                    </table>
+                </div>
+           
         </div>  <!--- container options-->
     </div>
     {% endfor %}

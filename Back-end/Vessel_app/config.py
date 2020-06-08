@@ -28,7 +28,7 @@ class Config:
     RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
     RECAPTCHA_OPTIONS= {'theme':'white'}
-
+    FLASK_ENV = "development"
 
 
     ######## UPlOAD FOLDER Need to depcreated #####
