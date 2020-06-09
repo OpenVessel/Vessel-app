@@ -7,56 +7,55 @@
 {% block content %}
 
 <div class='browser' style='display: grid; grid-template-columns: auto;'>
-    {% for study in all_studies%}
-    <div class='card' style='margin: 3%; background: whitesmoke;'>
-        <div class='container'>
-                <div class="browser_card">
-                    
-                
-                    <table> 
+    {% if all_studies == [] %}
+        <div class='card' style='margin: 3%; background: whitesmoke;'>
+            <div class='container'>
+                    <div class="browser_card">
+                        <p>You have no files uploaded. Please go to the <a href=' {{url_for("upload")}} '>upload page</a> to continue.</p>
+                    </div>
+            </div>
+    {% else %}
+        </div>
+        {% for study in all_studies %}
+        <div class='card' style='margin: 3%; background: whitesmoke;'>
+            <div class='container'>
+                <table> 
                     <tr>
-                    <td> 
-                    <img src="{{ url_for('static', filename=study[1]) }}" alt="text">    
-                    </td>
+                        <td> 
+                            <img src="{{ url_for('static', filename=study[1]) }}" alt="text">    
+                        </td>
                     </tr>
-                    </table>
-
-                
-                    <table>
-                    <tr>
-                        <strong>
-                            <th> Patient Sex   </th>    
-                            <th>  Modality   </th>
-                            <th>  SOP Class UID     </th>
-                            <th>   X-Ray Tube Current  </th>
-                            <th>   File count  </th>
-                        </strong>
-                    </tr>
-                    <tr>
-                        <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
-                        <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
-                        <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
-                        <td>  {{ study[0]['X-Ray Tube Current'].iloc[0].value.decode("utf-8") }} </td>
-                        <td> file count {{ study[2] }} </td>
-                    </tr>
-                    </table>
-                
-
-                    <table> 
-                        <a href="{{url_for('job', session_id=study[3]) }}"> 
-                        <button class="btn btn-success">  Process </button> </a>
-                    </table>
-         
-               
-                    <table> 
-                        <a href="{{url_for('dicom_viewer', session_id=study[3]) }}"> 
-                        <button class="btn btn-success">  DICOM Viewer </button> </a>
-                    </table>
-                </div>
-           
-        </div>  <!--- container options-->
-    </div>
-    {% endfor %}
+                </table>
+                <table>
+                <tr>
+                    <strong>
+                        <th> Patient Sex   </th>    
+                        <th>  Modality   </th>
+                        <th>  SOP Class UID     </th>
+                        <th>   X-Ray Tube Current  </th>
+                        <th>   File count  </th>
+                    </strong>
+                </tr>
+                <tr>
+                    <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                    <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                    <td>  {{ study[0]["Patient's Sex"].iloc[0].value.decode("utf-8") }} </td>
+                    <td>  {{ study[0]['X-Ray Tube Current'].iloc[0].value.decode("utf-8") }} </td>
+                    <td> file count {{ study[2] }} </td>
+                </tr>
+                </table> 
+                <table> 
+                    <a href="{{url_for('job', session_id=study[3]) }}"> 
+                    <button class="btn btn-success">  Process </button> </a>
+                </table>
+                <table> 
+                    <a href="{{url_for('dicom_viewer', session_id=study[3]) }}"> 
+                    <button class="btn btn-success">  DICOM Viewer </button> </a>
+                </table>
+            </div>  <!--- container options-->
+        </div>
+        {% endfor %}
+    {% endif %}
 </div>
 
 {% endblock content %}
