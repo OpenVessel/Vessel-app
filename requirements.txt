@@ -31,7 +31,7 @@ mudicom==0.1.2
 numpy==1.18.2
 pandas==1.0.4
 Pillow==7.0.0
-psycopg2==2.8.4
+psycopg2-binary==2.8.5
 pycparser==2.20
 pydicom==1.4.2
 pyOpenSSL==19.1.0
