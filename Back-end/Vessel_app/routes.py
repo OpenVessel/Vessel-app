@@ -286,8 +286,8 @@ def browser():
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         file_thumbnail = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + file_thumbnail
-        #filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
+        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + file_thumbnail
+        filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             
@@ -311,7 +311,7 @@ def job(session_id):
         ##
 
     return render_template('job_submit.html') 
-    
+
 @app.route('/dicom_viewer<session_id>')
 def dicom_viewer(session_id):
     dicom_data = Dicom.query.filter_by(session_id=session_id).all()

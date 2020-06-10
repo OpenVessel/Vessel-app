@@ -49,8 +49,12 @@ def graphing(files):
         # a3.set_aspect(cor_aspect)
         #plt.show()
         plt.axis('off')
-        filename = url_for('static', filename='media/testplot.jpg')
-        plt.savefig(filename, bbox_inches='tight')
-        im = Image.open(filename)
+        filename = url_for('static', filename='\\media\\testplot.jpg')
+
+        print(filename)
+        path = r"D:\Openvessel\vessel-app\Back-end\vessel_app\static\media\testplot.jpg"
+        print(path)
+        plt.savefig(path, bbox_inches='tight')
+        im = Image.open(path)
 
         return im
