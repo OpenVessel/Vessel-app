@@ -347,7 +347,7 @@ def dicom_viewer():
         print('rendering dicom viewer for ID', session_id)
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
 
-        return render_template('dicom_viewer.html', dicom_data) 
+        return render_template('dicom_viewer.html') 
     else:
         # this should never get called
         return redirect(url_for('index'))
