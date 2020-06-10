@@ -8,7 +8,7 @@ from datetime import datetime as dt
 ### Flask + Celery https://blog.miguelgrinberg.com/post/using-celery-with-flask
 from celery import Celery
 
-# upload imports
+# flask app extensions
 from flask_dropzone import Dropzone
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import os
