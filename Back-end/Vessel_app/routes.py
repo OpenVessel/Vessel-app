@@ -293,10 +293,12 @@ def browser():
         filespec = path + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
-            
+        
+        
         all_studies.append([study_df,file_thumbnail,file_count,session_id])
 
-    return render_template('browser.html', all_studies=all_studies)
+    browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
+    return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
 
 @app.route('/job', methods=['POST'])
 def job():
@@ -334,7 +336,6 @@ def delete():
             return redirect(url_for('browser'))
         except:
             print('failed to delete', dicom_data, dicom_form_data)
-            flash('failed to delete', dicom_data, dicom_form_data)
             return redirect(url_for('internal_error'))
     else:
         # this should never get called
