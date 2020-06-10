@@ -1,12 +1,13 @@
 import numpy as np
+import os
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import base64
-from flask import url_for
 
+from flask import url_for
 from PIL import Image
 from io import BytesIO
-import os
-
 
 def graphing(file):
         
@@ -24,18 +25,19 @@ def graphing(file):
         # fill 3D array with the images from the files
         img2d = file.pixel_array
         img3d[:, :, 0] = img2d
-            
+        
         # plot orthogonal slice
         ax = plt.subplot(1, 1, 1)
         plt.imshow(img3d[:, :, img_shape[2]//2])
         ax.set_aspect('auto')
         plt.axis('off')
-        filename = url_for('static', filename='\\media\\testplot.jpg')
-
-        print(filename)
-        path = r"D:\Openvessel\vessel-app\Back-end\vessel_app\static\media\testplot.jpg"
-        print(path)
-        plt.savefig(path, bbox_inches='tight')
-        im = Image.open(path)
-
+                
+        #save D:\Openvessel\vessel-app\Back-end\vessel_app\static\media\testplot.jpg
+        strpath = os.getcwd()
+        strFile = strpath + r"\vessel_app\static\media\testplot.jpg"
+        if os.path.isfile(strFile):
+                os.remove(strFile)   # Opt.: os.system("rm "+strFile)
+        plt.savefig(strFile)
+        im = Image.open(strFile)
+        
         return im
