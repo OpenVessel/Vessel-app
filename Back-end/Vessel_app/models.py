@@ -43,8 +43,6 @@ class Dicom(db.Model):
     thumbnail = db.Column(db.LargeBinary, nullable=False)
     file_count = db.Column(db.Integer, nullable=True) 
     session_id = db.Column(db.String(200), nullable=False)
-    formData = db.relationship('DicomFormData', backref='author', lazy=True)
-    
 
     def __repr__(self):
         return f"Dicom('{self.date_uploaded}')"
@@ -55,8 +53,8 @@ class DicomFormData(db.Model):
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
     study_name = db.Column(db.String(300), nullable=False) 
     description = db.Column(db.String(1000), nullable=False)
-    session_id = db.Column(db.String(200), db.ForeignKey('dicom.session_id'), nullable=False)
-
+    session_id = db.Column(db.String(200), nullable=False)
+    
     def __repr__(self):
         return f"DicomFormData('{self.study_name}')"
 

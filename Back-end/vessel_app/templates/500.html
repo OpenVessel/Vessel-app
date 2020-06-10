@@ -7,6 +7,15 @@
 <div style="text-align: center;">
     <h1 >An unexpected error has occurred</h1>
     <p>The administrator has been notified. Sorry for the inconvenience!</p>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <p><a href="{{ url_for('index') }}">Back</a></p>
 </div>
 {% endblock %}

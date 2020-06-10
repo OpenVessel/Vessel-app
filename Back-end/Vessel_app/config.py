@@ -18,10 +18,10 @@ class Config:
     #SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:Sd40dash2@localhost/Vessel-test' 
     
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
-    #SQLALCHEMY_DATABASE_URI = r'sqlite:///C:\Users\grego\Documents\GitHub\Vessel-app\Back-end\site.db'
-    SQLALCHEMY_DATABASE_URI = r'sqlite:////Users/muhsin/Documents/GitHub/Vessel-app/Back-end/site.db'
+    SQLALCHEMY_DATABASE_URI = r'sqlite:///C:\Users\grego\Documents\GitHub\Vessel-app\Back-end\site.db'
+    #SQLALCHEMY_DATABASE_URI = r'sqlite:////Users/muhsin/Documents/GitHub/Vessel-app/Back-end/site.db'
     #SQLALCHEMY_DATABASE_URI = r'sqlite:///D:\Openvessel\vessel-app\Back-end\site.db'
-    #SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
+    SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
 
     ########## reCAPtcha ########### 
 
