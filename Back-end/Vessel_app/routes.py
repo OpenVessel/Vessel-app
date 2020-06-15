@@ -8,8 +8,6 @@ import tempfile
 import base64
 import shutil
 import pickle 
-
-
 ### 
 import logging
 from vessel_app.flask_logs import LogSetup
@@ -32,12 +30,18 @@ from io import BytesIO
 from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
 
 ## From Vessel_app own functions, classes, and models
-from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from vessel_app.forms import  RegistrationForm, LoginForm, UpdateAccountForm, SessionIDForm
 from vessel_app.models import User, Dicom, DicomFormData
 from vessel_app.graph import graphing
 from vessel_app.utils import request_id
 
 from flask_login import login_user, current_user, logout_user, login_required
+
+
+### Celery app functions for datapipeline
+# vessel functions 
+from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask
+
 
 # globals
 session_id = None
@@ -52,6 +56,11 @@ def index():
 @celery.task()
 def add_together(a, b):
     x = a + b
+
+    ## step one read dicom file slice load_scan() 
+
+
+
     return x
 ######
 ####  BEFORE & AFTER Requesting blocks 
@@ -96,7 +105,6 @@ def after_request(response):
      #   request.user_agent,
    # )
     return response
-
 
 
 @app.route("/login",methods=['POST', 'GET'])
@@ -183,6 +191,7 @@ def doc():
     
 
 @app.route("/upload",  methods=['GET', 'POST'])
+@login_required 
 def upload():
     return render_template('upload.html')
 
@@ -252,6 +261,7 @@ def handle_form():
     return redirect(url_for('browser'))
 
 @app.route('/browser')
+@login_required 
 def browser():
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
@@ -271,13 +281,20 @@ def browser():
         raw_image = BytesIO(k.thumbnail).read()
         file_count = k.file_count
         session_id = k.session_id
-
-
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each 
         for byte_file in data: # list of all dicom files in binary
             raw = DicomBytesIO(byte_file)
-            dicom_dict = dict([(dd(k),v) for k,v in dcmread(raw).items()])
+            dicom_dict = []
+            
+            for k,v in dcmread(raw).items():
+                try:
+                    pair = (dd(k),v)
+                except KeyError:
+                    pair = (str(k), v)
+                dicom_dict.append(pair)
+            dicom_dict = dict(dicom_dict)
+            # dicom_dict = dict([(dd(k),v) for k,v in dcmread(raw).items()])
             all_rows_in_study.append(dicom_dict)
             cols.append(list(dicom_dict.keys())) 
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
@@ -286,15 +303,16 @@ def browser():
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         file_thumbnail = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + file_thumbnail
-        filespec = "/Users/muhsin/Documents/GitHub/Vessel-app/Back-end/vessel_app/static" + file_thumbnail
-        #filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
+        root_path = os.getcwd() 
+        path = root_path + r"\vessel_app/static/"
+        filespec = path + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
-            
         all_studies.append([study_df,file_thumbnail,file_count,session_id])
+        
+        browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
 
-    return render_template('browser.html', all_studies=all_studies)
+    return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
 
 @app.route('/job', methods=['POST'])
 def job():
@@ -303,7 +321,12 @@ def job():
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
         print('making job request for ID', session_id)
         
-    return render_template('browser.html', all_studies=all_studies)
+        result = add_together.delay(10, 20)
+        print(result.get()) 
+        print("Job done", result.ready())
+
+
+    return render_template('job_submit.html') 
 
     
 @app.route('/delete', methods=['POST'])
@@ -327,14 +350,17 @@ def delete():
         # this should never get called
         return redirect(url_for('index'))
 
-    return render_template('job_submit.html') 
     
-@app.route('/dicom_viewer<session_id>')
-def dicom_viewer(session_id):
-    dicom_data = Dicom.query.filter_by(session_id=session_id).all()
-    print(type(dicom_data))
-
-    return render_template('dicom_viewer.html') 
+@app.route('/dicom_viewer', methods=['POST'])
+def dicom_viewer():
+    if request.method == 'POST':
+        session_id = request.form.get('session_id')
+        print('rendering dicom viewer for ID', session_id)
+        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+        return render_template('dicom_viewer.html') 
+    else:
+        # this should never get called
+        return redirect(url_for('index'))
 
 @app.route('/3d_viewer')
 def viewer():
