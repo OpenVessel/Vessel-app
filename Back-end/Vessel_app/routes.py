@@ -292,24 +292,40 @@ def browser():
         with open(filespec, 'wb') as f:
             f.write(imgdata)
             
-        
         all_studies.append([study_df,file_thumbnail,file_count,session_id])
+
+    return render_template('browser.html', all_studies=all_studies)
+
+@app.route('/job', methods=['POST'])
+def job():
+    if request.method == 'POST':
+        session_id = request.form.get('session_id')
+        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+        print('making job request for ID', session_id)
         
     return render_template('browser.html', all_studies=all_studies)
 
-@app.route('/job/<session_id>')
-def job(session_id):
     
-    dicom_data = Dicom.query.filter_by(session_id=session_id).all()
-    print(type(dicom_data))
-
-    #task = background_task.delay(10,20).get() ## delay for apply_async() 
-    #print(task)
-    
-    ## jab generates a Messegar to the broker for Query server 
-        ## the broker sends a message to Query server
-        ## the Query server master -> queries the database and inserst into the worker database 
-        ##
+@app.route('/delete', methods=['POST'])
+def delete():
+    if request.method == 'POST':
+        session_id = request.form.get('session_id')
+        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+        dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
+        print('attempting to delete', dicom_data, dicom_form_data)
+        try:
+            db.session.delete(dicom_data)
+            db.session.delete(dicom_form_data)
+            db.session.commit()
+            print(dicom_data, 'deleted successfully')
+            return redirect(url_for('browser'))
+        except:
+            print('failed to delete', dicom_data, dicom_form_data)
+            flash('failed to delete', dicom_data, dicom_form_data)
+            return redirect(url_for('internal_error'))
+    else:
+        # this should never get called
+        return redirect(url_for('index'))
 
     return render_template('job_submit.html') 
     
