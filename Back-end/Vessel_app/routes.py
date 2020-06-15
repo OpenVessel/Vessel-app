@@ -32,7 +32,7 @@ from io import BytesIO
 from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
 
 ## From Vessel_app own functions, classes, and models
-from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, SessionIDForm
+from vessel_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from vessel_app.models import User, Dicom, DicomFormData
 from vessel_app.graph import graphing
 from vessel_app.utils import request_id
@@ -208,7 +208,7 @@ def dropzone_handler():
     median_i = len(dicom_list)//2
     median_dicom = dicom_list[median_i]
 
-    tn = graphing(median_dicom)
+    tn = graphing([median_dicom])
     size = (300, 300)
     tn.thumbnail(size)
 
@@ -286,71 +286,39 @@ def browser():
         image_64= base64.b64encode(raw_image)
         imgdata = base64.b64decode(image_64)
         file_thumbnail = f'media/'+ temp_user_dir + f'/some_image_{file_num}.png'
-        
-        root_path = os.getcwd() 
-        path = root_path + r"\vessel_app/static/"
-        
-        filespec = path + file_thumbnail
+        #filespec = "C:/Users/grego/Documents/GitHub/Vessel-app/Back-end/vessel_app/static/" + file_thumbnail
+        filespec = "/Users/muhsin/Documents/GitHub/Vessel-app/Back-end/vessel_app/static" + file_thumbnail
+        #filespec = f"D:/Openvessel/vessel-app/Back-end/vessel_app/static/" + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
-        
+            
         
         all_studies.append([study_df,file_thumbnail,file_count,session_id])
-
-    browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
-    return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
-
-@app.route('/job', methods=['POST'])
-def job():
-    if request.method == 'POST':
-        session_id = request.form.get('session_id')
-        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
-        print('making job request for ID', session_id)
         
-        result = add_together.delay(10, 20)
-        print(result.get()) 
-        print("Job done", result.ready())
-        ## jab generates a Messegar to the broker for Query server 
-            ## the broker sends a message to Query server
-            ## the Query server master -> queries the database and inserst into the worker database 
-            ##
+    return render_template('browser.html', all_studies=all_studies)
 
-        return render_template('job_submit.html', session_id=session_id) 
-    else:
-        # this should never get called
-        return redirect(url_for('index'))
+@app.route('/job/<session_id>')
+def job(session_id):
     
-@app.route('/delete', methods=['POST'])
-def delete():
-    if request.method == 'POST':
-        session_id = request.form.get('session_id')
-        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
-        dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
-        print('attempting to delete', dicom_data, dicom_form_data)
-        try:
-            db.session.delete(dicom_data)
-            db.session.delete(dicom_form_data)
-            db.session.commit()
-            print(dicom_data, 'deleted successfully')
-            return redirect(url_for('browser'))
-        except:
-            print('failed to delete', dicom_data, dicom_form_data)
-            return redirect(url_for('internal_error'))
-    else:
-        # this should never get called
-        return redirect(url_for('index'))
+    dicom_data = Dicom.query.filter_by(session_id=session_id).all()
+    print(type(dicom_data))
 
-@app.route('/dicom_viewer', methods=['POST'])
-def dicom_viewer():
-    if request.method == 'POST':
-        session_id = request.form.get('session_id')
-        print('rendering dicom viewer for ID', session_id)
-        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+    #task = background_task.delay(10,20).get() ## delay for apply_async() 
+    #print(task)
+    
+    ## jab generates a Messegar to the broker for Query server 
+        ## the broker sends a message to Query server
+        ## the Query server master -> queries the database and inserst into the worker database 
+        ##
 
-        return render_template('dicom_viewer.html') 
-    else:
-        # this should never get called
-        return redirect(url_for('index'))
+    return render_template('job_submit.html') 
+    
+@app.route('/dicom_viewer<session_id>')
+def dicom_viewer(session_id):
+    dicom_data = Dicom.query.filter_by(session_id=session_id).all()
+    print(type(dicom_data))
+
+    return render_template('dicom_viewer.html') 
 
 @app.route('/3d_viewer')
 def viewer():

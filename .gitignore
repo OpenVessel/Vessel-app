@@ -32,3 +32,10 @@ Back-end/migrations/versions/280eea38800c_.py
 Back-end/vessel_app/OrthancDocker/
 Back-end/vessel_app/static/media/testplot.jpg
 Back-end/site.db
+Back-end/site.db
+Back-end/vessel_app/__pycache__/__init__.cpython-38.pyc
+Back-end/vessel_app/__pycache__/__init__.cpython-38.pyc
+Back-end/vessel_app/__pycache__/config.cpython-38.pyc
+Back-end/vessel_app/__pycache__/forms.cpython-38.pyc
+Back-end/vessel_app/__pycache__/models.cpython-38.pyc
+Back-end/vessel_app/__pycache__/routes.cpython-38.pyc

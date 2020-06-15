@@ -37,12 +37,9 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
     recaptcha = RecaptchaField()
 
-class SessionIDForm(FlaskForm):
-    session_id = StringField('Session ID')
-    submit = SubmitField('Process')
-
 class UpdateAccountForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
                         
@@ -63,5 +60,5 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('Email is taken.')
 
-
+#class dicomform(): 
     
