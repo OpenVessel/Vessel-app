@@ -49,10 +49,10 @@ def index():
 
 ####
 #### CELERY Task Queue blocks 
-
-@celery.task
-def background_task(arg1, arg2):
-    return arg1 + arg2
+@celery.task()
+def add_together(a, b):
+    x = a + b
+    return x
 ######
 ####  BEFORE & AFTER Requesting blocks 
 #####
@@ -307,10 +307,9 @@ def job():
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
         print('making job request for ID', session_id)
         
-
-        # task = background_task.delay(10,20).get() ## delay for apply_async() 
-        # print(task)
-
+        result = add_together.delay(10, 20)
+        print(result.get()) 
+        print("Job done", result.ready())
         ## jab generates a Messegar to the broker for Query server 
             ## the broker sends a message to Query server
             ## the Query server master -> queries the database and inserst into the worker database 

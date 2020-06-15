@@ -19,6 +19,23 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from vessel_app.config import Config # config class
 
+# celery function
+def make_celery(app):
+    celery = Celery(
+        app.import_name,
+        backend=app.config['CELERY_RESULT_BACKEND'],
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    #celery.conf.update(app.config) what is this config?>
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
 app = Flask(__name__) ## Global Flask instance application Factory???
 
 ## python-dot-env 
@@ -31,14 +48,15 @@ bcrypt = Bcrypt(app)
 dropzone = Dropzone(app)
 
 #### Flask + Celery 
-app.config['CELERY_BROKER_URL'] = 'amqp://guest:guest@localhost:5672/' ## Input IP to direct messages to BROKER 
-#app.config['CELERY_RESULT_BACKEND'] = 'amqp://guest:guest@localhost:5672/'
-#app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/1'
-app.config['CELERY_RESULT_BACKEND'] = 'rpc://'
+app.config.update(
+    CELERY_BROKER_URL='redis://localhost:6379/0',
+    CELERY_RESULT_BACKEND='redis://localhost:6379/0'
+)
+#app.config['CELERY_RESULT_BACKEND'] = 'rpc://'
 
  ### response will be sent back to RabbitMQ queue 
 
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL']) ## Celery is initialized by obj class Celery
+celery = make_celery(app) ## Celery is initialized by obj class Celery
 #celery.conf.update(app.config) for some reason causes a igorne 
 
 ## log info
