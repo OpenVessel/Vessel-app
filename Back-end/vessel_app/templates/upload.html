@@ -1,0 +1,34 @@
+{% if current_user.is_authenticated %}
+{% extends "user_layout.html" %}
+{% else %}
+{% extends "layout.html" %}
+{% endif %}
+{% block content %}
+
+<div class="header-blue">
+    <div class="container hero">
+        <div class="content-section-upload">
+            <fieldset class="form-group">   
+                <div class="font_headers"> <!-- found in styles.css -->
+                    <h2 > Drag or Drop DICOM   </h2>
+                </div>                     <div class="center_dropbox"> <!-- found in styles.css -->
+                <form action="{{ url_for('handle_form') }}" enctype="multipart/form-data" method="post">
+                    <div class = "font_input"> <!-- found in styles.css -->
+                        <label for="Study Name">Study Name</label>
+                        <input type="text" id="Study Name" name="Study Name"/><br>
+                        <label for="description">Description</label>
+                        <input type="text" id="description" name="description"/><br>
+                         
+                                {{ dropzone.create() }} <!-- dropzone.css -->
+                            
+                        <input type="submit" id="submit" value="Submit and Upload">
+                    </div></div>
+                </form>
+                {{ dropzone.load_js() }}
+                {{ dropzone.config() }}
+            </fieldset>
+        </div>
+    </div>  
+</div>
+
+{% endblock content %}

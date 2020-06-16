@@ -58,6 +58,9 @@ def add_together(a, b):
     x = a + b
 
     ## step one read dicom file slice load_scan() 
+
+
+
     return x
 ######
 ####  BEFORE & AFTER Requesting blocks 
@@ -318,9 +321,9 @@ def job():
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
         print('making job request for ID', session_id)
         
-    result = add_together.delay(10, 20)
-    print(result.get()) 
-    print("Job done", result.ready())
+        result = add_together.delay(10, 20)
+        print(result.get()) 
+        print("Job done", result.ready())
 
 
     return render_template('job_submit.html') 
