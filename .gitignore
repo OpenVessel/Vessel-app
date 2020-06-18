@@ -6,6 +6,7 @@
 vessel_env/Lib/site-packages/alembic-1.4.2.dist-info/INSTALLER
 vessel_env/Lib/site-packages/alembic-1.4.2.dist-info/LICENSE
 vessel_env/*
+vesseltest_env/*
 site.db
 .vscode
 Back-end/migrations/*
@@ -39,3 +40,6 @@ Back-end/vessel_app/__pycache__/config.cpython-38.pyc
 Back-end/vessel_app/__pycache__/forms.cpython-38.pyc
 Back-end/vessel_app/__pycache__/models.cpython-38.pyc
 Back-end/vessel_app/__pycache__/routes.cpython-38.pyc
+.vscode/settings.json
+.DS_Store
+.DS_Store
