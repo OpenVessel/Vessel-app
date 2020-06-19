@@ -1,4 +1,12 @@
-from vessel_app import celery
+import pickle
+from vessel_app import  db, celery
+from pydicom import dcmread
+from pydicom.filebase import DicomBytesIO
+from pydicom.charset import encode_string
+from pydicom.datadict import dictionary_description as dd
+import numpy as np
+from vessel_app.models import User, Dicom, DicomFormData, Object_3D
+from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk
 
 #### celery -A vessel_app.celery worker -l info -P gevent
 #### CELERY Task Queue block 
@@ -37,7 +45,7 @@ def data_pipeline(session_id, b):
 
     ## STEP FOUR K-MEANS MASKING
     for img in imgs_after_resamp: #loops through images and applies mask
-        masked_lung.append(make_lungmask(img)
+        masked_lung.append(make_lungmask(img))
     
     mask = np.array(masked_lung)
     data = displayer(mask)
@@ -45,6 +53,7 @@ def data_pipeline(session_id, b):
     # convert pyvista class --> binary
     pickled_vtk = pickle_vtk(data)
     
+    string_ok = "test"
     insert = Object_3D( 
     object_3D = pickled_vtk, 
     session_id=str(session_id),

@@ -99,9 +99,9 @@ def temp_file_db():
     with tempfile.NamedTemporaryFile(delete=False,suffix=".vti") as tf:
         
         if not tf.name:
-        print("tempfile name does not exist")
+            print("tempfile name does not exist")
         else:
-        print("tempfile made -- temp_file_db")
+            print("tempfile made -- temp_file_db")
         
     return tf.name
 
