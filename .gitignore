@@ -39,3 +39,4 @@ Back-end/vessel_app/__pycache__/config.cpython-38.pyc
 Back-end/vessel_app/__pycache__/forms.cpython-38.pyc
 Back-end/vessel_app/__pycache__/models.cpython-38.pyc
 Back-end/vessel_app/__pycache__/routes.cpython-38.pyc
+node_modules/*

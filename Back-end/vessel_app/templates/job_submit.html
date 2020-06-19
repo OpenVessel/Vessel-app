@@ -11,9 +11,20 @@
             <div class="col-12 col-lg-6 col-xl-5 offset-xl-1">
                 <img class="align-content-center" src="{{url_for('static', filename='img/screen-content-iphone-6.jpg')}}">
             </div>
-            <div class="col">
-                <button class="btn btn-light btn-lg text-center d-xl-flex justify-content-xl-center action-button" type="button" style="margin: 122px;">View</button>
-                <button class="btn btn-light btn-lg text-left action-button" type="button" style="margin: 122px;">Submit Job</button>
+            <div class="col form-group">
+                <form action='{{url_for("viewer")}}' method='post'>
+                    <input class="form-control" type='hidden' value='{{session_id}}' name='session_id'>
+                    
+                    <label for="k" style="color:white">K value (1-50):</label>
+                    <input class="form-control"type="number" name="k"
+                        min="1" max="50">
+
+                    <select class="form-control" name="segmentation_options">
+                        <option value="350">Bone</option>
+                        <option value="55">Blood</option>
+                    </select>
+                    <button action="" class="btn btn-light btn-lg text-left action-button" type="submit" style="margin: 122px;">Submit Job</button>
+                </form>
             </div>
         </div>
     </div>

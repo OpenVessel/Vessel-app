@@ -8,6 +8,7 @@ import tempfile
 import base64
 import shutil
 import pickle 
+import numpy as np
 ### 
 import logging
 from vessel_app.flask_logs import LogSetup
@@ -31,7 +32,7 @@ from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
 
 ## From Vessel_app own functions, classes, and models
 from vessel_app.forms import  RegistrationForm, LoginForm, UpdateAccountForm, SessionIDForm
-from vessel_app.models import User, Dicom, DicomFormData
+from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from vessel_app.graph import graphing
 from vessel_app.utils import request_id
 
@@ -40,7 +41,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 ### Celery app functions for datapipeline
 # vessel functions 
-from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask
+from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk
 
 
 # globals
@@ -51,23 +52,89 @@ session_id = None
 def index():
     return render_template('home.html')
 
-####
+#### celery -A vessel_app.celery worker -l info -P gevent
 #### CELERY Task Queue blocks 
 @celery.task()
-def add_together(a, b):
-    x = a + b
+def data_pipeline(session_id, b):
+    
+    # ESSENTIAL IMPORTS
+    #import numpy as np
+    ## vessel functions 
+    #from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask
+
+    b = b
+    
+    dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+    print("----------",dicom_data)
+
+    data = pickle.loads(dicom_data.dicom_stack)
+    dicom_list = [] 
+    for byte_file in data:
+        dicom_list.append(dcmread(DicomBytesIO(byte_file)))
+    
+    print(type(dicom_list))
+    ## STEP ONE of Masking pipeline 
+    patient = load_scan(dicom_list)
+    print("Patient number: 1" )
+    print ("Slice Thickness: %f" % patient[0].SliceThickness)
+    print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
+
+    ## STEP TWO of Masking pipeline
+    image_stack = get_pixels_hu(patient)
+    
+    ## STEP THREE RESAMPLING
+    print("Shape of CT slice before resampling", image_stack.shape)
+    imgs_after_resamp, spacing = resample(image_stack, patient, [1,1,1])
+    print ("Shape after resampling\t", imgs_after_resamp.shape)
+
+    masked_lung = []
+
+    ## STEP FOUR K-MEANS MASKING
+    for img in imgs_after_resamp: #loops through images and applies mask
+        masked_lung.append(make_lungmask(img))
+    #print(slices)
+    
+    mask = np.array(masked_lung)
+    print(mask)
+
+    ###
+    #####
+    ##### 
+    
+    data = displayer(mask)
+    name_path = temp_file_db()
+
+    #print(type(data))
+    print(name_path)
+    print(pickle_vtk(data, name_path))
+
+    with open(name_path, 'r') as f:
+        output = f.read()
+        print(output.encode)
+
+    binary_blob = bytes(7)
+    string_ok = "test"
+    
+    insert = Object_3D( 
+    object_3D = binary_blob, 
+    session_id=str(session_id),
+    test = str(string_ok)
+    )
+    
+    db.session.add(insert) 
+    db.session.commit()
+
+    #displayer(mask)
 
     ## step one read dicom file slice load_scan() 
 
-
-
-    return x
+    return 
 ######
 ####  BEFORE & AFTER Requesting blocks 
 #####
 
 @app.before_request
-def before_request_func(): 
+def before_request_fun(): 
     webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
     if current_user.is_authenticated and request.endpoint =='upload':
         # upload id
@@ -217,7 +284,7 @@ def dropzone_handler():
     median_i = len(dicom_list)//2
     median_dicom = dicom_list[median_i]
 
-    tn = graphing([median_dicom])
+    tn = graphing(median_dicom)
     size = (300, 300)
     tn.thumbnail(size)
 
@@ -318,15 +385,9 @@ def browser():
 def job():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
-        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
-        print('making job request for ID', session_id)
-        
-        result = add_together.delay(10, 20)
-        print(result.get()) 
-        print("Job done", result.ready())
-
-
-    return render_template('job_submit.html') 
+    
+    
+    return render_template('job_submit.html', session_id=session_id) 
 
     
 @app.route('/delete', methods=['POST'])
@@ -357,12 +418,22 @@ def dicom_viewer():
         session_id = request.form.get('session_id')
         print('rendering dicom viewer for ID', session_id)
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+
+
         return render_template('dicom_viewer.html') 
     else:
         # this should never get called
         return redirect(url_for('index'))
 
-@app.route('/3d_viewer')
+@app.route('/3d_viewer', methods=['POST'])
 def viewer():
+    if request.method=='POST':
+        session_id = request.form.get('session_id')
+        k = request.form.get('k')
+        segmentation_options = request.form.get("segmentation_options")
+        print(session_id, k, segmentation_options)
+        
+        result = data_pipeline.delay(session_id, k)
+        print(result.get()) 
 
     return render_template('3d_viewer.html') 

@@ -22,6 +22,11 @@ class Config:
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
 
+    ### Celery Workers Config
+    #CELERY_BROKER_URL='redis://localhost:6379/0'
+    #CELERY_RESULT_BACKEND='redis://localhost:6379/0'
+
+
     ########## reCAPtcha ########### 
 
     RECAPTCHA_USE_SSL= False

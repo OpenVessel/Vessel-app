@@ -1,0 +1,29 @@
+[2020-06-16 14:41:28,386: INFO/MainProcess] Connected to amqp://guest:**@127.0.0.1:5672//
+[2020-06-16 14:41:28,394: INFO/MainProcess] mingle: searching for neighbors
+[2020-06-16 14:41:29,409: INFO/MainProcess] mingle: all alone
+[2020-06-16 14:41:29,420: INFO/MainProcess] pidbox: Connected to amqp://guest:**@127.0.0.1:5672//.
+[2020-06-16 14:41:29,423: INFO/MainProcess] celery@DESKTOP-CPG6IEP ready.
+[2020-06-16 14:41:41,520: INFO/MainProcess] Received task: vessel_app.routes.data_pipeline[365c691e-1946-4068-96d4-f26c7e5068a4]  
+[2020-06-16 14:41:41,526: ERROR/MainProcess] Task vessel_app.routes.data_pipeline[365c691e-1946-4068-96d4-f26c7e5068a4] raised unexpected: NameError("name 'flask' is not defined")
+Traceback (most recent call last):
+  File "d:\openvessel\vessel-app\vessel_env\lib\site-packages\celery\app\trace.py", line 412, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "D:\Openvessel\vessel-app\Back-end\vessel_app\__init__.py", line 39, in __call__
+    if flask.has_app_context():
+NameError: name 'flask' is not defined
+[2020-06-16 14:42:05,516: INFO/MainProcess] Received task: vessel_app.routes.data_pipeline[c157e8ba-c43a-4037-bfa7-b014ea80c48c]  
+[2020-06-16 14:42:05,518: ERROR/MainProcess] Task vessel_app.routes.data_pipeline[c157e8ba-c43a-4037-bfa7-b014ea80c48c] raised unexpected: NameError("name 'flask' is not defined")
+Traceback (most recent call last):
+  File "d:\openvessel\vessel-app\vessel_env\lib\site-packages\celery\app\trace.py", line 412, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "D:\Openvessel\vessel-app\Back-end\vessel_app\__init__.py", line 39, in __call__
+    if flask.has_app_context():
+NameError: name 'flask' is not defined
+[2020-06-16 14:44:00,691: INFO/MainProcess] Received task: vessel_app.routes.data_pipeline[21333756-c323-4fee-ba7c-1eb47720e1b7]  
+[2020-06-16 14:44:00,694: ERROR/MainProcess] Task vessel_app.routes.data_pipeline[21333756-c323-4fee-ba7c-1eb47720e1b7] raised unexpected: NameError("name 'flask' is not defined")
+Traceback (most recent call last):
+  File "d:\openvessel\vessel-app\vessel_env\lib\site-packages\celery\app\trace.py", line 412, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "D:\Openvessel\vessel-app\Back-end\vessel_app\__init__.py", line 39, in __call__
+    if flask.has_app_context():
+NameError: name 'flask' is not defined

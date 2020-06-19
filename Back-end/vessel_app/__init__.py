@@ -14,12 +14,16 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_cl
 import os
 
 from flask_sqlalchemy import SQLAlchemy #URI SQLite database simply a file set as config file
+
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from vessel_app.config import Config # config class
 
 # celery function
+
+
+
 def make_celery(app):
     celery = Celery(
         app.import_name,
@@ -29,9 +33,9 @@ def make_celery(app):
     #celery.conf.update(app.config) what is this config?>
 
     class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
+       def __call__(self, *args, **kwargs):
+           with app.app_context():
+              return self.run(*args, **kwargs)
 
     celery.Task = ContextTask
     return celery

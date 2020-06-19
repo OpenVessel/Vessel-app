@@ -9,18 +9,22 @@ import numpy as np
 import skimage
 import scipy.ndimage
 
+## displayer
+import sys
+import pyvista as pv
+
 from scipy import misc
 from pydicom import dcmread
 import matplotlib.pyplot as plt
+from io import BytesIO
+import pickle 
+import tempfile
+import vtk
 
 ## loads the whole folder
-def load_scan(path):
-    ## slices = [] is an array
-    slices = [dcmread(path + '/' + s) for s in os.listdir(path)]
+def load_scan(slices):
     ## all slices are put into the array
-    ###
     slices.sort(key = lambda x: int(x.InstanceNumber))
-    
     ##
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
@@ -79,6 +83,40 @@ def resample(image, scan, new_spacing=[1,1,1]):
     image = scipy.ndimage.interpolation.zoom(image, real_resize_factor)
     
     return image, new_spacing
+
+def displayer(numpy_mask):
+  data_matrix = numpy_mask
+  opacity = [0, 0, 0, 4, 8, 0, 0] 
+  data = pv.wrap(data_matrix)
+
+  pv.set_plot_theme("night")
+  #print(type(data)) #pyvista.core.grid.UniformGrid'
+  #print(dir(data)) #x = pickle.dumps(data) #print(x)
+  #print(BytesIO(data))
+  return data
+
+def temp_file_db():
+  with tempfile.NamedTemporaryFile(delete=False,suffix=".vti") as tf:
+    
+    if not tf.name:
+      print("tempfile name does not exist")
+    else:
+      print("tempfile made -- temp_file_db")
+    
+  return tf.name
+
+def pickle_vtk(mesh, filename):
+    writer = vtk.vtkDataSetWriter()
+    writer.SetInputDataObject(mesh)
+    writer.SetWriteToOutputString(True)
+    writer.SetFileTypeToASCII()
+    writer.Write()
+    to_serialize = writer.GetOutputString()
+
+    with open(filename, 'wb') as handle:
+        pickle.dump(to_serialize, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    return filename
 
 ## show sample stack
 def sample_stack(stack, rows=6, cols=6, start_with=15, show_every=4):
