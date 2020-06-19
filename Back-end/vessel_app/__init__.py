@@ -34,8 +34,8 @@ def make_celery(app):
 
     class ContextTask(celery.Task):
        def __call__(self, *args, **kwargs):
-           with app.app_context():
-              return self.run(*args, **kwargs)
+            with app.app_context():
+                return self.run(*args, **kwargs)
 
     celery.Task = ContextTask
     return celery
@@ -51,6 +51,7 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 dropzone = Dropzone(app)
 
+#celery -A vessel_app.celery worker -l info -P gevent
 #### Flask + Celery 
 app.config.update(
     CELERY_BROKER_URL='redis://localhost:6379/0',
@@ -58,7 +59,7 @@ app.config.update(
 )
 #app.config['CELERY_RESULT_BACKEND'] = 'rpc://'
 
- ### response will be sent back to RabbitMQ queue 
+### response will be sent back to RabbitMQ queue 
 
 celery = make_celery(app) ## Celery is initialized by obj class Celery
 #celery.conf.update(app.config) for some reason causes a igorne 
