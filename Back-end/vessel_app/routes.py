@@ -96,7 +96,6 @@ def data_pipeline(session_id, b):
     
     mask = np.array(masked_lung)
     print(mask)
-
     ###
     #####
     ##### 
