@@ -85,27 +85,27 @@ def resample(image, scan, new_spacing=[1,1,1]):
     return image, new_spacing
 
 def displayer(numpy_mask):
-  data_matrix = numpy_mask
-  opacity = [0, 0, 0, 4, 8, 0, 0] 
-  data = pv.wrap(data_matrix)
+    data_matrix = numpy_mask
+    opacity = [0, 0, 0, 4, 8, 0, 0] 
+    data = pv.wrap(data_matrix)
 
-  pv.set_plot_theme("night")
-  #print(type(data)) #pyvista.core.grid.UniformGrid'
-  #print(dir(data)) #x = pickle.dumps(data) #print(x)
-  #print(BytesIO(data))
-  return data
+    pv.set_plot_theme("night")
+    #print(type(data)) #pyvista.core.grid.UniformGrid'
+    #print(dir(data)) #x = pickle.dumps(data) #print(x)
+    #print(BytesIO(data))
+    return data
 
 def temp_file_db():
-  with tempfile.NamedTemporaryFile(delete=False,suffix=".vti") as tf:
-    
-    if not tf.name:
-      print("tempfile name does not exist")
-    else:
-      print("tempfile made -- temp_file_db")
-    
-  return tf.name
+    with tempfile.NamedTemporaryFile(delete=False,suffix=".vti") as tf:
+        
+        if not tf.name:
+        print("tempfile name does not exist")
+        else:
+        print("tempfile made -- temp_file_db")
+        
+    return tf.name
 
-def pickle_vtk(mesh, filename):
+def pickle_vtk(mesh):
     writer = vtk.vtkDataSetWriter()
     writer.SetInputDataObject(mesh)
     writer.SetWriteToOutputString(True)
@@ -113,10 +113,9 @@ def pickle_vtk(mesh, filename):
     writer.Write()
     to_serialize = writer.GetOutputString()
 
-    with open(filename, 'wb') as handle:
-        pickle.dump(to_serialize, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    output = pickle.dumps(to_serialize, protocol=pickle.HIGHEST_PROTOCOL)
 
-    return filename
+    return output
 
 ## show sample stack
 def sample_stack(stack, rows=6, cols=6, start_with=15, show_every=4):
