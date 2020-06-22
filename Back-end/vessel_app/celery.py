@@ -52,7 +52,7 @@ def data_pipeline(session_id, b):
 
     # convert pyvista class --> binary
     pickled_vtk = pickle_vtk(data)
-    
+
     string_ok = "test"
     insert = Object_3D( 
     object_3D = pickled_vtk, 
@@ -62,5 +62,7 @@ def data_pipeline(session_id, b):
     
     db.session.add(insert) 
     db.session.commit()
+
+    ### new_data = pickle.loads(k.object_3D )
 
     return 
