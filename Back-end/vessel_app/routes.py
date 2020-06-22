@@ -26,19 +26,27 @@ from os import path
 from io import BytesIO
 ## From vessel_app functions, classes, and models
 from vessel_app import app, db, bcrypt, dropzone, photos, patch
+
+## From Vessel_app own functions, classes, and models
 from vessel_app.forms import  RegistrationForm, LoginForm, UpdateAccountForm, SessionIDForm
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from vessel_app.graph import graphing
 from vessel_app.celery import data_pipeline
 from vessel_app.utils import request_id
-### Celery app functions for datapipeline
 from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk
+from vessel_app.celery import data_pipeline
+from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
+
+from flask_login import login_user, current_user, logout_user, login_required
+
 # globals
 session_id = None
 @app.route("/")
 @app.route('/home')
 def index():
     return render_template('home.html')
+
+
 @app.before_request
 def before_request_fun(): 
     webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
@@ -280,8 +288,8 @@ def viewer():
     if request.method=='POST':
         session_id = request.form.get('session_id')
         k = request.form.get('k')
-        segmentation_options = request.form.get("segmentation_options")
-        print(session_id, k, segmentation_options)
-        result = data_pipeline.delay(session_id, k)
-        print(result.get()) 
-    return render_template('3d_viewer.html') 
+        segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
+        result = data_pipeline.delay(session_id, n_clusters=k)
+        data = result.get() # data is the 3d model
+
+    return render_template('3d_viewer.html', ) 
