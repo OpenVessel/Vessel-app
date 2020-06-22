@@ -1,8 +1,4 @@
 
-##
-## FUNCTIONS
-##
-## this loads the scans
 import os
 import pydicom 
 import numpy as np
@@ -20,6 +16,23 @@ from io import BytesIO
 import pickle 
 import tempfile
 import vtk
+
+import sklearn
+import scipy
+from skimage import morphology, measure
+from skimage.transform import resize
+from sklearn.cluster import KMeans
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+import matplotlib.pyplot as plt
+from concurrent.futures import ProcessPoolExecutor
+
+import plotly
+from plotly import __version__
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+from plotly.tools import FigureFactory as FF
+from plotly.graph_objs import *
+import plotly.graph_objects as go
 
 ## loads the whole folder
 def load_scan(slices):
@@ -96,12 +109,11 @@ def displayer(numpy_mask):
     return data
 
 def temp_file_db():
-    with tempfile.NamedTemporaryFile(delete=False,suffix=".vti") as tf:
-        
+    with tempfile.NamedTemporaryFile(delete=False,suffix=".vti") as tf: 
         if not tf.name:
-        print("tempfile name does not exist")
+            print("tempfile name does not exist")
         else:
-        print("tempfile made -- temp_file_db")
+            print("tempfile made -- temp_file_db")
         
     return tf.name
 
@@ -133,36 +145,12 @@ def sample_stack(stack, rows=6, cols=6, start_with=15, show_every=4):
     plt.show()
 
 ## Histogram functions 
-  ## LUNG MASK LUNG SEGMENTATION
-  ## 3D display
-#Standardize the pixel values
+## LUNG MASK LUNG SEGMENTATION
+## 3D display
+## Standardize the pixel values
 ## skimage algorithms for image processing
 
-import numpy as np
-import skimage
-import sklearn
-import scipy
-## from SECTION 
-from skimage import morphology
-from skimage import measure
-from skimage.transform import resize
-from sklearn.cluster import KMeans
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-
-import plotly
-from scipy import misc
-import matplotlib.pyplot as plt
-
-from concurrent.futures import ProcessPoolExecutor
-
-## plotly
-from plotly import __version__
-from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-from plotly.tools import FigureFactory as FF
-from plotly.graph_objs import *
-import plotly.graph_objects as go
-
-def make_lungmask(img, display=False):
+def make_lungmask(img, n_clusters=2, display=False):
     row_size= img.shape[0]
     col_size = img.shape[1]
     
@@ -178,14 +166,14 @@ def make_lungmask(img, display=False):
     min = np.min(img)
     # To improve threshold finding, I'm moving the 
     # underflow and overflow on the pixel spectrum
-    img[img==max]=mean
-    img[img==min]=mean
+    img[img==max] = mean
+    img[img==min] = mean
     #
     # Using Kmeans to separate foreground (soft tissue / bone) and background (lung/air)
     #sensitive to outliers and noise Kmeans could be really bad 
     # https://www.youtube.com/watch?v=_aWzGGNrcic
 
-    kmeans = KMeans(n_clusters=2).fit(np.reshape(middle,[np.prod(middle.shape),1]))
+    kmeans = KMeans(n_clusters=n_clusters).fit(np.reshape(middle,[np.prod(middle.shape),1]))
     centers = sorted(kmeans.cluster_centers_.flatten())
     ###
     threshold = np.mean(centers)

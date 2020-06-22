@@ -1,16 +1,12 @@
 from vessel_app import celery
+import numpy as np
+from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask
+    
 
 #### celery -A vessel_app.celery worker -l info -P gevent
 #### CELERY Task Queue block 
 @celery.task()
-def data_pipeline(session_id, b):
-    
-    # ESSENTIAL IMPORTS
-    #import numpy as np
-    ## vessel functions 
-    #from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask
-
-    b = b
+def data_pipeline(session_id, n_clusters=k):
     
     dicom_data = Dicom.query.filter_by(session_id=session_id).first()
 
@@ -37,7 +33,7 @@ def data_pipeline(session_id, b):
 
     ## STEP FOUR K-MEANS MASKING
     for img in imgs_after_resamp: #loops through images and applies mask
-        masked_lung.append(make_lungmask(img)
+        masked_lung.append(make_lungmask(img, n_clusters=k))
     
     mask = np.array(masked_lung)
     data = displayer(mask)
@@ -47,11 +43,10 @@ def data_pipeline(session_id, b):
     
     insert = Object_3D( 
     object_3D = pickled_vtk, 
-    session_id=str(session_id),
-    test = str(string_ok)
+    session_id=str(session_id)
     )
     
     db.session.add(insert) 
     db.session.commit()
 
-    return 
+    return data
