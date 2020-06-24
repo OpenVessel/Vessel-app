@@ -43,7 +43,7 @@ class Dicom(db.Model):
     thumbnail = db.Column(db.LargeBinary, nullable=False)
     file_count = db.Column(db.Integer, nullable=True) 
     session_id = db.Column(db.String(200), nullable=False)
-    formData = db.relationship('DicomFormData', backref='author', lazy=True)
+    formData = db.relationship('DicomFormData', uselist=False, backref='author', lazy=True) #uselist one to one relationship
     
 
     def __repr__(self):
@@ -67,8 +67,7 @@ class Object_3D(db.Model):
     object_3D = db.Column(db.LargeBinary, nullable=False)
     session_id = db.Column(db.String(200), nullable=False)
     #formData = db.relationship('DicomFormData', backref='author', lazy=True)
-
-    test = db.Column(db.String(200), nullable=False)
+    session_id_3d = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return f"Object_3D('{self.date_uploaded}')"

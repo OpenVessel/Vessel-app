@@ -112,10 +112,12 @@ def register():
     else:
         print("failed to validate or create a account")
     return render_template('register.html', title='Register', form=form)
+
 @app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
@@ -126,6 +128,7 @@ def save_picture(form_picture):
     i.thumbnail(output_size)
     i.save(picture_path)
     return picture_fn
+
 @app.route("/account",  methods=['GET', 'POST'])
 @login_required
 def account():
@@ -144,13 +147,16 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
+
 @app.route("/documentation")
 def doc():
     return render_template('documentation.html')
+
 @app.route("/upload",  methods=['GET', 'POST'])
 @login_required 
 def upload():
     return render_template('upload.html')
+
 @app.route("/dropzone_handler",  methods=['GET', 'POST'])
 def dropzone_handler():
     files_list = []
@@ -191,6 +197,7 @@ def dropzone_handler():
     db.session.add(batch) 
     db.session.commit()
     return ''
+
 @app.route('/form', methods=['POST'])
 def handle_form():
     study_name = request.form.get('Study Name')
@@ -203,25 +210,36 @@ def handle_form():
     db.session.add(formData) 
     db.session.commit()
     return redirect(url_for('browser'))
+
 @app.route('/browser')
 @login_required 
 def browser():
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
+    
     #FileDataset part pydicoms
     all_studies = []
     images_list_path = []
     temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
     os.mkdir(path = temp_dir + "user_" + str(current_user.id))
     temp_user_dir = "user_" + str(current_user.id)
+
     ######  DICOM data to dataframes function ######
     for file_num, k in enumerate(dicom_data): #k is each row in the query database
         data = pickle.loads(k.dicom_stack)
         raw_image = BytesIO(k.thumbnail).read()
         file_count = k.file_count
         session_id = k.session_id
+        
+        ## session_id_3d
+        try:
+            session_id_3ds = [(k.date_uploaded, k.session_id_3d) for k in Object_3D.query.filter_by(session_id=session_id).all()]
+        except:
+            session_id_3ds = []
+
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each 
+
         for byte_file in data: # list of all dicom files in binary
             raw = DicomBytesIO(byte_file)
             dicom_dict = []
@@ -245,14 +263,19 @@ def browser():
         filespec = path + file_thumbnail
         with open(filespec, 'wb') as f:
             f.write(imgdata)
-        all_studies.append([study_df,file_thumbnail,file_count,session_id])
+
+        all_studies.append([study_df,file_thumbnail,file_count,session_id,session_id_3ds])
+
         browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
+
     return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
+
 @app.route('/job', methods=['POST'])
 def job():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
     return render_template('job_submit.html', session_id=session_id) 
+
 @app.route('/delete', methods=['POST'])
 def delete():
     if request.method == 'POST':
@@ -283,13 +306,26 @@ def dicom_viewer():
     else:
         # this should never get called
         return redirect(url_for('index'))
+
 @app.route('/3d_viewer', methods=['POST'])
 def viewer():
     if request.method=='POST':
-        session_id = request.form.get('session_id')
-        k = request.form.get('k')
-        segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
-        result = data_pipeline.delay(session_id, n_clusters=k)
-        data = result.get() # data is the 3d model
+        source = request.form.get('source')
+        # post request came from job submit
+        if source == 'job_submit':
+            session_id = request.form.get('session_id')
+            k = request.form.get('k')
+        
+            session_id_3d = str(request_id())
+            k = int(request.form.get('k'))
+            segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
+            ## Calls workers
+            data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
+            data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
 
-    return render_template('3d_viewer.html', ) 
+        # post request came from browser
+        elif source == 'browser':
+            session_id_3d = request.form.get('session_id_3d')
+            data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
+
+    return render_template('3d_viewer.html', data=data) 

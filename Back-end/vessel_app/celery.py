@@ -7,11 +7,12 @@ from pydicom.datadict import dictionary_description as dd
 import numpy as np
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk
+from vessel_app.utils import request_id
 
 #### celery -A vessel_app.celery worker -l info -P gevent
 #### CELERY Task Queue block 
 @celery.task()
-def data_pipeline(session_id, n_clusters=k):
+def data_pipeline(session_id, session_id_3d, n_clusters=2):
     
     dicom_data = Dicom.query.filter_by(session_id=session_id).first()
 
@@ -21,7 +22,7 @@ def data_pipeline(session_id, n_clusters=k):
         dicom_list.append(dcmread(DicomBytesIO(byte_file)))
     
     ## STEP ONE of Masking pipeline 
-    patient = load_scan(dicom_list)
+    patient = load_scan(dicom_list) ## 3D array
     print("Patient number: 1" )
     print ("Slice Thickness: %f" % patient[0].SliceThickness)
     print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
@@ -38,7 +39,7 @@ def data_pipeline(session_id, n_clusters=k):
 
     ## STEP FOUR K-MEANS MASKING
     for img in imgs_after_resamp: #loops through images and applies mask
-        masked_lung.append(make_lungmask(img, n_clusters=k))
+        masked_lung.append(make_lungmask(img, n_clusters=n_clusters))
     
     mask = np.array(masked_lung)
     data = displayer(mask)
@@ -48,11 +49,13 @@ def data_pipeline(session_id, n_clusters=k):
 
     string_ok = "test"
     insert = Object_3D( 
-    object_3D = pickled_vtk, 
-    session_id=str(session_id)
+        object_3D = pickled_vtk, 
+        session_id=str(session_id),
+        session_id_3d=str(session_id_3d)
+        
     )
     
     db.session.add(insert) 
     db.session.commit()
 
-    return data
+    return 

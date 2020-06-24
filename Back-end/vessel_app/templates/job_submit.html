@@ -15,6 +15,8 @@
                 <form action='{{url_for("viewer")}}' method='post'>
                     <input class="form-control" type='hidden' value='{{session_id}}' name='session_id'>
                     
+                    <input class="form-control" type='hidden' value='job_submit' name='source'>
+                    
                     <label for="k" style="color:white">K value (1-50):</label>
                     <input class="form-control"type="number" name="k"
                         min="1" max="50">

@@ -61,6 +61,20 @@
                                     <input class="btn btn-success" type="submit" value="Dicom Viewer">
                                 </form>
                             </td>
+                            {% if study[4] != [] %}
+                            <td> <!-- 3d object viewer dropdown and submit -->
+                                <form action='{{url_for("viewer")}}' method='post'>
+                                    <label for="session_id_3d">Generate a past model</label>
+                                    <select class="form-control" name="session_id_3d" id="session_id_3d">
+                                        {% for session_id_3d in study[4] %}
+                                            <option value="{{session_id_3d[0]}}">{{session_id_3d[1]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input class="form-control" type='hidden' value='browser' name='source'>
+                                    <input class="btn btn-success" type="submit" value="Generate">
+                                </form>                
+                            </td>
+                            {% endif %}
                         </tr> 
                         <tr>
                             <td colspan="2", style="text-align: center;"> <!-- Delete button -->
