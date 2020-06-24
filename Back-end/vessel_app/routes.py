@@ -54,7 +54,7 @@ def before_request_fun():
         # upload id
         global session_id
         session_id = request_id()
-        print('SESSION_ID:', session_id)
+        print('SESSION_ID before request:', session_id)
     if current_user.is_authenticated and request.endpoint in webpages:
         # temp file management
         temp_dir = os.getcwd() + "\\vessel_app\\static\\media\\" 
@@ -160,15 +160,18 @@ def upload():
 @app.route("/dropzone_handler",  methods=['GET', 'POST'])
 def dropzone_handler():
     files_list = []
+
     for key, f in request.files.items():
         if key.startswith('file'):
             files_list.append(f)
     file_count = len(files_list)
     binary_files = [file.read() for file in files_list] # list of bytes objects
     binary_blob = pickle.dumps(binary_files) # binary blob
+    
     ### generate thumbnail
     data = pickle.loads(binary_blob) 
     dicom_list = []
+
     for byte_file in data: # list of all dicom files in binary
         raw = DicomBytesIO(byte_file)
         dicom_list.append(dcmread(raw))
@@ -178,7 +181,9 @@ def dropzone_handler():
     tn = graphing(median_dicom)
     size = (300, 300)
     tn.thumbnail(size)
+
     # convert thumbnail to bytes
+
     def imgToBytes(img):
         img_bytes = BytesIO()
         img.save(img_bytes, format='PNG')
@@ -186,7 +191,9 @@ def dropzone_handler():
         return img_bytes
     tn_bytes = imgToBytes(tn)
     filename = "file name"
+
     global session_id
+    print("Session dropzone handler", session_id)
     ## database upload
     batch = Dicom( 
     user_id=current_user.id,
@@ -230,7 +237,10 @@ def browser():
         raw_image = BytesIO(k.thumbnail).read()
         file_count = k.file_count
         session_id = k.session_id
-        
+        print("SESSION_ID browser per card:", session_id)
+        study_name = k.formData.study_name
+        description = k.formData.description
+
         ## session_id_3d
         try:
             session_id_3ds = [(k.date_uploaded, k.session_id_3d) for k in Object_3D.query.filter_by(session_id=session_id).all()]
@@ -264,10 +274,16 @@ def browser():
         with open(filespec, 'wb') as f:
             f.write(imgdata)
 
-        all_studies.append([study_df,file_thumbnail,file_count,session_id,session_id_3ds])
+        all_studies.append([study_df,
+            file_thumbnail,
+            file_count,
+            session_id,
+            session_id_3ds, 
+            study_name, 
+            description])
 
-        browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
-
+    browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
+    print("Print all studies list:",all_studies)
     return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
 
 @app.route('/job', methods=['POST'])
@@ -281,21 +297,54 @@ def delete():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+        data_3ds = Object_3D.query.filter_by(session_id=session_id).all()
         dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
-        print('attempting to delete', dicom_data, dicom_form_data)
+        # dicom and form data
         try:
             db.session.delete(dicom_data)
             db.session.delete(dicom_form_data)
-            db.session.commit()
-            print(dicom_data, 'deleted successfully')
-            return redirect(url_for('browser'))
+            print(dicom_data, dicom_form_data, 'deleted successfully')
         except:
             print('failed to delete', dicom_data, dicom_form_data)
-            flash('failed to delete', dicom_data, dicom_form_data)
             return redirect(url_for('internal_error'))
+        # 3d data
+        if data_3ds != []:
+            try:
+                for data_3d in data_3ds:
+                    db.session.delete(data_3d)
+                    print(data_3d, 'deleted successfully')
+            except:
+                print('failed to delete', dicom_data, dicom_form_data)
+                return redirect(url_for('internal_error'))
+        db.session.commit()
+        print("GOING TO BROWSER")
+        return redirect(url_for('browser'))
+
     else:
         # this should never get called
         return redirect(url_for('index'))
+
+@app.route('/delete_3d', methods=['POST'])
+def delete_3d():
+    if request.method == 'POST':
+        session_id_3d = request.form.get('session_id_3d')
+        print(session_id_3d)
+        object_3d_data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
+        print('attempting to delete', object_3d_data)
+        try:
+            db.session.delete(object_3d_data)
+            db.session.commit()
+            print(object_3d_data, 'deleted successfully')
+            return redirect(url_for('browser'))
+        except:
+            print('failed to delete', object_3d_data)
+            flash('failed to delete', object_3d_data)
+            return render_template('500.html')
+    else:
+        # this should never get called
+        return redirect(url_for('index'))
+
+
 @app.route('/dicom_viewer', methods=['POST'])
 def dicom_viewer():
     if request.method == 'POST':
@@ -327,5 +376,6 @@ def viewer():
         elif source == 'browser':
             session_id_3d = request.form.get('session_id_3d')
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
+            data = data.session_id_3d
 
     return render_template('3d_viewer.html', data=data) 
