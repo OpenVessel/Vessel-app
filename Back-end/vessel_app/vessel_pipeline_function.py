@@ -118,9 +118,9 @@ def temp_file_db():
     return tf.name
 
 def pickle_vtk(mesh):
-    writer = vtk.vtkDataSetWriter()
-    writer.SetInputDataObject(mesh)
-    writer.SetWriteToOutputString(True)
+    writer = vtk.vtkDataSetWriter() # create instance of writer
+    writer.SetInputDataObject(mesh) # input the data as a vtk object
+    writer.SetWriteToOutputString(True) # instead of writing to file
     writer.SetFileTypeToASCII()
     writer.Write()
     to_serialize = writer.GetOutputString()
@@ -128,6 +128,23 @@ def pickle_vtk(mesh):
     output = pickle.dumps(to_serialize, protocol=pickle.HIGHEST_PROTOCOL)
 
     return output
+
+def unpickle_vtk(data):
+    unpickled_data = pickle.loads(data) # data is a result of writer.GetOutputString()
+    reader = vtk.vtkDataSetReader()
+
+    # Which one to use?
+    # reader.SetReadFromInputString(True)
+    reader.ReadFromInputStringOn()
+
+    reader.SetInputString(unpickled_data)
+    # reader.ReadAllVectorsOn()
+    # reader.ReadAllScalarsOn()
+    reader.Update()
+
+    data = reader.GetOutput()
+
+    return data # this is a vtk object being returned
 
 ## show sample stack
 def sample_stack(stack, rows=6, cols=6, start_with=15, show_every=4):

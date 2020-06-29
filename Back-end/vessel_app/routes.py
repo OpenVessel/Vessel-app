@@ -33,7 +33,7 @@ from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from vessel_app.graph import graphing
 from vessel_app.celery import data_pipeline
 from vessel_app.utils import request_id
-from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk
+from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk
 from vessel_app.celery import data_pipeline
 from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
 
@@ -376,6 +376,6 @@ def viewer():
         elif source == 'browser':
             session_id_3d = request.form.get('session_id_3d')
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-            data = data.session_id_3d
+            data = unpickle_vtk(data)
 
     return render_template('3d_viewer.html', data=data) 
