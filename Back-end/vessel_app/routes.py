@@ -376,6 +376,6 @@ def viewer():
         elif source == 'browser':
             session_id_3d = request.form.get('session_id_3d')
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-            data = unpickle_vtk(data)
+            data = unpickle_vtk(data.object_3d)
 
     return render_template('3d_viewer.html', data=data) 
