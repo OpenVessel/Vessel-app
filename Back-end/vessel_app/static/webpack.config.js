@@ -6,7 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-
+const sourcePath = path.join(__dirname, './js');
 const resolve = require('path').resolve;
 const vtkRules = require('vtk.js/Utilities/config/dependency.js').webpack.core.rules;
 
@@ -20,21 +20,29 @@ const config = { // dirname is global variable containing the name of dir that s
       publicPath: resolve('../static/js')
 },
  resolve: {
-  extensions: ['.js','.jsx','.css']
+  extensions: ['.js','.jsx','.css'],
+  modules: [
+    path.resolve(__dirname, 'node_modules'),
+    sourcePath,
+  ],
  },
 
  module: { ///////////////////////////////// MODULES
     rules: [
         {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        
-        loader: "babel-loader",
-      
-        query:{ 
-            presets:[ "@babel/preset-react", '@babel/preset-env']
-        }
-    }].concat(vtkRules),
+          test: /\.(js|jsx)$/,
+          loader: "babel-loader",
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.css$/,
+          loader: 'style-loader!css-loader?modules'
+        },
+        { 
+          test: /\.html$/, 
+          loader: 'html-loader' 
+        },
+        ].concat(vtkRules),
    }
 };
 module.exports = config;
