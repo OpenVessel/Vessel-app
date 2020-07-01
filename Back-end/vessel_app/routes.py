@@ -49,7 +49,8 @@ def index():
 
 @app.before_request
 def before_request_fun(): 
-    webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser']
+    webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser', '3d_viewer',
+    'delete', 'delete_3d','dicom_viewer' ]
     if current_user.is_authenticated and request.endpoint =='upload':
         # upload id
         global session_id
@@ -283,7 +284,7 @@ def browser():
             description])
 
     browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
-    print("Print all studies list:",all_studies)
+    #print("Print all studies list:",all_studies)
     return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
 
 @app.route('/job', methods=['POST'])
@@ -371,11 +372,13 @@ def viewer():
             ## Calls workers
             data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
+            data = unpickle_vtk(data.object_3D)
+            print(type(data))
 
         # post request came from browser
         elif source == 'browser':
             session_id_3d = request.form.get('session_id_3d')
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
             data = unpickle_vtk(data.object_3D)
-
+            print(type(data))
     return render_template('3d_viewer.html', data=data) 
