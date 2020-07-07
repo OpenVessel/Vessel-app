@@ -47,7 +47,6 @@ def data_pipeline(session_id, session_id_3d, n_clusters=2):
     # convert pyvista class --> binary
     pickled_vtk = pickle_vtk(data)
 
-    string_ok = "test"
     insert = Object_3D( 
         object_3D = pickled_vtk, 
         session_id=str(session_id),
@@ -57,5 +56,5 @@ def data_pipeline(session_id, session_id_3d, n_clusters=2):
     
     db.session.add(insert) 
     db.session.commit()
-
-    return 
+    test = "I am done"
+    return test

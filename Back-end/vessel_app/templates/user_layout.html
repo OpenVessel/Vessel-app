@@ -31,8 +31,15 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/dropdown_job.css')}}">
     <!--  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">--> 
     <!--  Dropzone reference or include --> 
-    {{ dropzone.load_css(css_url='/static/css/dropzone.css') }} 
-    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px; width: 800px') }}
+    
+    
+<script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+<script src="{{url_for('static', filename='bootstrap/js/bootstrap.min.js' )}}"></script>
+<script src="{{url_for('static', filename='js/Scroll-To-Top-Button.js')}}"></script>
+<script src="{{url_for('static', filename='js/Scroll-to-top.js')}}"></script>
+
+
+
     {% if title %}
         <title>Vessel - {{ title }}</title>
     {% else %}
@@ -84,11 +91,6 @@
 </div>
 </div>
 </header>   
-
-<script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
-<script src="{{url_for('static', filename='bootstrap/js/bootstrap.min.js' )}}"></script>
-<script src="{{url_for('static', filename='js/Scroll-To-Top-Button.js')}}"></script>
-<script src="{{url_for('static', filename='js/Scroll-to-top.js')}}"></script>
 
 </body>
 </html>

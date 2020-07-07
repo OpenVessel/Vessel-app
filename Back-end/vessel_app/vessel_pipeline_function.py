@@ -136,15 +136,25 @@ def unpickle_vtk(data):
     # Which one to use?
     # reader.SetReadFromInputString(True)
     reader.ReadFromInputStringOn()
-
     reader.SetInputString(unpickled_data)
     # reader.ReadAllVectorsOn()
     # reader.ReadAllScalarsOn()
     reader.Update()
-
-    data = reader.GetOutput()
+    data = pv.wrap(reader.GetOutput())
 
     return data # this is a vtk object being returned
+
+def unpickle_vtk_2(filename):
+    with open(filename, 'rb') as handle:
+        to_deserialize = pickle.load(handle)
+
+    reader = vtk.vtkDataSetReader()
+    reader.ReadFromInputStringOn()
+    reader.SetInputString(to_deserialize)
+    reader.Update()
+    return pv.wrap(reader.GetOutput())
+
+
 
 ## show sample stack
 def sample_stack(stack, rows=6, cols=6, start_with=15, show_every=4):

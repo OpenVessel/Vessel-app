@@ -520,7 +520,10 @@ function (_Emitter) {
          */
         init: function init() {},
 
+        
         /**
+         * 
+         * 
          * Can be an **object** of additional parameters to transfer to the server, **or** a `Function`
          * that gets invoked with the `files`, `xhr` and, if it's a chunked upload, `chunk` arguments. In case
          * of a function, this needs to return a map.
@@ -959,6 +962,15 @@ function (_Emitter) {
         // Called whenever the upload progress gets updated.
         // Receives `file`, `progress` (percentage 0-100) and `bytesSent`.
         // To get the total number of bytes of the file, use `file.size`
+        /* uploadprogress: function(file, progress, bytesSent) {
+          if (file.previewElement) {
+              var progressElement = file.previewElement.querySelector("[data-dz-uploadprogress]");
+              progressElement.style.width = progress + "%";
+              progressElement.querySelector(".progress-text").textContent = progress + "%";
+          }
+      }, */
+        
+        
         uploadprogress: function uploadprogress(file, progress, bytesSent) {
           if (file.previewElement) {
             var _iteratorNormalCompletion8 = true;
@@ -985,10 +997,16 @@ function (_Emitter) {
               }
             }
           }
-        },
+        }, 
         // Called whenever the total upload progress gets updated.
         // Called with totalUploadProgress (0-100), totalBytes and totalBytesSent
-        totaluploadprogress: function totaluploadprogress() {},
+        
+        totaluploadprogress: function totaluploadprogress(uploadProgress) {
+          $('.progress-bar').css('width', uploadProgress + '%')
+      
+      },
+
+       
         // Called just before the file is sent. Gets the `xhr` object as second
         // parameter, so you can modify it (for example to add a CSRF token) and a
         // `formData` object to add additional information.

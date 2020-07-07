@@ -10,5 +10,5 @@ import {importVTK} from './3d_vtk'
 
 //ReactDOM.render(line, document.getElementById("content"));
 //ReactDOM.render(line2, document.getElementById("container"));
-
-importVTK();
+var path = document.getElementById("vti-path-holder").getAttribute("value");
+importVTK(path);

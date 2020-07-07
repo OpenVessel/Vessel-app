@@ -7,15 +7,18 @@ import vtkVolumeMapper from 'vtk.js/Sources/Rendering/Core/VolumeMapper';
 import vtkXMLImageDataReader from 'vtk.js/Sources/IO/XML/XMLImageDataReader';
 
 import vtkGenericRenderWindow from 'vtk.js/Sources/Rendering/Misc/GenericRenderWindow';
-
+import vtkHttpDataSetReader from 'vtk.js/Sources/IO/Core/HttpDataSetReader';
 //import vtkFullScreenRenderWindow from 'vtk.js/Sources/Rendering/Misc/FullScreenRenderWindow';
 // Post-Processing / filter
 import vtkPiecewiseFunction from 'vtk.js/Sources/Common/DataModel/PiecewiseFunction';
 import vtkColorMaps from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction/ColorMaps';
 import vtkColorTransferFunction from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction';
 
-export function importVTK(){
+export function importVTK(path){
     // -- setting up renderer --
+    console.log(path)
+    //path = "../static/users_3d_objects/user_1/data_object.vti"
+    console.log(path)
     const container = document.querySelector('#container');
 
 // We use the wrapper here to abstract out manual RenderWindow/Renderer/OpenGLRenderWindow setup
@@ -51,9 +54,13 @@ export function importVTK(){
     actor.getProperty().setRGBTransferFunction(0, lookupTable);
     actor.getProperty().setScalarOpacity(0, piecewiseFun);
     // -- server request and rendering --
+
+    const data_reader = vtkHttpDataSetReader.newInstance();
+
+    // DATA READER
     const reader = vtkXMLImageDataReader.newInstance();
     mapper.setInputConnection(reader.getOutputPort());
-    reader.setUrl('https://kitware.github.io/vtk-js-datasets/data/vti/LIDC2.vti')
+    reader.setUrl(path)
         .then(() => reader.loadData())
         .then(() =>{
             // configuring the renderer

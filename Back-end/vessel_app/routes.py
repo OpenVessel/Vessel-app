@@ -33,14 +33,17 @@ from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from vessel_app.graph import graphing
 from vessel_app.celery import data_pipeline
 from vessel_app.utils import request_id
-from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk
+from vessel_app.vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2 
 from vessel_app.celery import data_pipeline
 from vessel_app import app, db, bcrypt, dropzone, photos, patch, celery
 
 from flask_login import login_user, current_user, logout_user, login_required
 
-# globals
+#### globals
 session_id = None
+upload_condition = False
+path_3d = ""
+
 @app.route("/")
 @app.route('/home')
 def index():
@@ -50,10 +53,11 @@ def index():
 @app.before_request
 def before_request_fun(): 
     webpages = ['job','account', 'upload', 'home', 'index', 'doc', 'logout', 'browser', '3d_viewer',
-    'delete', 'delete_3d','dicom_viewer' ]
+    'delete', 'delete_3d','dicom_viewer']
     if current_user.is_authenticated and request.endpoint =='upload':
         # upload id
-        global session_id
+        global session_id, path_3d
+
         session_id = request_id()
         print('SESSION_ID before request:', session_id)
     if current_user.is_authenticated and request.endpoint in webpages:
@@ -62,10 +66,14 @@ def before_request_fun():
         temp_user_dir = "user_" + str(current_user.id)
         current_user_dir = temp_dir + temp_user_dir
         state = os.path.isdir(current_user_dir)
-        if state == True:
-            shutil.rmtree(current_user_dir)
-        elif state == False:
-            return 
+        state_2 = os.path.isdir(path_3d)
+
+        if state:
+            shutil.rmtree(current_user_dir)        
+        if state_2:
+            shutil.rmtree(path_3d)
+        
+    
 ##### logging 
 @app.after_request
 def after_request(response):
@@ -160,6 +168,11 @@ def upload():
 
 @app.route("/dropzone_handler",  methods=['GET', 'POST'])
 def dropzone_handler():
+    
+    ## reference to global scope
+    global upload_condition
+    upload_condition = False
+
     files_list = []
 
     for key, f in request.files.items():
@@ -202,22 +215,40 @@ def dropzone_handler():
     thumbnail = tn_bytes,
     file_count= file_count,
     session_id=str(session_id))
-    db.session.add(batch) 
-    db.session.commit()
+    
+    try:
+        db.session.add(batch)
+        db.session.commit()
+        upload_condition = True
+    except Exception as e:
+        #log your exception in the way you want -> log to file, log as error with default logging, send by email. It's upon you
+        print("Failed to upload file to database")
+        db.session.rollback()
+        db.session.flush() # for resetting non-commited .add()
+        
+
     return ''
 
 @app.route('/form', methods=['POST'])
 def handle_form():
-    study_name = request.form.get('Study Name')
-    description = request.form.get('description')
-    global session_id
-    formData = DicomFormData( 
-        study_name=study_name,
-        description=description,
-        session_id=str(session_id))
-    db.session.add(formData) 
-    db.session.commit()
-    return redirect(url_for('browser'))
+    
+    global upload_condition
+
+    if upload_condition:
+        study_name = request.form.get('study_name')
+        description = request.form.get('description')
+        global session_id
+        formData = DicomFormData( 
+            study_name=study_name,
+            description=description,
+            session_id=str(session_id))
+        db.session.add(formData) 
+        db.session.commit()
+
+        return redirect(url_for('browser'))
+    
+    flash("Upload failed")
+    return redirect(url_for('upload'))
 
 @app.route('/browser')
 @login_required 
@@ -239,6 +270,7 @@ def browser():
         file_count = k.file_count
         session_id = k.session_id
         print("SESSION_ID browser per card:", session_id)
+        print(k.formData)
         study_name = k.formData.study_name
         description = k.formData.description
 
@@ -359,6 +391,16 @@ def dicom_viewer():
 
 @app.route('/3d_viewer', methods=['POST'])
 def viewer():
+    
+    ## global
+    global path_3d 
+
+    print(path_3d)
+    temp_dir = os.getcwd() + "\\vessel_app\\static\\users_3d_objects\\" 
+    os.mkdir(path = temp_dir + "user_" + str(current_user.id))
+    temp_user_dir = "user_" + str(current_user.id)
+    path_3d = temp_dir + temp_user_dir
+
     if request.method=='POST':
         source = request.form.get('source')
         # post request came from job submit
@@ -369,16 +411,37 @@ def viewer():
             session_id_3d = str(request_id())
             k = int(request.form.get('k'))
             segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
+            
             ## Calls workers
-            data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
+            result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
+            result_output = result.wait(timeout=None, interval=0.5)
+            print(result_output)
+            
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-            data = unpickle_vtk(data.object_3D)
-            print(type(data))
+            data_a = unpickle_vtk(data.object_3D)
+            path = path_3d + "\\data_object.vti"
+            data_a.save(path)
+            path = path.replace("\\", "/")
+            print(path)
+        #object_path = "D:\Openvessel\vessel-app\Back-end\vessel_app\static\users_3d_objects"
 
         # post request came from browser
         elif source == 'browser':
             session_id_3d = request.form.get('session_id_3d')
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-            data = unpickle_vtk(data.object_3D)
-            print(type(data))
-    return render_template('3d_viewer.html', data=data) 
+            data_a = unpickle_vtk(data.object_3D)
+            print(type(data_a))
+            path = path_3d + "\\data_object.vti"
+            print(path)
+            data_a.save(path)
+            
+            print(path)
+            path = os.path.relpath(path, start = "vessel_app")
+            path = path.replace("\\", "/")
+            print("last ", path)
+
+        ## solution one output data as URL
+            ## pathing_data = "//home//" ## sttring generate from the worker 
+        
+        
+    return render_template('3d_viewer.html', data=data, path_data=path) 
