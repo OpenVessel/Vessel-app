@@ -7,6 +7,7 @@ import pandas as pd
 import tempfile 
 import base64
 import shutil
+import json
 import pickle 
 import numpy as np
 import logging
@@ -41,7 +42,6 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 #### globals
 session_id = None
-upload_condition = False
 path_3d = ""
 
 @app.route("/")
@@ -166,89 +166,91 @@ def doc():
 def upload():
     return render_template('upload.html')
 
+all_files = []
+file_count_global = 0
+
 @app.route("/dropzone_handler",  methods=['GET', 'POST'])
 def dropzone_handler():
-    
-    ## reference to global scope
-    global upload_condition
-    upload_condition = False
-
     files_list = []
+    done = False
+    try:
+       form_data = request.form.to_dict()
+       done = form_data['done']
+    except:
+        pass
 
     for key, f in request.files.items():
         if key.startswith('file'):
             files_list.append(f)
+
     file_count = len(files_list)
     binary_files = [file.read() for file in files_list] # list of bytes objects
-    binary_blob = pickle.dumps(binary_files) # binary blob
     
-    ### generate thumbnail
-    data = pickle.loads(binary_blob) 
-    dicom_list = []
+    global all_files, file_count_global
 
-    for byte_file in data: # list of all dicom files in binary
-        raw = DicomBytesIO(byte_file)
-        dicom_list.append(dcmread(raw))
-    # find median dicom file to generate thumbnail
-    median_i = len(dicom_list)//2
-    median_dicom = dicom_list[median_i]
-    tn = graphing(median_dicom)
-    size = (300, 300)
-    tn.thumbnail(size)
+    if not done:
+        print("adding files!!!!!!")
+        all_files.extend(binary_files)
+        file_count_global += file_count
+        return ''
 
-    # convert thumbnail to bytes
-
-    def imgToBytes(img):
-        img_bytes = BytesIO()
-        img.save(img_bytes, format='PNG')
-        img_bytes = img_bytes.getvalue()
-        return img_bytes
-    tn_bytes = imgToBytes(tn)
-    filename = "file name"
-
-    global session_id
-    print("Session dropzone handler", session_id)
-    ## database upload
-    batch = Dicom( 
-    user_id=current_user.id,
-    dicom_stack = binary_blob, 
-    thumbnail = tn_bytes,
-    file_count= file_count,
-    session_id=str(session_id))
-    
-    try:
-        db.session.add(batch)
-        db.session.commit()
-        upload_condition = True
-    except Exception as e:
-        #log your exception in the way you want -> log to file, log as error with default logging, send by email. It's upon you
-        print("Failed to upload file to database")
-        db.session.rollback()
-        db.session.flush() # for resetting non-commited .add()
+    else:
+        print("serializing files")
+        print(len(all_files))
+        binary_blob = pickle.dumps(all_files) # binary blob
+        ### generate thumbnail
+        data = pickle.loads(binary_blob) 
+        dicom_list = []
+        for byte_file in data: # list of all dicom files in binary
+            raw = DicomBytesIO(byte_file)
+            dicom_list.append(dcmread(raw))
+        # find median dicom file to generate thumbnail
+        median_i = len(dicom_list)//2
+        median_dicom = dicom_list[median_i]
+        tn = graphing(median_dicom)
+        size = (300, 300)
+        tn.thumbnail(size)
+        # convert thumbnail to bytes
+        def imgToBytes(img):
+            img_bytes = BytesIO()
+            img.save(img_bytes, format='PNG')
+            img_bytes = img_bytes.getvalue()
+            return img_bytes
+        tn_bytes = imgToBytes(tn)
+        filename = "file name"
+        global session_id
         
+        print("Session dropzone handler", session_id)
+        ## database upload
+        batch = Dicom( 
+        user_id=current_user.id,
+        dicom_stack = binary_blob, 
+        thumbnail = tn_bytes,
+        file_count= file_count_global,
+        session_id=str(session_id))
 
-    return ''
+        db.session.add(batch) 
+        db.session.commit()
+       
+        all_files = []
+        file_count_global = 0
+        return redirect(url_for('browser'))
 
 @app.route('/form', methods=['POST'])
 def handle_form():
-    
-    global upload_condition
+  
+    study_name = request.form.get('study_name', "No Study Name")
+    description = request.form.get('description', "No description")
+    global session_id
+    print(" SESSSION ID form_handler", session_id)
+    formData = DicomFormData( 
+        study_name=study_name,
+        description=description,
+        session_id=str(session_id))
+    db.session.add(formData) 
+    db.session.commit()
 
-    if upload_condition:
-        study_name = request.form.get('study_name')
-        description = request.form.get('description')
-        global session_id
-        formData = DicomFormData( 
-            study_name=study_name,
-            description=description,
-            session_id=str(session_id))
-        db.session.add(formData) 
-        db.session.commit()
-
-        return redirect(url_for('browser'))
-    
-    flash("Upload failed")
-    return redirect(url_for('upload'))
+    return redirect(url_for('browser'))
 
 @app.route('/browser')
 @login_required 
@@ -421,8 +423,11 @@ def viewer():
             data_a = unpickle_vtk(data.object_3D)
             path = path_3d + "\\data_object.vti"
             data_a.save(path)
-            path = path.replace("\\", "/")
+            
             print(path)
+            path = os.path.relpath(path, start = "vessel_app")
+            path = path.replace("\\", "/")
+            print("last ", path)
         #object_path = "D:\Openvessel\vessel-app\Back-end\vessel_app\static\users_3d_objects"
 
         # post request came from browser

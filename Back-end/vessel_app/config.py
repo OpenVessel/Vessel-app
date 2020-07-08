@@ -42,10 +42,7 @@ class Config:
 
     # Flask-Dropzone config:
     DROPZONE_ALLOWED_FILE_CUSTOM= True
-    DROPZONE_ALLOWED_FILE_TYPE='image/*, .dcm'
-    DROPZONE_MAX_FILE_SIZE=3
-    DROPZONE_MAX_FILES=400
-    
+
     DROPZONE_IN_FORM=True
     DROPZONE_UPLOAD_ON_CLICK=True
     DROPZONE_UPLOAD_ACTION='dropzone_handler'  # URL or endpoint
