@@ -1,0 +1,29 @@
+html {
+    height: 100%;
+}
+
+.font_headers h2 {
+
+    font-size: 75px;
+    color: white;
+    margin-top: 40px;
+    text-align: center;
+    padding-bottom: 10px;
+
+} 
+
+.font_input label{ 
+
+
+    color: white;
+    font-size: 20px;
+}
+
+.center_dropbox { 
+
+    margin: auto;
+    width: 75%;
+    padding: 10px;
+
+}
+

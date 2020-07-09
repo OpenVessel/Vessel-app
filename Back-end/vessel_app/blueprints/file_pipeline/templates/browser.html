@@ -1,0 +1,162 @@
+{% if current_user.is_authenticated %}
+{% extends "user_layout.html" %}
+{% else %}
+{% extends "layout.html" %}
+{% endif %}
+{% block content %}
+    <style>
+            /* Style the button that is used to open and close the collapsible content */
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+        /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+        .active, .collapsible:hover {
+            background-color: #ccc;
+        }
+        /* Style the collapsible content. Note: hidden by default */
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: whitesmoke;
+        }
+    </style>
+
+    <div class='browser' style='display: grid; grid-template-columns: auto;'>
+        {% if all_studies == [] %}
+            <div class='card' style='margin: 3%; background: whitesmoke;'>
+                <div class='container'>
+                        <div class="browser_card">
+                            <p>You have no files uploaded. Please go to the <a href=' {{url_for("file_pipeline.upload")}} '>upload page</a> to continue.</p>
+                            <br>
+                            <br>
+                            <div style="text-align: center;">
+                                <h5 style='text-decoration: black;'>or</h5>
+                            </div>
+                            <br>
+                            <p>If you uploaded files and you don't see them, please <a href=' {{url_for("file_pipeline.browser")}} '>refresh the page</a></p>
+                        </div>
+                </div>
+            </div>
+        {% else %}
+            {% for study in all_studies %}
+                <div class='card' style='margin: 3%; background: whitesmoke;'>
+                    <div class='container'>
+                        <div style='text-align: center;'>
+                            <h2> Study Name {{study[5]}} </h2>
+                            <p> Description {{study[6]}}</p>
+                        </div>
+                        <table> 
+                            <tr>
+                                <td> 
+                                    <img src="{{ url_for('static', filename=study[1]) }}" alt="text">    
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="border-spacing: 50px 50px;">
+                            <tr style="text-align: center;">
+                            <strong>
+                                {% for field in browserFields %}
+                                <th> {{ field }}   </th>    
+                            {% endfor %}
+                                <th> File Count </th>
+                            </strong>
+                        </tr>
+                        <tr style="text-align: center;">
+                            {% for field in browserFields %}   
+                                {% if field in study[0] %}
+                                    <td>  {{ study[0][field].iloc[0].value.decode("utf-8") }} </td>
+                                {% else %}
+                                    <td> NO DATA </td>
+                                {% endif %}
+                            {% endfor %}
+                            <td> {{ study[2] }} </td>
+                        </tr>
+                        </table> 
+                        <div style="text-align: center;">
+                            <table style="border-spacing: 20px 20px;">
+                                <tr>
+                                    <td> <!-- Submit Job button -->
+                                        <form action="{{url_for('file_pipeline.job')}}" method="post">
+                                            <input type="hidden" name="session_id" value="{{ study[3] }}">
+                                            <input class="btn btn-success" type="submit" value="Submit Job">
+                                        </form>
+                                    </td>
+                                    <td> <!-- Dicom Viewer button --> 
+                                        <form action="{{url_for('file_pipeline.dicom_viewer')}}" method="post">
+                                            <input type="hidden" name="session_id" value="{{ study[3] }}">
+                                            <input class="btn btn-success" type="submit" value="Dicom Viewer">
+                                        </form>
+                                    </td>
+                                    {% if study[4] != [] %}
+                                    <!-- 3d object viewer dropdown and submit -->
+                                    <td>
+                                        <button type="button" class="collapsible">Generate a past model</button>
+                                        <div class="content">
+                                            <table style="border-spacing: 20px 20px;">
+                                                {% for session_id_3d in study[4] %}
+                                                    <tr>
+                                                        <td>
+                                                            <p>{{session_id_3d[0]}}</p>
+                                                        </td>
+                                                        <td> <!-- Generate button -->
+                                                            <form action='{{url_for("viewer")}}' method='post'>
+                                                                <input class="form-control" type='hidden' value='{{session_id_3d[1]}}' name="session_id_3d">
+                                                                <input class="form-control" type='hidden' value='browser' name='source'>
+                                                                <input class="btn btn-success" type="submit" value="Generate">   
+                                                            </form>
+                                                        </td>
+                                                        <td> <!-- Delete button -->
+                                                            <form action="{{url_for('file_pipeline.delete_3d')}}" method="post">
+                                                                <input class="form-control" type="hidden"  value="{{session_id_3d[1]}}" name="session_id_3d">
+                                                                <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this 3d render?')" value="Delete">
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>               
+                                        </div>
+                                    </td>
+                                    {% endif %}
+                                </tr> 
+                                <tr>
+                                    <td colspan="2", style="text-align: center;"> <!-- Delete button -->
+                                        <form action="{{url_for('file_pipeline.delete')}}" method="post">
+                                            <input type="hidden" name="session_id" value="{{ study[3] }}">
+                                            <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this upload?')" value="Delete Upload">
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+    </script>
+    
+{% endblock content %}
