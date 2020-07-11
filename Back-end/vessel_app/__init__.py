@@ -2,7 +2,6 @@ from flask import Flask, current_app
 
 ##logging imports
 import logging
-from vessel_app.flask_logs import LogSetup
 from datetime import datetime as dt
 
 ### Flask + Celery https://blog.miguelgrinberg.com/post/using-celery-with-flask
@@ -24,8 +23,9 @@ migrate = Migrate()
 bcrypt = Bcrypt()
 dropzone = Dropzone()
 login_manager = LoginManager()
-logs = LogSetup()
+# logs = LogSetup()
 celery = Celery()
+
 def create_app(config_class=Config):
 
     app = Flask(__name__) ## Global Flask instance application Factory???
@@ -38,13 +38,13 @@ def create_app(config_class=Config):
     
 
     # blueprint registrations
-    from .blueprints.errors import bp as errors_bp
+    from .errors import bp as errors_bp
     app.register_blueprint(errors_bp)
-    from .blueprints.auth import bp as auth_bp
+    from .auth import bp as auth_bp
     app.register_blueprint(auth_bp)
-    from .blueprints.main import bp as main_bp
+    from .main import bp as main_bp
     app.register_blueprint(main_bp)
-    from .blueprints.file_pipeline import bp as file_pipeline_bp
+    from .file_pipeline import bp as file_pipeline_bp
     app.register_blueprint(file_pipeline_bp)
 
     #celery -A vessel_app.celery worker -l info -P gevent
@@ -74,7 +74,7 @@ def create_app(config_class=Config):
     app.config['LOG_DIR'] = os.environ.get("LOG_DIR", "./")
     app.config['APP_LOG_NAME'] = os.environ.get("APP_LOG_NAME", "app.log")
     app.config['WWW_LOG_NAME'] = os.environ.get("WWW_LOG_NAME", "www.log")
-    logs.init_app(app)
+    # logs.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_view = 'login'
