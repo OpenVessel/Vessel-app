@@ -138,11 +138,6 @@ def handle_form():
     return redirect(url_for('file_pipeline.browser'))
 
 
-@bp.route('/image/<image_data>')
-def get_image(image_data):
-    return Response(image_data, mimetype='image/jpeg')
-
-
 @bp.route('/browser')
 @login_required 
 def browser():
@@ -203,8 +198,6 @@ def browser():
             session_id_3ds, 
             study_name, 
             description])
-
-    print('------------------')
 
     browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
     #print("Print all studies list:",all_studies)
