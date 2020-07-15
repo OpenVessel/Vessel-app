@@ -57,7 +57,8 @@
                         <table> 
                             <tr>
                                 <td> 
-                                    <img src="{{ url_for('static', filename=study[1]) }}" alt="text">    
+                                    <!-- <img src="{{ url_for('static', filename=study[1]) }}" alt="text">     -->
+                                    <img src="data:image/jpeg;charset=utf-8;base64,{{ study[1]}}" alt="dicom thumbnail">  
                                 </td>
                             </tr>
                         </table>

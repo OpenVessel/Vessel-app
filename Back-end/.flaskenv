@@ -1,2 +1,2 @@
 FLASK_DEBUG=0
-FLASK_APP=app.py
+FLASK_APP=wsgi.py

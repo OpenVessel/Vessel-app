@@ -35,57 +35,53 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     dropzone.init_app(app)
-    
-
-    # blueprint registrations
-    from .errors import bp as errors_bp
-    app.register_blueprint(errors_bp)
-    from .auth import bp as auth_bp
-    app.register_blueprint(auth_bp)
-    from .main import bp as main_bp
-    app.register_blueprint(main_bp)
-    from .file_pipeline import bp as file_pipeline_bp
-    app.register_blueprint(file_pipeline_bp)
-
-    #celery -A vessel_app.celery worker -l info -P gevent
-
-    # def make_celery(app):
-    #     celery = Celery(
-    #         app.import_name,
-    #         backend=app.config['CELERY_RESULT_BACKEND'],
-    #         broker=app.config['CELERY_BROKER_URL']
-    #     )
-    #     #celery.conf.update(app.config) what is this config?>
-
-    #     class ContextTask(celery.Task):
-    #         def __call__(self, *args, **kwargs):
-    #             with app.app_context():
-    #                 return self.run(*args, **kwargs)
-
-    #     celery.Task = ContextTask
-    #     return celery
-
-    # celery = make_celery(current_app)
-    # celery = make_celery(app)
-
-    ## log info
-    app.config["LOG_TYPE"] = os.environ.get("LOG_TYPE", "stream")
-    app.config["LOG_LEVEL"] = os.environ.get("LOG_LEVEL", "INFO")
-    app.config['LOG_DIR'] = os.environ.get("LOG_DIR", "./")
-    app.config['APP_LOG_NAME'] = os.environ.get("APP_LOG_NAME", "app.log")
-    app.config['WWW_LOG_NAME'] = os.environ.get("WWW_LOG_NAME", "www.log")
     # logs.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_view = 'login'
     login_manager.login_message_category = 'info'
 
-    # Uploads settings
+    # profile uploads settings (Deprecate)
     photos = UploadSet('photos', IMAGES)
     configure_uploads(app, photos)
     patch = patch_request_class(app) 
 
-    return app
+    
+    with app.app_context():
+
+        # blueprint registrations
+        from .errors import bp as errors_bp
+        app.register_blueprint(errors_bp)
+        from .auth import bp as auth_bp
+        app.register_blueprint(auth_bp)
+        from .main import bp as main_bp
+        app.register_blueprint(main_bp)
+        from .file_pipeline import bp as file_pipeline_bp
+        app.register_blueprint(file_pipeline_bp)
+
+        #celery -A vessel_app.celery worker -l info -P gevent
+
+        # def make_celery(app):
+        #     celery = Celery(
+        #         app.import_name,
+        #         backend=app.config['CELERY_RESULT_BACKEND'],
+        #         broker=app.config['CELERY_BROKER_URL']
+        #     )
+        #     #celery.conf.update(app.config) what is this config?>
+
+        #     class ContextTask(celery.Task):
+        #         def __call__(self, *args, **kwargs):
+        #             with app.app_context():
+        #                 return self.run(*args, **kwargs)
+
+        #     celery.Task = ContextTask
+        #     return celery
+
+        # celery = make_celery(current_app)
+        # celery = make_celery(app)
+
+        
+        return app
 
 def create_celery_app(app=None):
         app = app or create_app(Config)
