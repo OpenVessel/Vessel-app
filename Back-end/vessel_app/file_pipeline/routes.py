@@ -21,7 +21,7 @@ from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from .celery import data_pipeline
+from .celery_tasks import data_pipeline
 from .utils import request_id, dicom_to_thumbnail
 from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2 
 from vessel_app import db, bcrypt, dropzone
@@ -38,7 +38,7 @@ def before_request_fun():
 
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
         # upload id
-        path_3d
+        global path_3d
 
         session['id'] = request_id()
         print('SESSION_ID before request:', session['id'])
@@ -282,6 +282,7 @@ def viewer():
     global path_3d 
 
     print(path_3d)
+    ### naib static 
     temp_dir = os.getcwd() + "\\vessel_app\\static\\users_3d_objects\\" 
     os.mkdir(path = temp_dir + "user_" + str(current_user.id))
     temp_user_dir = "user_" + str(current_user.id)

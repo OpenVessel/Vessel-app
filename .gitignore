@@ -1,2 +1,11 @@
 
 *.db
+Back-end/migrations/*
+Back-end/vessel_app/static/node_modules/*
+# Byte-compiled / optimized / DLL files
+**\__pycache__
+*.py[cod]
+*$py.class
+Back-end/__pycache__/*
+Back-end/vessel_app/auth/__pycache__/forms.cpython-37.pyc
+Back-end/migrations/versions/bfee7d82774a_.py

@@ -1,5 +1,5 @@
 import pickle
-from vessel_app import db, celery
+from vessel_app import db
 from pydicom import dcmread
 from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
@@ -13,17 +13,19 @@ from vessel_app import create_celery_app
 from celery.signals import task_prerun
 from flask import g
 
-celery = create_celery_app()
+#from vessel_app.file_pipeline.celery_tasks.data_pipeline import celery
 
-@task_prerun.connect
-def celery_prerun(*args, **kwargs):
-    #print g
-    with celery.app.app_context():
-        # use g.db
-        print(g)
+
+# @task_prerun.connect
+# def celery_prerun(*args, **kwargs):
+#     #print g
+#     with celery.app.app_context():
+#         # use g.db
+#         print(g)
     
 #### celery -A vessel_app.celery worker -l info -P gevent
 #### CELERY Task Queue block 
+celery = create_celery_app()
 @celery.task()
 def data_pipeline(session_id, session_id_3d, n_clusters=2):
     
@@ -55,6 +57,7 @@ def data_pipeline(session_id, session_id_3d, n_clusters=2):
         masked_lung.append(make_lungmask(img, n_clusters=n_clusters))
     
     mask = np.array(masked_lung)
+    ## pyvista
     data = displayer(mask)
 
     # convert pyvista class --> binary
