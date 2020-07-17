@@ -7,6 +7,7 @@ import tempfile
 import base64
 import shutil
 import pickle 
+import time
 import logging
 from datetime import datetime as dt
 from PIL import Image
@@ -120,7 +121,7 @@ def dropzone_handler():
         # set globals back to default values
         all_files = []
         file_count_global = 0
-        return ''
+        return 'dropzone done'
 
 @bp.route('/form', methods=['POST'])
 def handle_form():
@@ -134,7 +135,7 @@ def handle_form():
         session_id=str(session['id']))
     db.session.add(formData) 
     db.session.commit()
-
+    time.sleep(1.5)
     return redirect(url_for('file_pipeline.browser'))
 
 
