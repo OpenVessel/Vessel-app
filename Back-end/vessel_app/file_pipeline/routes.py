@@ -43,7 +43,7 @@ def create_session_id():
         # check if folder exists
         try:
             folder_3d_exists = os.path.isdir(session['path_3d'])
-        except: 
+        except:
             folder_3d_exists = False
 
         if folder_3d_exists:
@@ -286,11 +286,12 @@ def viewer():
     
     print('getting object_3d from folder:', session['path_3d'])
 
-    if request.method=='':
+    if request.method=='POST':
         source = request.form.get('source')
+
         # post request came from job submit
         if source == 'job_submit':
-
+            print('Generating model from job submit')
             # get request data
             session_id = request.form.get('session_id')
             k = int(request.form.get('k'))
@@ -318,7 +319,7 @@ def viewer():
 
         # post request came from browser
         elif source == 'browser':
-
+            print('Generating model from browser')
             # get request data
             session_id_3d = request.form.get('session_id_3d')
 
