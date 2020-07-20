@@ -41,7 +41,10 @@ def create_session_id():
     if current_user.is_authenticated and request.endpoint != 'file_pipeline.3d_viewer': # and request.endpoint in endpoints:
 
         # check if folder exists
-        folder_3d_exists = os.path.isdir(session['path_3d'])
+        try:
+            folder_3d_exists = os.path.isdir(session['path_3d'])
+        except:
+            folder_3d_exists = False
 
         if folder_3d_exists:
             shutil.rmtree(session['path_3d'])
@@ -283,11 +286,12 @@ def viewer():
     
     print('getting object_3d from folder:', session['path_3d'])
 
-    if request.method=='':
+    if request.method=='POST':
         source = request.form.get('source')
+
         # post request came from job submit
         if source == 'job_submit':
-
+            print('Generating model from job submit')
             # get request data
             session_id = request.form.get('session_id')
             k = int(request.form.get('k'))
@@ -315,7 +319,7 @@ def viewer():
 
         # post request came from browser
         elif source == 'browser':
-
+            print('Generating model from browser')
             # get request data
             session_id_3d = request.form.get('session_id_3d')
 
@@ -330,4 +334,4 @@ def viewer():
             data_as_pyvista_obj.save(object_3d_path)
         
         
-    return render_template('3d_viewer.html', data=data, path_data=object_3d_path) 
+    return render_template('3d_viewer.html', path_data=object_3d_path) 
