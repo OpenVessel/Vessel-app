@@ -29,26 +29,23 @@ from vessel_app import db, bcrypt, dropzone
 
 from . import bp
 
-
-#### globals
-path_3d = ""
-
 @bp.before_app_request
-def before_request_fun(): 
-    endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
-
+def create_session_id(): 
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
-        # upload id
-        global path_3d
 
+        # create session_id
         session['id'] = request_id()
         print('SESSION_ID before request:', session['id'])
-    if current_user.is_authenticated and request.endpoint in endpoints:
-        # temp file management
-        state = os.path.isdir(path_3d)
+    
+    # endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
+    if current_user.is_authenticated and request.endpoint != 'file_pipeline.3d_viewer': # and request.endpoint in endpoints:
 
-        if state:
-            shutil.rmtree(path_3d)
+        # check if folder exists
+        folder_3d_exists = os.path.isdir(session['path_3d'])
+
+        if folder_3d_exists:
+            shutil.rmtree(session['path_3d'])
+    
 
 
 @bp.route("/upload",  methods=['GET', 'POST'])
@@ -75,11 +72,10 @@ def dropzone_handler():
 
     file_count = len(files_list)
     binary_files = [file.read() for file in files_list] # list of bytes objects
-    
-    global all_files, file_count_global
 
     if not done:
         # add to overall list, but not database
+        global all_files, file_count_global
 
         all_files.extend(binary_files)
         file_count_global += file_count
@@ -278,61 +274,60 @@ def dicom_viewer():
 
 @bp.route('/3d_viewer', methods=['POST'])
 def viewer():
-    
-    ## global
-    global path_3d 
 
-    print(path_3d)
-    ### naib static 
+    # update path_3d
     temp_dir = os.getcwd() + "\\vessel_app\\static\\users_3d_objects\\" 
-    os.mkdir(path = temp_dir + "user_" + str(current_user.id))
     temp_user_dir = "user_" + str(current_user.id)
-    path_3d = temp_dir + temp_user_dir
+    session['path_3d'] = temp_dir + temp_user_dir
+    os.mkdir(path = session['path_3d'])
+    
+    print('getting object_3d from folder:', session['path_3d'])
 
-    if request.method=='POST':
+    if request.method=='':
         source = request.form.get('source')
         # post request came from job submit
         if source == 'job_submit':
+
+            # get request data
             session_id = request.form.get('session_id')
-            k = request.form.get('k')
-        
-            session_id_3d = str(request_id())
             k = int(request.form.get('k'))
             segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
             
-            ## Calls workers
+            # create a session_id_3d 
+            session_id_3d = str(request_id())
+
+            # Call worker and save result to database
             result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
             result_output = result.wait(timeout=None, interval=0.5)
-            print(result_output)
             
+            # query database for newly added object_3D
             data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-            data_a = unpickle_vtk(data.object_3D)
-            path = path_3d + "\\data_object.vti"
-            data_a.save(path)
+            data_as_pyvista_obj = unpickle_vtk(data.object_3D)
+
+            # save to .vti file
+            object_3d_path = session['path_3d'] + "\\data_object.vti"
+            # path = os.path.relpath(path, start = "vessel_app")
+            # path = path.replace("\\", "/")
+            data_as_pyvista_obj.save(object_3d_path)
+        
             
-            print(path)
-            path = os.path.relpath(path, start = "vessel_app")
-            path = path.replace("\\", "/")
-            print("last ", path)
         #object_path = "D:\Openvessel\vessel-app\Back-end\vessel_app\static\users_3d_objects"
 
         # post request came from browser
         elif source == 'browser':
-            session_id_3d = request.form.get('session_id_3d')
-            data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-            data_a = unpickle_vtk(data.object_3D)
-            print(type(data_a))
-            path = path_3d + "\\data_object.vti"
-            print(path)
-            data_a.save(path)
-            
-            print(path)
-            path = os.path.relpath(path, start = "vessel_app")
-            path = path.replace("\\", "/")
-            print("last ", path)
 
-        ## solution one output data as URL
-            ## pathing_data = "//home//" ## sttring generate from the worker 
+            # get request data
+            session_id_3d = request.form.get('session_id_3d')
+
+            # query database for object_3D 
+            data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
+            data_as_pyvista_obj = unpickle_vtk(data.object_3D)
+
+            # save to .vti file
+            object_3d_path = session['path_3d'] + "\\data_object.vti"
+            # path = os.path.relpath(path, start = "vessel_app")
+            # path = path.replace("\\", "/")
+            data_as_pyvista_obj.save(object_3d_path)
         
         
-    return render_template('3d_viewer.html', data=data, path_data=path) 
+    return render_template('3d_viewer.html', data=data, path_data=object_3d_path) 
