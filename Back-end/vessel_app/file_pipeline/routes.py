@@ -41,7 +41,10 @@ def create_session_id():
     if current_user.is_authenticated and request.endpoint != 'file_pipeline.3d_viewer': # and request.endpoint in endpoints:
 
         # check if folder exists
-        folder_3d_exists = os.path.isdir(session['path_3d'])
+        try:
+            folder_3d_exists = os.path.isdir(session['path_3d'])
+        except: 
+            folder_3d_exists = False
 
         if folder_3d_exists:
             shutil.rmtree(session['path_3d'])
@@ -330,4 +333,4 @@ def viewer():
             data_as_pyvista_obj.save(object_3d_path)
         
         
-    return render_template('3d_viewer.html', data=data, path_data=object_3d_path) 
+    return render_template('3d_viewer.html', path_data=object_3d_path) 
