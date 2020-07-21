@@ -332,9 +332,10 @@ def viewer_3d():
 
     # save to .vti file
     object_3d_path = session['path_3d'] + "\\data_object.vti"
-    path = os.path.relpath(path, start = "vessel_app")
-    path = path.replace("\\", "/")
     data_as_pyvista_obj.save(object_3d_path)
+    object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
+    object_3d_path = object_3d_path.replace("\\", "/")
+    
 
     
     return render_template('3d_viewer.html', path_data=object_3d_path) 
