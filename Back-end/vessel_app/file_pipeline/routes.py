@@ -39,8 +39,8 @@ def before_fun():
         print('SESSION_ID before request:', session['id'])
 
     
-    if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.upload' and request.endpoint != 'static':
-        print('just left upload')
+    if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.viewer_3d' and request.endpoint != 'static':
+        print('just left 3d viewer')
         # BUG: WONT DELETE FILES IF THE USER LEAVES THE SITE FROM 3D VIEWER
         if os.path.isdir(session['path_3d']):
             # remove user folder
@@ -288,7 +288,7 @@ def dicom_viewer():
         return redirect(url_for('main.index'))
 
 @bp.route('/3d_viewer', methods=['POST'])
-def viewer():
+def viewer_3d():
 
     source = request.form.get('source')
 

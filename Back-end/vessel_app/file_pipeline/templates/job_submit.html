@@ -12,7 +12,7 @@
                 <img class="align-content-center" src="{{url_for('static', filename='img/screen-content-iphone-6.jpg')}}">
             </div>
             <div class="col form-group">
-                <form action='{{url_for("file_pipeline.viewer")}}' method='post'>
+                <form action='{{url_for("file_pipeline.viewer_3d")}}' method='post'>
                     <input class="form-control" type='hidden' value='{{session_id}}' name='session_id'>
                     
                     <input class="form-control" type='hidden' value='job_submit' name='source'>
