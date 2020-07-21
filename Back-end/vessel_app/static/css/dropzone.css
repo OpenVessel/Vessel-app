@@ -2,6 +2,36 @@
  * The MIT License
  * Copyright (c) 2012 Matias Meno <m@tias.me>
  */
+
+
+/* ADDITIONAL CSS ADDED BY US */
+.font_headers h2 {
+
+  font-size: 75px;
+  color: white;
+  margin-top: 40px;
+  text-align: center;
+  padding-bottom: 10px;
+
+} 
+
+.font_input label{ 
+
+
+  color: white;
+  font-size: 20px;
+}
+
+.center_dropbox { 
+
+  margin: auto;
+  width: 75%;
+  padding: 10px;
+
+}
+
+/* *************** */
+
  @-webkit-keyframes passing-through {
     0% {
       opacity: 0;
