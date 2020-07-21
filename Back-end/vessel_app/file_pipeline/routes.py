@@ -30,24 +30,36 @@ from vessel_app import db, bcrypt, dropzone
 from . import bp
 
 @bp.before_app_request
-def create_session_id(): 
+def before_fun(): 
+    
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
 
         # create session_id
         session['id'] = request_id()
         print('SESSION_ID before request:', session['id'])
+
     
-    # endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
-    if current_user.is_authenticated and request.endpoint != 'file_pipeline.3d_viewer': # and request.endpoint in endpoints:
-
-        # check if folder exists
-        try:
-            folder_3d_exists = os.path.isdir(session['path_3d'])
-        except:
-            folder_3d_exists = False
-
-        if folder_3d_exists:
+    if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.upload' and request.endpoint != 'static':
+        print('just left upload')
+        # BUG: WONT DELETE FILES IF THE USER LEAVES THE SITE FROM 3D VIEWER
+        if os.path.isdir(session['path_3d']):
+            # remove user folder
+            print('removing files')
             shutil.rmtree(session['path_3d'])
+
+
+@bp.after_app_request
+def update_last_endpoint(response):
+    try:
+        session['last_endpoint']
+    except:
+        # No last endpoint. Set to nowhere
+        session['last_endpoint'] = 'nowhere'
+
+    if request.endpoint != 'static':
+        session['last_endpoint'] = request.endpoint
+
+    return response
     
 
 
@@ -278,6 +290,13 @@ def dicom_viewer():
 @bp.route('/3d_viewer', methods=['POST'])
 def viewer():
 
+    source = request.form.get('source')
+
+    # you should only get here from browser and job submit
+    if source not in ['browser', 'job_submit']:
+        redirect(url_for('file_pipeline.browser'))
+
+
     # update path_3d
     temp_dir = os.getcwd() + "\\vessel_app\\static\\users_3d_objects\\" 
     temp_user_dir = "user_" + str(current_user.id)
@@ -286,12 +305,12 @@ def viewer():
     
     print('getting object_3d from folder:', session['path_3d'])
 
-    source = request.form.get('source')
+    
 
     print(f'Generating model from {source}')
 
 
-    if source == 'job_submit'
+    if source == 'job_submit':
         # get request data
         session_id = request.form.get('session_id')
         k = int(request.form.get('k'))
