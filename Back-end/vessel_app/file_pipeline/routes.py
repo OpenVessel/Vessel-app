@@ -290,19 +290,23 @@ def viewer():
 
     print(f'Generating model from {source}')
 
-    # get request data
-    session_id = request.form.get('session_id')
-    k = int(request.form.get('k'))
-    segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
-    
-    # create a session_id_3d 
-    session_id_3d = str(request_id())
 
     if source == 'job_submit'
+        # get request data
+        session_id = request.form.get('session_id')
+        k = int(request.form.get('k'))
+        segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
+        
+        # create a session_id_3d 
+        session_id_3d = str(request_id())
+
         # Call worker and save result to database
         result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
         result_output = result.wait(timeout=None, interval=0.5)
-    
+        
+    elif source == "browser":
+        session_id_3d = request.form.get('session_id_3d')
+
     # query database for newly added object_3D
     data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
     data_as_pyvista_obj = unpickle_vtk(data.object_3D)
@@ -313,5 +317,5 @@ def viewer():
     path = path.replace("\\", "/")
     data_as_pyvista_obj.save(object_3d_path)
 
-        
+    
     return render_template('3d_viewer.html', path_data=object_3d_path) 
