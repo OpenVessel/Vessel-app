@@ -1,8 +1,8 @@
 // render stuf here
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Home from "./components/Home";
-import VTK from "./components/Vtk_view-port";
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import Home from "./components/Home";
+// import VTK from "./components/Vtk_view-port";
 import {importVTK} from './3d_vtk'
 
 //var line = <Home/> 
