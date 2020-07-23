@@ -32,9 +32,8 @@ def graphing(file):
         plt.imshow(img3d[:, :, img_shape[2]//2])
         ax.set_aspect('auto')
         plt.axis('off')
-        #save D:\Openvessel\vessel-app\Back-end\vessel_app\static\media\testplot.jpg
         strpath = os.getcwd()
-        strFile = strpath + r"\vessel_app\static\media\testplot.jpg"
+        strFile = strpath + r"\vessel_app\static\temp\testplot.jpg"
         if os.path.isfile(strFile):
                 os.remove(strFile)   # Opt.: os.system("rm "+strFile)
         plt.savefig(strFile)
