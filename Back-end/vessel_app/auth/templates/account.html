@@ -1,0 +1,82 @@
+    {% if current_user.is_authenticated %}
+    {% extends "user_layout.html" %}
+    {% else %}
+    {% extends "layout.html" %}
+    {% endif %}
+{% block content %}
+
+<!-- ACCOUNT HEADER -->
+<div class="content-section">
+    <div style='text-align: center;'>
+		<img class="rounded-circle account-img" src="data:image/jpeg;charset=utf-8;base64,{{ image_file }}" alt='Account Image' style="width:250px;height:250px;">
+		<div class="media-body">
+		    <h2 style='color: white;' id='username-text'>{{current_user.username }}</h2>
+	        <p style='color: white;' id='email-text'>{{current_user.email }}</p>
+		</div>
+    </div>
+</div>
+
+<!-- ACCOUNT INFO -->
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4" style='color: white;'>Account info</legend>
+
+            <!-- USERNAME -->
+            <div class="form-group account-form" id='username-field'>
+                {{ form.username.label(class="form-control-label") }}
+
+                {% if form.username.errors %}
+                    {{ form.username(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.username(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <!-- EMAIL -->
+            <div class="form-group account-form" id='email-field'>
+                {{ form.email.label(class="form-control-label") }}
+                {% if form.email.errors %}
+                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <!-- IMAGE UPLOAD -->
+            <div class="form-group account-form" id='image-upload'>
+                {{ form.picture.label() }}
+                {{ form.picture(class="form-control-file") }}
+                {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group account-form">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+    
+<style>
+    .account-form{
+        margin-left: 10%;
+        margin-right: 10%;
+        color: white;
+    }
+</style>
+
+{% endblock content %}
