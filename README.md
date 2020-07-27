@@ -59,7 +59,7 @@ git clone https://github.com/OpenVessel/Vessel-app.git
 #### Make the Virtual Environment (Optional)
 ```
 python3 -m venv vessel_env  
-source vessel_env/Script/activate   
+source vessel_env/bin/activate   
 ```  
 
 #### Install requirements
