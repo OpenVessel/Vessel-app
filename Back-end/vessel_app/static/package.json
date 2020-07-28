@@ -1,25 +1,17 @@
 {
-  "name": "dicom_viewer",
-  "version": "1.0.0",
-  "description": "dicom_viewer",
+  "name": "super-app",
+  "version": "0.0.1",
+  "description": "vessel",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --hot --mode development",
     "build": "webpack --mode production",
     "dev-build": "webpack --progress -d --config webpack.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --progress -d --config webpack.config.js --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/OpenVessel/Vessel-app.git"
-  },
-  "author": "Leslie Wubbel",
+  "author": "muhsin",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/OpenVessel/Vessel-app/issues"
-  },
-  "homepage": "https://github.com/OpenVessel/Vessel-app#readme",
   "dependencies": {
     "-": "0.0.1",
     "@babel/core": "^7.10.3",
