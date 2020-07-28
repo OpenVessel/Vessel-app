@@ -78,11 +78,16 @@ brew install vtk
 
 Our machine learning happens on various workers with the help of celery. Celery is included in requirements.txt, however it needs a Redis server to work off of. 
 
-Install Redis
+Install Redis MACOS
 ```
 brew install redis
+brew services start redis
+brew services stop redis
+brew services restart redis
+```
 ```
 
+```
 Once you have Redis installed, you need to point to the the URL that the Redis broker is located at.
 
 Open config.py and find these lines 
@@ -97,6 +102,14 @@ class Config:
     CELERY_RESULT_BACKEND='redis://localhost:6379/0'
 ```
 Change the *redis://localhost:6379/0* to whatever port your Redis server is running on.
+
+### To start celery
+make new terimnal 
+go into the virtual environment 
+cd into Back_end
+```
+celery -A vessel_app.file_pipeline.celery_tasks.celery worker --loglevel=info -P gevent
+```
 
 ## Running the App
 
