@@ -17,8 +17,7 @@ import vtkColorMaps from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction/Co
 
 
 export function importVTK(path){   
-    console.log(path);
-    console.log("HELLLLLLLLLLLLLLLO");
+
     // Setting up viewport container
     const rootContainer = document.querySelector(
         '#container'
