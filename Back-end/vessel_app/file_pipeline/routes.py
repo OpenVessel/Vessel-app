@@ -17,7 +17,7 @@ from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
@@ -64,7 +64,6 @@ def update_last_endpoint(response):
 
 
 @bp.route("/upload",  methods=['GET', 'POST'])
-@login_required 
 def upload():
     return render_template('upload.html')
 
@@ -151,12 +150,17 @@ def handle_form():
 
 
 @bp.route('/browser')
-@login_required 
 def browser():
-    ###### Query Database and Indexing ######
+
+    ####### Login user (for demo) ###########
+    user = User.query.filter_by(email='sample_user@gmail.com').first()
+    login_user(user)
+
+
+    ###### Query Database ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
     
-    #FileDataset part pydicoms
+
     all_studies = []
     images_list_path = []
 
@@ -211,7 +215,7 @@ def browser():
             study_name, 
             description])
 
-    browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
+    browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
     return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
 

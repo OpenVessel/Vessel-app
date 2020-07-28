@@ -8,7 +8,6 @@ from datetime import datetime as dt
 from celery import Celery
 # flask app extensions
 from flask_dropzone import Dropzone
-from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import os
 
 from flask_sqlalchemy import SQLAlchemy
@@ -41,11 +40,6 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     login_manager.login_view = 'login'
     login_manager.login_message_category = 'info'
-
-    # profile uploads settings (Deprecate)
-    photos = UploadSet('photos', IMAGES)
-    configure_uploads(app, photos)
-    patch = patch_request_class(app) 
 
     
     with app.app_context():

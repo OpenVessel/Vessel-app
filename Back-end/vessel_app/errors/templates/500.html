@@ -1,8 +1,4 @@
-{% if current_user.is_authenticated %}
-{% extends "user_layout.html" %}
-{% else %}
-{% extends "layout.html" %}
-{% endif %}
+{% extends "demo_layout.html" %}
 {% block content %}
 <div style="text-align: center;">
     <h1 >An unexpected error has occurred</h1>
