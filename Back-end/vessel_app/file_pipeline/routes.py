@@ -211,7 +211,7 @@ def browser():
             study_name, 
             description])
 
-    browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
+    browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
     return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
 
@@ -326,15 +326,12 @@ def viewer_3d():
     elif source == "browser":
         session_id_3d = request.form.get('session_id_3d')
 
-    # query database for newly added object_3D
+    # query database for object_3D
     data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
     data_as_pyvista_obj = unpickle_vtk(data.object_3D)
 
     # save to .vti file
     object_3d_path = session['path_3d'] + "\\data_object.vti"
-
-    #object_3d_path = Path(session['path_3d'])
-    #object_3d_path = object_3d_path / "data_object.vti"
 
 
     data_as_pyvista_obj.save(object_3d_path)
