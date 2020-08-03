@@ -17,7 +17,7 @@ from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
@@ -66,6 +66,8 @@ def update_last_endpoint(response):
 @bp.route("/upload",  methods=['GET', 'POST'])
 @login_required 
 def upload():
+    if current_app.config['DEMO']:
+        return redirect(url_for('main.index'))
     return render_template('upload.html')
 
 all_files = []
@@ -149,10 +151,24 @@ def handle_form():
     time.sleep(1.5)
     return redirect(url_for('file_pipeline.browser'))
 
+def conditional_decorator(dec, condition):
+    def decorator(func):
+        if condition:
+            return func
+        return dec(func)
+    return decorator
 
 @bp.route('/browser')
-@login_required 
+@conditional_decorator(login_required, current_app.config['DEMO']) # untoggles login_required in the demo
 def browser():
+
+    if current_app.config['DEMO']:  
+        ####### Login user (for demo) ###########
+        print('logging in user')
+        user = User.query.filter_by(email=current_app.config['DEMO_EMAIL']).first()
+        login_user(user)
+
+    print('generating browser')
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
     
@@ -213,7 +229,9 @@ def browser():
 
     browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
-    return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
+    return render_template('browser.html', 
+    all_studies=all_studies, 
+    browserFields=browserFields)
 
 @bp.route('/job', methods=['POST'])
 def job():

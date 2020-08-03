@@ -49,13 +49,17 @@
             <div class="container-fluid"><a class="navbar-brand" href="{{ url_for('main.index')}}">Vessel</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
                 <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                     <ul class="navbar-nav mr-auto">
-                        {% if current_user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.doc') }}">Getting Started</a></li>
-                            <li class="nav-item"><a  class="nav-link" role="presentation" href="{{ url_for('file_pipeline.upload')}}">Upload</a></li>
+                        {% if config['DEMO'] %}
                             <li class="nav-item"><a class="nav-link"role="presentation" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
-                            <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('auth.account')}}">Account</a></li>
                         {% else %}
-                            <li class="nav-item" role="presentation"><a class="nav-link" role="presentation" href="{{ url_for('main.index')}}">Home</a></li>
+                            {% if current_user.is_authenticated %}
+                                <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.doc') }}">Getting Started</a></li>
+                                <li class="nav-item"><a  class="nav-link" role="presentation" href="{{ url_for('file_pipeline.upload')}}">Upload</a></li>
+                                <li class="nav-item"><a class="nav-link"role="presentation" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
+                                <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('auth.account')}}">Account</a></li>
+                            {% else %}
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="presentation" href="{{ url_for('main.index')}}">Home</a></li>
+                            {% endif %}
                         {% endif %}
                     </ul>
                 </div>
@@ -63,11 +67,13 @@
 
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
-                {% if current_user.is_authenticated %}
-                    <li class="nav-item"><a class="btn btn-light action-button" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                {% else %}
-                    <li class="nav-item"><span class="navbar-text"><a class="login" href="{{url_for('auth.register')}}">Sign Up</a></span></li>
-                    <li class="nav-item"><a class="btn btn-light action-button" role="button" href="{{url_for('auth.login')}}">Log In</a></li>
+                {% if not config['DEMO'] %}
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item"><a class="btn btn-light action-button" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><span class="navbar-text"><a class="login" href="{{url_for('auth.register')}}">Sign Up</a></span></li>
+                        <li class="nav-item"><a class="btn btn-light action-button" role="button" href="{{url_for('auth.login')}}">Log In</a></li>
+                    {% endif %}
                 {% endif %}
                 </ul>
             </div>

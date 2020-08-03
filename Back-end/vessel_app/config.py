@@ -15,6 +15,10 @@ load_dotenv(path.join(basedir,'.flaskenv'))
 
 class Config:
 
+    DEMO = True
+    DEMO_EMAIL = 'admin@example.com'
+
+
     ########### Production config
     #SECRET_KEY = environ.get('SECRET_KEY')
     #FLASK_ENV = environ.get('FLASK_ENV')
