@@ -9,7 +9,7 @@ import os
 from flask import url_for
 from os import environ, path
 from dotenv import load_dotenv
-basedir = os.path.abspath(os.path.dirname(__file__))
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(path.join(basedir,'.flaskenv'))
 
@@ -23,8 +23,8 @@ class Config:
     SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
     
     ###### DATABASE PATHING  ########### 
-    #SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.getcwd() + r"\site.db"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.getcwd() + r"\site.db"
+    #SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
 
 
@@ -38,6 +38,13 @@ class Config:
     RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
     RECAPTCHA_OPTIONS= {'theme':'white'}
+
+    ########## reCAPtcha Production ########### 
+    #RECAPTCHA_USE_SSL= False
+    #RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
+    #RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
+    #RECAPTCHA_OPTIONS= {'theme':'white'}
+
 
 
     ######## UPlOAD FOLDER (Need to be depcreated) #####
