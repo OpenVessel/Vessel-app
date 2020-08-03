@@ -1,48 +1,17 @@
-{% if current_user.is_authenticated %}
-{% extends "user_layout.html" %}
-{% else %}
 {% extends "layout.html" %}
-{% endif %}
 {% block content %}
-<div class="header-blue">
-    <div class="container hero">
-        <div class="row">
-            <div class="col-12 col-lg-6 col-xl-5 offset-xl-1">
-                <h1>The revolution is here.</h1>
-                <p>Healthcare meets Machine Learning. Vessel uses machine learning techniques to distinguish vessels in CT scans.</p><button class="btn btn-light btn-lg action-button" type="button">Learn More</button></div>
-        </div>
+<div style="text-align: center; color: RGB(11, 4, 60);">
+    <div style='padding: 10%; '>
+                    <div class="animate__animated animate__fadeIn animate__slower">
+                        <img src=" {{url_for('static', filename='img/Vessel Logo.png')}} " alt='Vessel Logo' style='margin:2%'>
+                    </div>
+    </div>
+    <div style="padding-bottom: 10%">
+        {% if current_user.is_authenticated %}
+            <h4>Upload files to begin.</h4>
+        {% else %}
+            <h4>Login or register to begin.</h4>
+        {% endif %}
     </div>
 </div>
-<div class="article-clean">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-10 col-xl-8 offset-lg-1 offset-xl-2">
-                <div class="intro">
-                    <h1 class="text-center"><a href="https://nittanyai.psu.edu/blog/vessels-journey-towards-applying-machine-learning-to-vessel-segmentation/"><strong>Penn State Nittany AI Alliance - Vessel’s Journey toward Applying Machine Learning to Vessel Segmentation</strong></a></h1>
-                    <p
-                        class="text-center"><span class="by">by</span> <a href="#">Olivia Sarkisan</a><span class="date">MAR 26th, 2020</span></p><img class="img-fluid" src="static/img/beach.jpg"></div>
-                <div class="text">
-                    <p>Leslie Wubbel, Anikate Ganju, and Brittnie Yi,
-                        the team behind the creation of Vessel, are passionate 
-                        about using computer and data sciences to ignite a change in 
-                        the medical scene of CT scans and radiology.&nbsp;</p>
-                    <p>Through their participation in the Nittany AI Challenge, they are striving to 
-                        create a minimal viable product to showcase the research they’ve endeavored
-                        at Penn State. The team’s primary goal is to use pixel classification to
-                        distinguish vessels in slices of CT scans.&nbsp;</p>
-                    <h2></h2>
-                    <p></p>
-                    <figure>
-                        <figcaption></figcaption>
-                    </figure>
-                    <p></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ARROW TO TOP OF PAGE -->
-<a class="cd-top" href="#"></a>
-
 {% endblock content %}

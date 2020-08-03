@@ -1,8 +1,4 @@
-{% if current_user.is_authenticated %}
-{% extends "user_layout.html" %}
-{% else %}
 {% extends "layout.html" %}
-{% endif %}
 {% block content %}
     <style>
             /* Style the button that is used to open and close the collapsible content */
@@ -50,40 +46,46 @@
             {% for study in all_studies %}
                 <div class='card' style='margin: 3%; background: whitesmoke;'>
                     <div class='container'>
-                        <div style='text-align: center;'>
-                            <h2> Study Name {{study[5]}} </h2>
-                            <p> Description {{study[6]}}</p>
+                        <div id='study-titles' style='text-align: center;'>
+                            <h2><b>Study Name:</b> {{study[5]}} </h2>
+                            <p><b>Description:</b> {{study[6]}}</p>
                         </div>
-                        <table> 
+
+                        <!-- THUMBNAIL -->
+                        <table id='study-tn' style='border: none; margin-right: 2%;'> 
                             <tr>
                                 <td> 
-                                    <!-- <img src="{{ url_for('static', filename=study[1]) }}" alt="text">     -->
                                     <img src="data:image/jpeg;charset=utf-8;base64,{{ study[1]}}" alt="dicom thumbnail">  
                                 </td>
                             </tr>
                         </table>
-                        <table style="border-spacing: 50px 50px;">
+
+                        <!-- STUDY INFO TABLE -->
+                        <table id='study-info' style="border-spacing: 50px 50px; border: none;">
                             <tr style="text-align: center;">
-                            <strong>
                                 {% for field in browserFields %}
-                                <th> {{ field }}   </th>    
-                            {% endfor %}
-                                <th> File Count </th>
-                            </strong>
-                        </tr>
-                        <tr style="text-align: center;">
-                            {% for field in browserFields %}   
-                                {% if field in study[0] %}
-                                    <td>  {{ study[0][field].iloc[0].value.decode("utf-8") }} </td>
-                                {% else %}
-                                    <td> NO DATA </td>
-                                {% endif %}
-                            {% endfor %}
-                            <td> {{ study[2] }} </td>
-                        </tr>
+                                    <th style="padding: 2px;"><strong>{{ field }}</strong></th> 
+                                {% endfor %}
+                                    <th style="padding: 2px;"><strong>File Count</strong></th>
+                            </tr>
+                            <tr style="text-align: center;">
+                                {% for field in browserFields %}   
+                                    {% if field in study[0] %}
+                                        <td>  {{ study[0][field].iloc[0].value.decode("utf-8") }} </td>
+                                    {% else %}
+                                        <td> NO DATA </td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td> {{ study[2] }} </td>
+                            </tr>
                         </table> 
-                        <div style="text-align: center;">
-                            <table style="border-spacing: 20px 20px;">
+
+                        <br/>
+                        <br/>
+                        
+                        <!-- STUDY BUTTONS -->
+                        <div id='study-btns' style="text-align: center; margin: 2%">
+                            <table style="border-spacing: 20px 20px; border: none;">
                                 <tr>
                                     <td> <!-- Submit Job button -->
                                         <form action="{{url_for('file_pipeline.job')}}" method="post">
