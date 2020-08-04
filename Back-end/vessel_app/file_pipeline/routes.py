@@ -298,9 +298,9 @@ def viewer_3d():
 
 
     # update path_3d
-    temp_dir = os.getcwd() + "\\vessel_app\\static\\users_3d_objects\\" 
+    temp_dir = os.path.join(os.getcwd(), "vessel_app", "static", "users_3d_objects")
     temp_user_dir = "user_" + str(current_user.id)
-    session['path_3d'] = temp_dir + temp_user_dir
+    session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
     os.mkdir(path = session['path_3d'])
     
     print('getting object_3d from folder:', session['path_3d'])
