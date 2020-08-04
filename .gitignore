@@ -10,3 +10,8 @@ __pycache__/
 *$py.class
 vessel_env/*
 
+Back-end/__pycache__/wsgi.cpython-37.pyc
+Back-end/__pycache__/wsgi.cpython-37.pyc
+Back-end/vessel_app/auth/__pycache__/__init__.cpython-37.pyc
+Back-end/vessel_app/auth/__pycache__/forms.cpython-37.pyc
+Back-end/vessel_app/auth/__pycache__/routes.cpython-37.pyc

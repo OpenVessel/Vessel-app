@@ -7,13 +7,26 @@
 
 import os
 from flask import url_for
+from os import environ, path
+from dotenv import load_dotenv
 basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(path.join(basedir,'.flaskenv'))
 
 class Config:
 
+    DEMO = True
+    DEMO_EMAIL = 'admin@example.com'
+
+
+    ########### Production config
+    #SECRET_KEY = environ.get('SECRET_KEY')
+    #FLASK_ENV = environ.get('FLASK_ENV')
+    #FLASK_APP = 'wsgi.py'
+
     SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
-    
-    ###### DATABASE PATHING  ########### 
+
+    ###### DATABASE PATHING  ###########
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
 
@@ -23,7 +36,7 @@ class Config:
     CELERY_RESULT_BACKEND='redis://localhost:6379/0'
 
 
-    ########## reCAPtcha ########### 
+    ########## reCAPtcha ###########
     RECAPTCHA_USE_SSL= False
     RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'

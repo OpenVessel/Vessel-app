@@ -16,12 +16,13 @@ import vtkColorTransferFunction from 'vtk.js/Sources/Rendering/Core/ColorTransfe
 import vtkColorMaps from 'vtk.js/Sources/Rendering/Core/ColorTransferFunction/ColorMaps';
 
 
-export function importVTK(path){   
+export function importVTK(path){
 
+    //testing github
     // Setting up viewport container
     const rootContainer = document.querySelector(
         '#container'
-    ); 
+    );
 
     const genericRenderer = vtkGenericRenderWindow.newInstance({
         background: [0, 0, 0],
@@ -31,10 +32,10 @@ export function importVTK(path){
     genericRenderer.resize();
     const renderWindow = genericRenderer.getRenderWindow();
     const renderer = genericRenderer.getRenderer();
-    
+
 
     renderWindow.getInteractor().setDesiredUpdateRate(15.0);
-    
+
     const body = document.querySelector('#container');
 
     // Create Widget container
@@ -43,10 +44,10 @@ export function importVTK(path){
     widgetContainer.style.top = 'calc(10px + 1em)';
     widgetContainer.style.left = '5px';
     widgetContainer.style.background = 'rgba(255, 255, 255, 0.3)';
-    body.appendChild(widgetContainer);    
-    
+    body.appendChild(widgetContainer);
+
     // ------------------------ FUNCTIONALITY -------------------------------
-    
+
     const globalDataRange = [0, 255];
 
     // -- setting up volume actor & mapper --
@@ -54,16 +55,16 @@ export function importVTK(path){
     const mapper = vtkVolumeMapper.newInstance({ sampleDistance: 1.1 });
 
     // -- setting up mutator --
-    
+
     const lookupTable = vtkColorTransferFunction.newInstance();
-    
+
     // set up color transfer function
     lookupTable.applyColorMap(vtkColorMaps.getPresetByName('erdc_rainbow_bright'));
     // changable mapping range that will be updated by widget i think
     lookupTable.setMappingRange(...globalDataRange);
     lookupTable.updateRange();
 
-    
+
     const piecewiseFunction = vtkPiecewiseFunction.newInstance();
 
     // -- server request and rendering --
@@ -71,21 +72,21 @@ export function importVTK(path){
     mapper.setInputConnection(reader.getOutputPort());
 
 
-    
+
     // ---------- Actual Loading and Rendering -------
     reader.setUrl(path)
         .then(() => reader.loadData())
-        .then(() =>{    
+        .then(() =>{
             // processsing image data to be displayed nicely
             const imageData = reader.getOutputData(0);
-            
+
             console.log(imageData);
             const dataArray = imageData.getPointData().getScalars() || imageData.getPointData().getArrays()[0];            ;
             const dataRange = dataArray.getRange();
-            
+
             globalDataRange[0] = dataRange[0];
             globalDataRange[1] = dataRange[1];
-            
+
             actor.setMapper(mapper);
             mapper.setInputData(imageData);
             renderer.addVolume(actor);
@@ -101,7 +102,7 @@ export function importVTK(path){
             mapper.setSampleDistance(sampleDistance);
 
             // ------  CONFIGUREING ACTOR ---------------
-   
+
             actor.getProperty().setRGBTransferFunction(0, lookupTable);
             actor.getProperty().setScalarOpacity(0, piecewiseFunction);
             // actor.getProperty().setInterpolationTypeToFastLinear();
@@ -127,7 +128,7 @@ export function importVTK(path){
             actor.getProperty().setDiffuse(0.7);
             actor.getProperty().setSpecular(0.3);
             actor.getProperty().setSpecularPower(8.0);
-            
+
             // ------  CONFIGUREING WIDGET ---------------
 
             const widget = vtkVolumeController.newInstance({
@@ -139,7 +140,7 @@ export function importVTK(path){
             // setUpContent above sets the size to the container.
             // We need to set the size after that.
             // controllerWidget.setExpanded(false);
-            
+
             // Basic size maybe change?
             widget.setSize(400, 150);
 
@@ -151,8 +152,3 @@ export function importVTK(path){
             renderWindow.render();
     });
 }
-
-
-
-
-
