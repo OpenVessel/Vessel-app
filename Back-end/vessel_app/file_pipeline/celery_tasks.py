@@ -6,7 +6,7 @@ from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 import numpy as np
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk
+from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, make_lungmask_v2
 from .utils import request_id
 
 from vessel_app import create_celery_app
@@ -55,7 +55,7 @@ def data_pipeline(session_id, session_id_3d, n_clusters=2):
 
     ## STEP FOUR K-MEANS MASKING
     for img in imgs_after_resamp: #loops through images and applies mask
-        masked_lung.append(make_lungmask(img, n_clusters=n_clusters))
+        masked_lung.append(make_lungmask_v2(img, n_clusters=n_clusters))
     
     mask = np.array(masked_lung)
     ## pyvista

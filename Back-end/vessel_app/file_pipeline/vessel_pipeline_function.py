@@ -57,27 +57,32 @@ def load_scan(slices):
         
     return slices
 
-def get_pixels_hu(scans):
-    image = np.stack([s.pixel_array for s in scans])
+def get_pixels_hu(slices):
+    image = np.stack([s.pixel_array for s in slices])
     # Convert to int16 (from sometimes int16), 
     # should be possible as values should always be low enough (<32k)
     image = image.astype(np.int16)
 
-    # Set outside-of-scan pixels to 1
+    # Set outside-of-scan pixels to 0
     # The intercept is usually -1024, so air is approximately 0
-    image[image == -2000] = 0
+    # image[image == -2000] = 0
+    outside_image = image.min()
+    image[image == outside_image] = 0
     
     # Convert to Hounsfield units (HU)
-    intercept = scans[0].RescaleIntercept
-    slope = scans[0].RescaleSlope
-    
-    if slope != 1:
-        image = slope * image.astype(np.float64)
-        image = image.astype(np.int16)
+    for slice_number in range(len(slices)):
         
-    image += np.int16(intercept)
+        intercept = slices[slice_number].RescaleIntercept
+        slope = slices[slice_number].RescaleSlope
+        
+        if slope != 1:
+            image[slice_number] = slope * image[slice_number].astype(np.float64)
+            image[slice_number] = image[slice_number].astype(np.int16)
+            
+        image[slice_number] += np.int16(intercept)
     
     return np.array(image, dtype=np.int16)
+
 
 
 ## RESAMPLING ALL data
@@ -261,6 +266,91 @@ def make_lungmask(img, n_clusters=2, display=False):
         ax[2, 1].axis('off')
         
         plt.show()
+    return mask*img
+
+
+def make_lungmask_v2(img, n_clusters,  display = False):
+    row_size= img.shape[0]
+    col_size = img.shape[1]
+    mean = np.mean(img)
+    std = np.std(img) 
+    img = (img-mean)/std # Subtracts mean and divide standard deviation from each element ## Standardises the whole data
+
+    # Find the average pixel value near the lungs
+    # to renormalize washed out images
+    # middle = img
+    middle = img[int(col_size/5):int(col_size/5*4),int(row_size/5):int(row_size/5*4)]
+    # print(middle.shape)
+    
+    mean = np.mean(middle)  
+    max = np.max(img)
+    min = np.min(img)
+    
+    # To improve threshold finding, I'm moving the 
+    # underflow and overflow on the pixel spectrum
+    img[img==max]=mean # Goes through the list and if anything equals max, it changes its value to mean.
+    img[img==min]=mean # Goes through the list and if anything equals min, it changes its value to mean.
+
+    # Using Kmeans to separate foreground (soft tissue / bone) and background (lung/air)
+    #sensitive to outliers and noise Kmeans could be really bad 
+    # https://www.youtube.com/watch?v=_aWzGGNrcic
+    kmeans = KMeans(n_clusters=n_clusters).fit(np.reshape(middle,[np.prod(middle.shape),1]))
+    centers = sorted(kmeans.cluster_centers_.flatten())
+    
+    threshold = np.mean(centers)
+    # thresh_img = np.where(img<threshold,1.0,0.0)  # threshold the image
+    thresh_img = np.where(img<threshold, 3.0,0.0)
+
+    # First erode away the finer elements, then dilate to include some of the pixels surrounding the lung.  
+    # We don't want to accidentally clip the lung.
+
+    eroded = morphology.erosion(thresh_img,np.ones([3,3]))
+    dilation = morphology.dilation(eroded,np.ones([8,8]))
+
+    ## START here
+    labels = measure.label(dilation) 
+    # Different labels are displayed in different colors
+
+    label_vals = np.unique(labels)
+    ## ok region props what is this 
+    regions = measure.regionprops(labels)
+    good_labels = []
+    
+    # what is this SECTION OF CODE?? 
+    # why is it ommitting half the lung 
+    # This choses the output.
+    for prop in regions:
+        B = prop.bbox
+
+        if B[2]-B[0]<row_size/10*9 and B[3]-B[1]<col_size/10*9 and B[0]>row_size/5 and B[2]<col_size/3*4:
+            good_labels.append(prop.label)
+
+    mask = np.ndarray([row_size,col_size],dtype=np.int8)
+    mask[:] = 0
+
+    #  After just the lungs are left, we do another large dilation
+    #  in order to fill in and out the lung mask 
+    for N in good_labels:
+        mask = mask + np.where(labels==N,1,0)
+        # print("N:", N)
+    mask = morphology.dilation(mask,np.ones([10,10])) # one last dilation
+
+    if display:
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey = 'row', figsize=[18, 8])
+        ax1.set_title("Original Slice")
+        ax1.imshow(img, cmap='gray')
+        ax1.axis('off')
+
+        ax2.set_title("Color Labels")
+        ax2.imshow(labels)
+        ax2.axis('off')
+        
+        ax3.set_title("First Mask on Original")
+        ax3.imshow(mask*img, cmap='gray')
+        ax3.axis('off')
+
+        plt.show()
+
     return mask*img
 
 

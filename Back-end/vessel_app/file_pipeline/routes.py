@@ -308,7 +308,7 @@ def viewer_3d():
     temp_user_dir = "user_" + str(current_user.id)
     session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
     
-    if not os.isdir(session['path_3d']):
+    if not os.path.isdir(session['path_3d']):
         os.mkdir(path = session['path_3d'])
         
     print('getting object_3d from folder:', session['path_3d'])
