@@ -15,8 +15,8 @@ load_dotenv(path.join(basedir,'.flaskenv'))
 
 class Config:
 
-    DEMO = True
-    DEMO_EMAIL = 'admin@example.com'
+    DEMO = False
+    DEMO_EMAIL = 'sample@example.com'
 
 
     ########### Production config
