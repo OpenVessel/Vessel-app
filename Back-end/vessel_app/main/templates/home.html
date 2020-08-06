@@ -4,13 +4,20 @@
     <div style='padding: 10%; '>
                     <div class="animate__animated animate__fadeIn animate__slower">
                         <img src=" {{url_for('static', filename='img/Vessel Logo.png')}} " alt='Vessel Logo' style='margin:2%'>
+                        {% if config['DEMO'] %}
+                            <h3>Product Demo</h3>
+                        {% endif %}
                     </div>
     </div>
     <div style="padding-bottom: 10%">
-        {% if current_user.is_authenticated %}
-            <h4>Upload files to begin.</h4>
+        {% if config['DEMO'] %}
+        <h4>Go to the Browser page to begin.</h4>
         {% else %}
-            <h4>Login or register to begin.</h4>
+            {% if current_user.is_authenticated %}
+                <h4>Upload files to begin.</h4>
+            {% else %}
+                <h4>Login or register to begin.</h4>
+            {% endif %}
         {% endif %}
     </div>
 </div>
