@@ -152,8 +152,3 @@ export function importVTK(path){
             renderWindow.render();
     });
 }
-
-
-
-
-
