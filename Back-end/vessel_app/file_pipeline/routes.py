@@ -157,22 +157,9 @@ def handle_form():
     time.sleep(1.5)
     return redirect(url_for('file_pipeline.browser'))
 
-def conditional_decorator(dec, condition):
-    def decorator(func):
-        if condition:
-            return func
-        return dec(func)
-    return decorator
-
 @bp.route('/browser')
-@conditional_decorator(login_required, current_app.config['DEMO']) # untoggles login_required in the demo
+@login_required
 def browser():
-
-    if current_app.config['DEMO']:  
-        ####### Login user (for demo) ###########
-        print('logging in user')
-        user = User.query.filter_by(email=current_app.config['DEMO_EMAIL']).first()
-        login_user(user)
 
     print('generating browser')
     ###### Query Database and Indexing ######
