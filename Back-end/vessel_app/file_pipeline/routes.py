@@ -17,7 +17,7 @@ from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
@@ -31,7 +31,9 @@ from . import bp
 
 @bp.before_app_request
 def before_fun(): 
-    
+    internal_endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
+    #print(internal_endpoints)
+    print("Output before -------- ",session['last_endpoint'])
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
 
         # create session_id
@@ -39,11 +41,12 @@ def before_fun():
         print('SESSION_ID before request:', session['id'])
 
     
-    if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.viewer_3d' and request.endpoint != 'static':
+    if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.viewer_3d' and request.endpoint != 'static' and request.endpoint in internal_endpoints:
         print('just left 3d viewer')
         # BUG: WONT DELETE FILES IF THE USER LEAVES THE SITE FROM 3D VIEWER
         if os.path.isdir(session['path_3d']):
             # remove user folder
+            
             print('removing files')
             shutil.rmtree(session['path_3d'])
 
@@ -57,7 +60,10 @@ def update_last_endpoint(response):
         session['last_endpoint'] = 'nowhere'
 
     if request.endpoint != 'static':
-        session['last_endpoint'] = request.endpoint
+        if request.endpoint != session['last_endpoint']:
+            session['last_endpoint'] = 'same'
+        else:
+            session['last_endpoint'] = request.endpoint
 
     return response
     
@@ -66,6 +72,8 @@ def update_last_endpoint(response):
 @bp.route("/upload",  methods=['GET', 'POST'])
 @login_required 
 def upload():
+    if current_app.config['DEMO']:
+        return redirect(url_for('main.index'))
     return render_template('upload.html')
 
 all_files = []
@@ -149,10 +157,11 @@ def handle_form():
     time.sleep(1.5)
     return redirect(url_for('file_pipeline.browser'))
 
-
 @bp.route('/browser')
-@login_required 
+@login_required
 def browser():
+
+    print('generating browser')
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
     
@@ -211,9 +220,11 @@ def browser():
             study_name, 
             description])
 
-    browserFields = ["Patient's Sex", "Modality", "SOP Class UID", "X-Ray Tube Current", "FAKE FIELD"]
+    browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
-    return render_template('browser.html', all_studies=all_studies, browserFields=browserFields)
+    return render_template('browser.html', 
+    all_studies=all_studies, 
+    browserFields=browserFields)
 
 @bp.route('/job', methods=['POST'])
 def job():
@@ -298,14 +309,14 @@ def viewer_3d():
 
 
     # update path_3d
-    temp_dir = os.getcwd() + "\\vessel_app\\static\\users_3d_objects\\" 
+    temp_dir = os.path.join(os.getcwd(), "vessel_app", "static", "users_3d_objects" )
     temp_user_dir = "user_" + str(current_user.id)
-    session['path_3d'] = temp_dir + temp_user_dir
-    os.mkdir(path = session['path_3d'])
+    session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
     
+    if not os.path.isdir(session['path_3d']):
+        os.mkdir(path = session['path_3d'])
+        
     print('getting object_3d from folder:', session['path_3d'])
-
-    
 
     print(f'Generating model from {source}')
 
@@ -326,12 +337,14 @@ def viewer_3d():
     elif source == "browser":
         session_id_3d = request.form.get('session_id_3d')
 
-    # query database for newly added object_3D
+    # query database for object_3D
     data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
     data_as_pyvista_obj = unpickle_vtk(data.object_3D)
 
     # save to .vti file
     object_3d_path = session['path_3d'] + "\\data_object.vti"
+
+
     data_as_pyvista_obj.save(object_3d_path)
     object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
     object_3d_path = object_3d_path.replace("\\", "/")

@@ -1,24 +1,15 @@
-{% if current_user.is_authenticated %}
-{% extends "user_layout.html" %}
-{% else %}
 {% extends "layout.html" %}
-{% endif %}
 
 {% block content %}
 
 
-<div style='text-align: center;'>
-    <h6>Here is the data that will generate the 3d model!</h6>
-    <h5><i>NOTE: This page will be overhauled with the OHIF Viewer by Muhsin</i></h5>
-    
-</div>
-<div id="container" style="position:relative;"></div>
 
+<div id="container" style="position:relative;"></div>
 <div>
-<input type="file" accept=".vti" style="display: none;">
-<input id="vti-path-holder" type="hidden" value="{{path_data}}">
+    <input type="file" accept=".vti" style="display: none;">
+    <input id="vti-path-holder" type="hidden" value="{{path_data}}">
 </div>
-<script type="text/javascript" src="{{url_for('static', filename='js/bundle.js')}}"> 
-</script>  
+
+<script type="text/javascript" src="{{url_for('static', filename='js/bundle.js')}}"> </script>  
 
 {% endblock content %}

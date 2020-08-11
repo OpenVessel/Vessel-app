@@ -23,7 +23,7 @@ bcrypt = Bcrypt()
 dropzone = Dropzone()
 login_manager = LoginManager()
 # logs = LogSetup()
-#celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
+celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 
 def create_app(config_class=Config):
@@ -35,7 +35,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     dropzone.init_app(app)
-    #celery.conf.update(app.config)
+    celery.conf.update(app.config)
     # logs.init_app(app)
 
     login_manager.init_app(app)
