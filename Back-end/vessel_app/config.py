@@ -9,14 +9,14 @@ import os
 from flask import url_for
 from os import environ, path
 from dotenv import load_dotenv
-basedir = os.path.abspath(os.path.dirname(__file__))
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(path.join(basedir,'.flaskenv'))
 
 class Config:
 
-    DEMO = True
-    DEMO_EMAIL = 'admin@example.com'
+    DEMO = False
+    DEMO_EMAIL = 'sample@example.com'
 
 
     ########### Production config
@@ -41,6 +41,13 @@ class Config:
     RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
     RECAPTCHA_OPTIONS= {'theme':'white'}
+
+    ########## reCAPtcha Production ###########
+    #RECAPTCHA_USE_SSL= False
+    #RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
+    #RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
+    #RECAPTCHA_OPTIONS= {'theme':'white'}
+
 
 
     ######## UPlOAD FOLDER (Need to be depcreated) #####
