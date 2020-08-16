@@ -342,12 +342,11 @@ def viewer_3d():
     data_as_pyvista_obj = unpickle_vtk(data.object_3D)
 
     # save to .vti file
-    object_3d_path = session['path_3d'] + "\\data_object.vti"
+    object_3d_path = os.path.join(session['path_3d'], "data_object.vti")
 
 
     data_as_pyvista_obj.save(object_3d_path)
     object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
-    object_3d_path = object_3d_path.replace("\\", "/")
 
 
 
