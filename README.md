@@ -1,12 +1,5 @@
 # OpenVessel
 
-[OpenVessel](http://openvessel.org/) is an open-source Flask app that segments out portions of DICOM files using machine learning hosted on celery workers, and displays the result as a 3D objects using VTK. 
-
-## Installation
-
-### On Windows 
-# OpenVessel
-
   
 
 [OpenVessel](http://openvessel.org/) is an open-source Flask app that segments out portions of DICOM files using machine learning hosted on celery workers, and displays the result as a 3D objects using VTK.
@@ -51,7 +44,30 @@ pip3 install -r requirements.txt
 
 ```
 
-  
+### Set up JavaScript/EMCAScript
+
+If you do not have **npm** and **nodeJS**, follow this guide:
+[Directions to install npm](https://www.npmjs.com/get-npm)
+
+Then, type this in the terminal starting at the Vessel-app
+
+```
+
+cd Back-end\vessel_app\static
+
+npm install
+
+npm run build 
+
+```
+
+To run JavaScript for debugging, run
+
+```
+
+npm run watch
+
+```
   
 
 ### Installing VTK
@@ -121,7 +137,30 @@ pip3 install -r requirements.txt
 
 ```
 
-  
+### Set up JavaScript/EMCAScript
+
+If you do not have **npm** and **nodeJS**, follow this guide:
+[Directions to install npm](https://www.npmjs.com/get-npm)
+
+Then, type this in the terminal starting at the Vessel-app
+
+```
+
+cd Back-end/vessel_app/static
+
+npm install
+
+npm run build 
+
+```
+
+To run JavaScript for debugging, run
+
+```
+
+npm run watch
+
+```
 
 ### Installing VTK
 
