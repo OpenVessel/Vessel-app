@@ -1,0 +1,10 @@
+.g-recaptcha {
+    transform:scale(1);
+    transform-origin:0 0;
+    }
+input, textarea, select, button {
+    width : 150px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}

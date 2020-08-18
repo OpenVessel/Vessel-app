@@ -1,6 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
 
+    <style>
+        .g-recaptcha {
+    transform:scale(0.8);
+    transform-origin:0 0;
+}
+    </style>
+
     <div class="login-dark"> <!--- css -->
         <form action="" method="POST">
             {{form.hidden_tag() }}
@@ -46,7 +53,9 @@
                         {{ form.remember.label(class="form-check-label") }}
                     </div>
                     <!--- <input class="form-control" type="password" name="password" placeholder="Password"></div> --->
-                    {{ form.recaptcha }}
+                    <div class='form-group'>
+                        {{ form.recaptcha }}
+                    </div>
                     <div class="form-group">
                         <!--<button class="btn btn-primary btn-block" type="submit">Log In</button></div>--->  
                         <div class="form-group">
