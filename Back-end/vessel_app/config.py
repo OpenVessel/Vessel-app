@@ -30,9 +30,14 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.getcwd() + r"\site.db"
     #SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
+    SQLALCHEMY_BINDS = {
+    'one': "sqlite:///" + os.getcwd() + r"\one.db",
+    '2nd_db': "sqlite:///" + os.getcwd() + r"\two.db"
+    #'2nd_db': 'postgresql://postgres:Sd40dash2@localhost/Vessel-test'
+    }
+    ## worker database is 2nd_db
 
-
-    ### Celery Workers ##########3
+    ### Celery Brokers ##########
     CELERY_BROKER_URL='redis://localhost:6379/0'
     CELERY_RESULT_BACKEND='redis://localhost:6379/0'
 

@@ -38,6 +38,17 @@ class Dicom(db.Model):
     def __repr__(self):
         return f"Dicom('{self.date_uploaded}')"
 
+class Dicom2(db.Model):
+    __bind_key__ = '2nd_db'
+    ## data unqine id 
+    id = db.Column(db.Integer, primary_key=True)  
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    dicom_stack = db.Column(db.LargeBinary, nullable=False)
+    session_id = db.Column(db.String(200), nullable=False)
+    
+    def __repr__(self):
+        return f"Dicom('{self.date_uploaded}')"
+
 class DicomFormData(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)  

@@ -22,7 +22,7 @@ from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from .celery_tasks import data_pipeline
+from .celery_tasks import data_pipeline, query_db_insert, load_data, lung_segmentation, pyvista_call, query_db_insert, resample
 from .utils import request_id, dicom_to_thumbnail
 from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2 
 from vessel_app import db, bcrypt, dropzone
@@ -333,6 +333,19 @@ def viewer_3d():
         # Call worker and save result to database
         result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
         result_output = result.wait(timeout=None, interval=0.5)
+
+        #test_data = load_data.delay(session_id)            
+        #print(test_data)
+
+        ## WORKER CALL CHain workflow
+        # celery.chain(query_db_insert() , 
+        # load_data(),
+        # resample(),
+        # lung_segmentation(),
+        # pyvista_call(), 
+        
+        # ).apply()    
+
         
     elif source == "browser":
         session_id_3d = request.form.get('session_id_3d')
@@ -343,10 +356,12 @@ def viewer_3d():
 
     # save to .vti file
     object_3d_path = session['path_3d'] + "\\data_object.vti"
-
+    object_3d_path = object_3d_path.replace("\\", "/")
 
     data_as_pyvista_obj.save(object_3d_path)
+    print(object_3d_path)
     object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
+    print(object_3d_path)
     object_3d_path = object_3d_path.replace("\\", "/")
     
 
