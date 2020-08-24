@@ -1,4 +1,4 @@
-/* We will grab a .VTK source and use filters to edit it 
+/* We will grab a .VTK source and use filters to edit it
 Then we will map it which will turn it into a renderable object
 An actor object will 'emulate' it and it can be displayed by Vtk Render window
 */

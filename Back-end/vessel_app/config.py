@@ -25,10 +25,9 @@ class Config:
     #FLASK_APP = 'wsgi.py'
 
     SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
-    
-    ###### DATABASE PATHING  ########### 
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.getcwd() + r"\site.db"
-    #SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
+
+    ###### DATABASE PATHING  ###########
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
     SQLALCHEMY_BINDS = {
     'one': "sqlite:///" + os.getcwd() + r"\one.db",
@@ -42,13 +41,13 @@ class Config:
     CELERY_RESULT_BACKEND='redis://localhost:6379/0'
 
 
-    ########## reCAPtcha ########### 
+    ########## reCAPtcha ###########
     RECAPTCHA_USE_SSL= False
     RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
     RECAPTCHA_OPTIONS= {'theme':'white'}
 
-    ########## reCAPtcha Production ########### 
+    ########## reCAPtcha Production ###########
     #RECAPTCHA_USE_SSL= False
     #RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     #RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'

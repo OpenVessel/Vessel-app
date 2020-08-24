@@ -1,0 +1,62 @@
+/* BACKGROUND COLORS */
+.colors-primary {
+    background-color: #03003E;
+}
+
+.colors-primary-variant {
+    background-color: #06007A;
+}
+
+.colors-secondary {
+    background-color: #1CC0C2;
+}
+
+.colors-secondary-variant {
+    background-color: #179EA1;
+}
+
+.colors-background {
+    background-color: #FFFFFF;
+}
+
+.colors-surface {
+    background-color: #D6D6D6;
+}
+
+.colors-error {
+    background-color: #660000;
+}
+
+/* FONT COLORS */
+.colors-on-primary {
+    color: #FFFFFF;
+}
+
+.colors-on-secondary {
+    color: #000000;
+}
+
+.colors-on-background {
+    color: #000000;
+}
+
+.colors-on-surface {
+    color: #000000;
+}
+
+.colors-on-error{
+    color: #FFFFFF;
+}
+
+/* FORM TEXT */
+.form-text-h1 {
+    font-size: 30px;
+}
+
+.form-text-h2 {
+    font-size: 20px;
+}
+
+.form-text-h3 {
+    font-size: 15px;
+}

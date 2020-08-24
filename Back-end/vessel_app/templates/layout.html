@@ -5,10 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>OpenVessel</title>
+
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
@@ -53,12 +51,13 @@
                             <li class="nav-item"><a class="nav-link"role="presentation" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
                         {% else %}
                             {% if current_user.is_authenticated %}
-                                <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.doc') }}">Getting Started</a></li>
+                                <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.getting_started') }}">Getting Started</a></li>
                                 <li class="nav-item"><a  class="nav-link" role="presentation" href="{{ url_for('file_pipeline.upload')}}">Upload</a></li>
                                 <li class="nav-item"><a class="nav-link"role="presentation" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
                                 <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('auth.account')}}">Account</a></li>
                             {% else %}
                                 <li class="nav-item" role="presentation"><a class="nav-link" role="presentation" href="{{ url_for('main.index')}}">Home</a></li>
+                                <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.getting_started') }}">Getting Started</a></li>
                             {% endif %}
                         {% endif %}
                     </ul>

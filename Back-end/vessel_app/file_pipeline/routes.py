@@ -3,10 +3,10 @@ import pydicom
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import tempfile 
+import tempfile
 import base64
 import shutil
-import pickle 
+import pickle
 import time
 import logging
 from datetime import datetime as dt
@@ -24,13 +24,13 @@ from base64 import b64encode
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from .celery_tasks import data_pipeline, query_db_insert, load_data, lung_segmentation, pyvista_call, query_db_insert, resample
 from .utils import request_id, dicom_to_thumbnail
-from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2 
+from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2
 from vessel_app import db, bcrypt, dropzone
 
 from . import bp
 
 @bp.before_app_request
-def before_fun(): 
+def before_fun():
     internal_endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
     #print(internal_endpoints)
     print("Output before -------- ",session['last_endpoint'])
@@ -40,13 +40,13 @@ def before_fun():
         session['id'] = request_id()
         print('SESSION_ID before request:', session['id'])
 
-    
+
     if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.viewer_3d' and request.endpoint != 'static' and request.endpoint in internal_endpoints:
         print('just left 3d viewer')
         # BUG: WONT DELETE FILES IF THE USER LEAVES THE SITE FROM 3D VIEWER
         if os.path.isdir(session['path_3d']):
             # remove user folder
-            
+
             print('removing files')
             shutil.rmtree(session['path_3d'])
 
@@ -66,11 +66,11 @@ def update_last_endpoint(response):
             session['last_endpoint'] = request.endpoint
 
     return response
-    
+
 
 
 @bp.route("/upload",  methods=['GET', 'POST'])
-@login_required 
+@login_required
 def upload():
     if current_app.config['DEMO']:
         return redirect(url_for('main.index'))
@@ -109,7 +109,7 @@ def dropzone_handler():
 
         dicom_list = []
         for byte_file in all_files: # list of all dicom files in binary
-            
+
             # convert to dicom object
             raw = DicomBytesIO(byte_file)
             dicom_object = dcmread(raw)
@@ -123,20 +123,20 @@ def dropzone_handler():
         tn_bytes = dicom_to_thumbnail(median_dicom)
 
         binary_blob = pickle.dumps(all_files)
-        
+
         print("Session dropzone handler", session['id'])
         ## database upload
-        batch = Dicom( 
+        batch = Dicom(
             user_id=current_user.id,
-            dicom_stack = binary_blob, 
+            dicom_stack = binary_blob,
             thumbnail = tn_bytes,
             file_count= file_count_global,
             session_id=str(session['id'])
             )
 
-        db.session.add(batch) 
+        db.session.add(batch)
         db.session.commit()
-    
+
         # set globals back to default values
         all_files = []
         file_count_global = 0
@@ -148,11 +148,11 @@ def handle_form():
     study_name = request.form.get('study_name', "No Study Name")
     description = request.form.get('description', "No description")
     print(" SESSSION ID form_handler", session['id'])
-    formData = DicomFormData( 
+    formData = DicomFormData(
         study_name=study_name,
         description=description,
         session_id=str(session['id']))
-    db.session.add(formData) 
+    db.session.add(formData)
     db.session.commit()
     time.sleep(1.5)
     return redirect(url_for('file_pipeline.browser'))
@@ -164,7 +164,7 @@ def browser():
     print('generating browser')
     ###### Query Database and Indexing ######
     dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
-    
+
     #FileDataset part pydicoms
     all_studies = []
     images_list_path = []
@@ -190,7 +190,7 @@ def browser():
             session_id_3ds = []
 
         all_rows_in_study = [] # [{}, {}, {}]
-        cols = [] # list of list of each column for each 
+        cols = [] # list of list of each column for each
 
         for byte_file in data: # list of all dicom files in binary
             raw = DicomBytesIO(byte_file)
@@ -204,9 +204,9 @@ def browser():
             dicom_dict = dict(dicom_dict)
             # dicom_dict = dict([(dd(k),v) for k,v in dcmread(raw).items()])
             all_rows_in_study.append(dicom_dict)
-            cols.append(list(dicom_dict.keys())) 
+            cols.append(list(dicom_dict.keys()))
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
-        study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)    
+        study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)
 
         # turn bytes of thumbnail into ascii string
         file_thumbnail = base64.b64encode(raw_image).decode('ascii')
@@ -216,14 +216,14 @@ def browser():
             file_thumbnail,
             file_count,
             session_id,
-            session_id_3ds, 
-            study_name, 
+            session_id_3ds,
+            study_name,
             description])
 
     browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
-    return render_template('browser.html', 
-    all_studies=all_studies, 
+    return render_template('browser.html',
+    all_studies=all_studies,
     browserFields=browserFields)
 
 @bp.route('/job', methods=['POST'])
@@ -232,7 +232,7 @@ def job():
         session_id = request.form.get('session_id')
     else:
         return 'BAD METHOD', 500
-    return render_template('job_submit.html', session_id=session_id) 
+    return render_template('job_submit.html', session_id=session_id)
 
 @bp.route('/delete', methods=['POST'])
 def delete():
@@ -293,7 +293,7 @@ def dicom_viewer():
         session_id = request.form.get('session_id')
         print('rendering dicom viewer for ID', session_id)
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
-        return render_template('dicom_viewer.html') 
+        return render_template('dicom_viewer.html')
     else:
         # this should never get called
         return redirect(url_for('main.index'))
@@ -312,10 +312,10 @@ def viewer_3d():
     temp_dir = os.path.join(os.getcwd(), "vessel_app", "static", "users_3d_objects" )
     temp_user_dir = "user_" + str(current_user.id)
     session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
-    
+
     if not os.path.isdir(session['path_3d']):
         os.mkdir(path = session['path_3d'])
-        
+
     print('getting object_3d from folder:', session['path_3d'])
 
     print(f'Generating model from {source}')
@@ -326,8 +326,8 @@ def viewer_3d():
         session_id = request.form.get('session_id')
         k = int(request.form.get('k'))
         segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
-        
-        # create a session_id_3d 
+
+        # create a session_id_3d
         session_id_3d = str(request_id())
 
         # Call worker and save result to database
@@ -355,8 +355,8 @@ def viewer_3d():
     data_as_pyvista_obj = unpickle_vtk(data.object_3D)
 
     # save to .vti file
-    object_3d_path = session['path_3d'] + "\\data_object.vti"
-    object_3d_path = object_3d_path.replace("\\", "/")
+    object_3d_path = os.path.join(session['path_3d'], "data_object.vti")
+
 
     data_as_pyvista_obj.save(object_3d_path)
     print(object_3d_path)
@@ -365,5 +365,6 @@ def viewer_3d():
     object_3d_path = object_3d_path.replace("\\", "/")
     
 
-    
-    return render_template('3d_viewer.html', path_data=object_3d_path) 
+
+
+    return render_template('3d_viewer.html', path_data=object_3d_path)
