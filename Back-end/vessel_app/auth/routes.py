@@ -25,7 +25,7 @@ def login():
             return redirect(url_for('main.home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('login2.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form)
 
 @bp.route("/register", methods=['GET', 'POST'])
 def register():

@@ -1,76 +1,84 @@
-{% extends "layout.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OpenVessel</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-    <style>
-        .g-recaptcha {
-    transform:scale(0.8);
-    transform-origin:0 0;
-}
-    </style>
+    <!-- Bootstrap-->
+    <script src="{{url_for('static', filename='bootstrap/js/bootstrap.min.js' )}}"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
 
-    <div class="login-dark"> <!--- css -->
-        <form action="" method="POST">
-            {{form.hidden_tag() }}
-            <!--- form.validate_on_submit(): will not execute without {{ form.csrf_token }}  -->
-            <legend class="border-bottom mb-4">Login </legend>       
-            <fieldset class="form-group">
-                <h2 class="sr-only">Login Form</h2>
-                <div class="illustration">
-                    <i class="icon ion-ios-locked-outline"></i></div>
+    <!-- Additional CSS-->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/theme.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='auth/css/style.css')}}">
 
-                    <!---  EMAIL LOGIN  ----->
-                    <div class="form-group" class="form-control" type="email" name="email" placeholder="Email">
-                        <!---    <input class="form-control" type="email" name="email" placeholder="Email"> --->
-                        {{ form.email.label(class="form-control-label") }}
-                        {% if form.email.errors %}
-                            {{ form.email(class="form-control form-control-lg is-invalid") }}
-                        
-                            <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+</head>
+<body>
+<div style='background: linear-gradient(135deg, #06007A, #1CC0C2); background-color: #184e8e;'>
+    <div class="container-fluid d-flex flex-column" style='padding-left: 0; margin-left:0;'>
+        <div class='row flex-fill'>
+            <div class="col-sm-7" id='scan-gif' style='background-color: black;'>
+                <img src="{{url_for('static', filename='auth/img/Rotating_Scan.gif')}}" alt='rotating scan' width='100%' height='100%'>
+            </div>
+            <div class="login-dark col-sm-5 text-center" id='login-page' style='padding-top: 5%; padding-bottom: 5%; padding-left:4%; padding-right:4%;''>
+                <form action="" method="POST">
+                    {{form.hidden_tag() }}
+                    <!--- form.validate_on_submit(): will not execute without {{ form.csrf_token }}  -->
+                    <img src="{{url_for('static', filename='img/OpenVessel_Logo.png')}}" alt='OpenVessel' height='10%' width='100%'> 
+                    <fieldset class="form-group">
+                        <h2 class="sr-only colors-on-secondary">Login Form</h2>
+                        <div class="illustration">
+                            <!---  EMAIL LOGIN  ----->
+                            <div class="form-group" class="form-control" type="email" name="email" placeholder="Email">
+                                {{ form.email.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                                {% if form.email.errors %}
+                                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        <span class='colors-error'>{{ error }}</span>
+                                    {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.email(class="form-control form-control-lg") }}
+                                {% endif %}
                             </div>
-                        {% else %}
-                            {{ form.email(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
-                    <!---  PASSWORD LOGIN  ----->
-                    <div class="form-group" class="form-control">
-                        {{ form.password.label(class="form-control-label") }}
-                        {% if form.password.errors %}
-                            {{ form.password(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.password.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
+                            <!---  PASSWORD LOGIN  ----->
+                            <div class="form-group" class="form-control">
+                                {{ form.password.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                                {% if form.password.errors %}
+                                    {{ form.password(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password.errors %}
+                                            <span class='colors-error'>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.password(class="form-control form-control-lg") }}
+                                {% endif %}
                             </div>
-                        {% else %}
-                            {{ form.password(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
-                    <div class="form-check">
-                        {{ form.remember(class="form-check-input") }}
-                        {{ form.remember.label(class="form-check-label") }}
-                    </div>
-                    <!--- <input class="form-control" type="password" name="password" placeholder="Password"></div> --->
-                    <div class='form-group'>
-                        {{ form.recaptcha }}
-                    </div>
-                    <div class="form-group">
-                        <!--<button class="btn btn-primary btn-block" type="submit">Log In</button></div>--->  
-                        <div class="form-group">
-                            {{ form.submit(class="btn btn-primary btn-block") }}
-                        </div>
-            </fieldset>
 
-            <a class="forgot" href="#">Forgot your email or password?</a>
-        </form>
+                            <!-- REMEMBER ME-->
+                            <!-- <div class="form-check">
+                                {{ form.remember(class="form-check-input") }}
+                                {{ form.remember.label(class="form-check-label") }}
+                            </div> -->
+                            <div class='form-group'>
+                                {{ form.recaptcha }}
+                            </div>
+                            <div class="form-group">
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-primary btn-block") }}
+                            </div>
+                    </fieldset>
+                    <!-- <a class="forgot colors-on-secondary form-text-h3" href="#">Forgot your email or password?</a> -->
+                </form>
+            </div>
+        </div>
     </div>
-
-    <script src="static/js/jquery.min.js"></script>
-    <script src="static/bootstrap/js/bootstrap.min.js"></script>
-    <script src="static/js/Scroll-To-Top-Button.js"></script>
-    <script src="static/js/Scroll-to-top.js"></script>
-
-
-{% endblock content %}
+</div>
+</body>
+</html>
