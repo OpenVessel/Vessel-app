@@ -70,9 +70,6 @@
                 {% if not config['DEMO'] %}
                     {% if current_user.is_authenticated %}
                         <li class="nav-item"><a class="btn btn-light action-button" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                    {% else %}
-                        <li class="nav-item"><span class="navbar-text"><a class="login" href="{{url_for('auth.register')}}">Sign Up</a></span></li>
-                        <li class="nav-item"><a class="btn btn-light action-button" role="button" href="{{url_for('auth.login')}}">Log In</a></li>
                     {% endif %}
                 {% endif %}
                 </ul>

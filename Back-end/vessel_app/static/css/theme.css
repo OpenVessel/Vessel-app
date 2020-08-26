@@ -60,3 +60,66 @@
 .form-text-h3 {
     font-size: 15px;
 }
+
+/* FORM TEXT */
+.general-text-h1 {
+    font-size: 60px;
+}
+
+.general-text-h2 {
+    font-size: 40px;
+}
+
+.general-text-h3 {
+    font-size: 20px;
+}
+
+/* LINKS */
+
+/* unvisited link */
+a:link {
+    color: #03003E;
+}
+
+/* visited link */
+a:visited {
+    color: #0c094e;
+}
+
+/* mouse over link */
+a:hover {
+    color: #06007A;
+}
+
+/* selected link */
+a:active {
+    color: rgb(27, 27, 187)07A;
+}
+
+/* BACK BUTTON */
+#back-btn{
+    transition: color .15s ease-in-out,background-color;
+}
+
+#back-btn:link {
+    color: #007bff;
+}
+
+#back-btn:visited {
+    color: #007bff;
+}
+
+#back-btn:hover {
+    color: #1c86f7;
+    text-decoration: none;
+}
+
+#back-btn:active {
+    color: rgb(27, 27, 187)07A;
+    text-decoration: none;
+}
+
+.tutorial-section {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
