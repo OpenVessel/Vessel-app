@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>OpenVessel</title>
+    <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -15,6 +15,7 @@
     <!-- Additional CSS-->
     <link rel="stylesheet" href="{{url_for('static', filename='css/theme.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='auth/css/style.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
 </head>
 <body class='colors-surface'>
@@ -24,58 +25,66 @@
             <div class="col-sm-7" id='scan-gif' style='background-color: black;'>
                 <img src="{{url_for('static', filename='auth/img/Rotating_Scan.gif')}}" alt='rotating scan' width='100%' height='100%'>
             </div>
-            <div class="login-dark col-sm-5 text-center" id='login-page' style='padding-top: 5%; padding-bottom: 5%; padding-left:4%; padding-right:4%;''>
+            <div class="login-dark col-sm-5 text-center" id='login-page' style='padding-top: .5%; padding-bottom: 12%; padding-left:4%; padding-right:4%;'>
+                
+                <!-- BACK BUTTON -->
+                <div style='text-align: left; padding-bottom: 2%;'>
+                    <a id='back-btn' href=" {{url_for('main.index')}} " style='font-size:50px;'><i class="ri-arrow-left-circle-line"></i></a>
+                </div>
+
+                <!-- LOGIN FORM-->
                 <form action="" method="POST">
                     {{form.hidden_tag() }}
-                    <!--- form.validate_on_submit(): will not execute without {{ form.csrf_token }}  -->
                     <img src="{{url_for('static', filename='img/OpenVessel_Logo.png')}}" alt='OpenVessel' height='10%' width='100%'> 
                     <fieldset class="form-group">
-                        <h2 class="sr-only colors-on-secondary">Login Form</h2>
-                        <div class="illustration">
-                            <!---  EMAIL LOGIN  ----->
-                            <div class="form-group" class="form-control" type="email" name="email" placeholder="Email">
-                                {{ form.email.label(class="form-control-label colors-on-secondary form-text-h2") }}
-                                {% if form.email.errors %}
-                                    {{ form.email(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                    {% for error in form.email.errors %}
+                        <!--- EMAIL LOGIN ----->
+                        <div class="form-group" class="form-control" type="email" name="email" placeholder="Email">
+                            {{ form.email.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                            {% if form.email.errors %}
+                                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span class='colors-error'>{{ error }}</span>
+                                {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.email(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <!--- PASSWORD LOGIN ----->
+                        <div class="form-group" class="form-control">
+                            {{ form.password.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                            {% if form.password.errors %}
+                                {{ form.password(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
                                         <span class='colors-error'>{{ error }}</span>
                                     {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ form.email(class="form-control form-control-lg") }}
-                                {% endif %}
-                            </div>
-                            <!---  PASSWORD LOGIN  ----->
-                            <div class="form-group" class="form-control">
-                                {{ form.password.label(class="form-control-label colors-on-secondary form-text-h2") }}
-                                {% if form.password.errors %}
-                                    {{ form.password(class="form-control form-control-lg is-invalid") }}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.password.errors %}
-                                            <span class='colors-error'>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {{ form.password(class="form-control form-control-lg") }}
-                                {% endif %}
-                            </div>
+                                </div>
+                            {% else %}
+                                {{ form.password(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
 
-                            <!-- REMEMBER ME-->
-                            <!-- <div class="form-check">
-                                {{ form.remember(class="form-check-input") }}
-                                {{ form.remember.label(class="form-check-label") }}
-                            </div> -->
-                            <div class='form-group'>
-                                {{ form.recaptcha }}
-                            </div>
-                            <div class="form-group">
-                            <div class="form-group">
-                                {{ form.submit(class="btn btn-primary btn-block") }}
-                            </div>
+                        <!-- REMEMBER ME -->
+                        <!-- <div class="form-check">
+                            {{ form.remember(class="form-check-input") }}
+                            {{ form.remember.label(class="form-check-label") }}
+                        </div> -->
+
+                        <!-- RECAPTCHA -->
+                        <div class='form-group'>
+                            {{ form.recaptcha }}
+                        </div>
+
+                        <!-- Form Submit Button -->
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-primary btn-block") }}
+                        </div>
                     </fieldset>
-                    <!-- <a class="forgot colors-on-secondary form-text-h3" href="#">Forgot your email or password?</a> -->
                 </form>
+                <div>Don't have an account?</div>
+                <a class='form-text-h3' href=" {{url_for('auth.register')}} ">Register</a>
             </div>
         </div>
     </div>

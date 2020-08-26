@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>OpenVessel</title>
+    <title>Register</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -15,6 +15,7 @@
     <!-- Additional CSS-->
     <link rel="stylesheet" href="{{url_for('static', filename='css/theme.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='auth/css/style.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
 </head>
 <body class='colors-surface'>
@@ -24,7 +25,14 @@
             <div class="col-sm-7" id='scan-gif' style='background-color: black;'>
                 <img src="{{url_for('static', filename='auth/img/Rotating_Scan.gif')}}" alt='rotating scan' width='100%' height='100%'>
             </div>
-            <div class="login-dark col-sm-5 text-center" id='login-page' style='padding-top: 5%; padding-bottom: 5%; padding-left:4%; padding-right:4%;'>
+            <div class="login-dark col-sm-5 text-center" id='login-page' style='padding-top: .5%; padding-bottom: 7%; padding-left:4%; padding-right:4%;'>
+                
+                <!-- BACK BUTTON -->
+                <div style='text-align: left; padding-bottom: 2%;'>
+                    <a id='back-btn' href=" {{url_for('main.index')}} " style='font-size:50px;'><i class="ri-arrow-left-circle-line"></i></a>
+                </div>
+
+                <!-- REGISTRATION FORM-->
                 <form action="" method="POST">
                     {{form.hidden_tag() }}
                     <!--- form.validate_on_submit(): will not execute without {{ form.csrf_token }}  -->
@@ -100,6 +108,8 @@
                     </fieldset>
                     <!-- <a class="forgot colors-on-secondary form-text-h3" href="#">Forgot your email or password?</a> -->
                 </form>
+                <div>Already have an account?</div>
+                <a class='form-text-h3' href=" {{url_for('auth.login')}} ">Login</a>
             </div>
         </div>
     </div>
