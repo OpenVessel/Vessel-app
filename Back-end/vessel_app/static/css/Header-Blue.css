@@ -1,14 +1,9 @@
 .header-blue {
   background: linear-gradient(135deg, #06007A, #1CC0C2);
   background-color: #179EA1;
-  padding-bottom: 80px;
   font-family: 'Source Sans Pro', sans-serif;
-}
-
-@media (min-width:768px) {
-  .header-blue {
-    padding-bottom: 50px;
-  }
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .header-blue .navbar {

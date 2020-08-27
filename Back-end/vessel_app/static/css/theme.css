@@ -1,3 +1,7 @@
+/* FIX ALL HEIGHT WHITESPACE ISSUES */
+html, body{min-height:100%;}
+body{height:100%;}
+
 /* BACKGROUND COLORS */
 .colors-primary {
     background-color: #03003E;
@@ -94,32 +98,4 @@ a:hover {
 /* selected link */
 a:active {
     color: rgb(27, 27, 187)07A;
-}
-
-/* BACK BUTTON */
-#back-btn{
-    transition: color .15s ease-in-out,background-color;
-}
-
-#back-btn:link {
-    color: #007bff;
-}
-
-#back-btn:visited {
-    color: #007bff;
-}
-
-#back-btn:hover {
-    color: #1c86f7;
-    text-decoration: none;
-}
-
-#back-btn:active {
-    color: rgb(27, 27, 187)07A;
-    text-decoration: none;
-}
-
-.tutorial-section {
-    padding-top: 15px;
-    padding-bottom: 15px;
 }

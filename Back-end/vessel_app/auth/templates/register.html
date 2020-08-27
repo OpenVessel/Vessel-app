@@ -14,18 +14,18 @@
 
     <!-- Additional CSS-->
     <link rel="stylesheet" href="{{url_for('static', filename='css/theme.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='auth/css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/auth.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
 </head>
-<body class='colors-surface'>
-<div style='background: linear-gradient(135deg, #06007A, #1CC0C2); background-color: #184e8e; height: 100%;'>
-    <div class="container-fluid d-flex flex-column" style='padding-left: 0; margin-left:0;'>
+<body>
+<div>
+    <div class="container-fluid d-flex flex-column" style='height: 100vh;'>
         <div class='row flex-fill'>
             <div class="col-sm-7" id='scan-gif' style='background-color: black;'>
-                <img src="{{url_for('static', filename='auth/img/Rotating_Scan.gif')}}" alt='rotating scan' width='100%' height='100%'>
+                <img src="{{url_for('static', filename='img/Rotating_Scan.gif')}}" alt='rotating scan' width='100%' height='100%'>
             </div>
-            <div class="login-dark col-sm-5 text-center" id='login-page' style='padding-top: .5%; padding-bottom: 7%; padding-left:4%; padding-right:4%;'>
+            <div class="auth-form col-sm-5 text-center" id='register-page'>
                 
                 <!-- BACK BUTTON -->
                 <div style='text-align: left; padding-bottom: 2%;'>
@@ -98,7 +98,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class='form-group'>
+                            <div class='form-group text-center'>
                                 {{ form.recaptcha }}
                             </div>
                             <div class="form-group">
