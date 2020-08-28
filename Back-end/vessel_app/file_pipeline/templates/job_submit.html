@@ -3,9 +3,6 @@
 {% block content %}
 
 <style>
-    .center-input{
-        margin: auto;
-    }
     #loading-image{
     width: 10%;
     height: 10%;
@@ -15,27 +12,29 @@
 </style>
 
 <div id='main-content'>
-    <div class="container hero">
-        <div class="row" style='text-align: left; color:white;'>
-            <div class="col form-group">
-                <h1><b>Submit Job</b></h2>
-                <h2>Mask Segmentation</h4>
-                <br>
+    <div class="container">
+        <div class='card' style='margin: 3%;'>
+            <div class="form-group">
+                <h1 class='form-text-h1 colors-on-surface'><b>Submit Job</b></h1>
+                <h2 class='form-text-h2 colors-on-surface'>Mask Segmentation</h2>
                 <form action='{{url_for("file_pipeline.viewer_3d")}}' method='post'>
+
                     <input class="form-control" type='hidden' value='{{session_id}}' name='session_id'>
-                    
                     <input class="form-control" type='hidden' value='job_submit' name='source'>
+        
+                    <!-- K VALUE -->
+                    <label for="k" class='form-text-h3 colors-on-surface'>K value (1-20):</label>
+                    <input class="form-control" style="width: 10%; margin-bottom: 2%; margin: auto;" type="number" name="k" min="1" max="10" placeholder="2" value="2">
                     
-                    <label for="k">K value (1-20):</label>
-                    <input class="form-control center-input" style="width: 10%; margin-bottom: 2%;" type="number" name="k"
-                        min="1" max="10" placeholder="2" value="2">
-                    
-                    <label for="segmentation_options">Segmentation Options:</label>
-                    <select class="form-control center-input" name="segmentation_options" style="width: 35%;">
+                    <!-- SEGMENTATION OPTION -->
+                    <label for="segmentation_options" class='form-text-h3 colors-on-surface'>Segmentation Options:</label>
+                    <select class="form-control" name="segmentation_options" style="width: 35%; margin: auto;">
                         <option value="350" selected>Bone</option>
                         <option value="55">Blood</option>
                     </select>
-                    <button action="" class="btn btn-main btn-lg text-left action-button" type="submit" style="margin-top: 2%; margin-bottom: 150px;" onclick="$('#loading').show(); $('#main-content').hide();">Submit Job</button>
+
+                    <!-- SUBMIT BUTTON-->
+                    <button action="" class="btn btn-main" type="submit" style="margin-top: 2%;" onclick="$('#loading').show(); $('#main-content').hide();">Submit Job</button>
                 </form>
             </div>
         </div>
