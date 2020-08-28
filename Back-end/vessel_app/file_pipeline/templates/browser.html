@@ -20,106 +20,114 @@
     <!-- GENERATE LIST OF CARDS -->
         {% for study in all_studies %}
             <div class='card' style='margin: 3%; background: whitesmoke;'>
-                <div class='container'>
-                    <div id='study-titles' style='text-align: center;'>
-                        <h2><b>Study Name:</b> {{study[5]}} </h2>
-                        <p><b>Description:</b> {{study[6]}}</p>
-                    </div>
+                
+                <!-- CARD HEADINGS -->
+                <div id='study-titles' style='text-align: center;'>
+                    <h1 class='form-text-h1'><b>Study Name:</b> {{study['study_name']}} </h1>
+                    <p class='form-text-h2'><b>Description:</b> {{study['description']}}</p>
+                </div>
 
+                
+                <div style='padding-bottom: 2%;'>
                     <!-- THUMBNAIL -->
                     <table id='study-tn' style='border: none; margin-right: 2%;'> 
                         <tr>
                             <td> 
-                                <img src="data:image/jpeg;charset=utf-8;base64,{{ study[1]}}" alt="dicom thumbnail">  
+                                <img src="data:image/jpeg;charset=utf-8;base64,{{ study['file_thumbnail']}}" alt="dicom thumbnail">  
                             </td>
                         </tr>
                     </table>
 
-                    <!-- STUDY INFO TABLE -->
-                    <table id='study-info' style="border-spacing: 50px 50px; border: none;">
-                        <tr style="text-align: center;">
+                    <!-- STUDY INFO -->
+                    <div>
+                        <!-- Field Names-->
+                        <div style='float: left; text-align: left;'>
                             {% for field in browserFields %}
-                                <th style="padding: 2px;"><strong>{{ field }}</strong></th> 
+                                <p class='form-text-h3'><strong>{{ field }}</strong></p> 
                             {% endfor %}
-                                <th style="padding: 2px;"><strong>File Count</strong></th>
-                        </tr>
-                        <tr style="text-align: center;">
-                            {% for field in browserFields %}   
-                                {% if field in study[0] %}
-                                    <td>  {{ study[0][field].iloc[0].value.decode("utf-8") }} </td>
-                                {% else %}
-                                    <td> NO DATA </td>
-                                {% endif %}
-                            {% endfor %}
-                            <td> {{ study[2] }} </td>
-                        </tr>
-                    </table> 
+                                <p class='form-text-h3'><strong>File Count</strong></p>
+                        </div>
 
-                    <br/>
-                    <br/>
-                    
-                    <!-- STUDY BUTTONS -->
-                    <div id='study-btns' style="text-align: center; margin: 2%">
-                        <table style="border-spacing: 20px 20px; border: none;">
-                            <tr>
-                                <td> <!-- Submit Job button -->
-                                    <form action="{{url_for('file_pipeline.job')}}" method="post">
-                                        <input type="hidden" name="session_id" value="{{ study[3] }}">
-                                        <input class="btn btn-success" type="submit" value="Submit To Machine Learning">
-                                    </form>
-                                </td>
-                                <td> <!-- Dicom Viewer button --> 
-                                    <form action="{{url_for('file_pipeline.dicom_viewer')}}" method="post">
-                                        <input type="hidden" name="session_id" value="{{ study[3] }}">
-                                        <input class="btn btn-success" type="submit" value="Dicom Viewer">
-                                    </form>
-                                </td>
-                                {% if study[4] != [] %}
-                                <!-- 3d object viewer dropdown and submit -->
-                                <td>
-                                    <button type="button" class="collapsible">Generate a past model</button>
-                                    <div class="content">
-                                        <table style="border-spacing: 20px 20px;">
-                                            {% for session_id_3d in study[4] %}
-                                                <tr>
-                                                    <td>
-                                                        <p>{{session_id_3d[0]}}</p>
-                                                    </td>
-                                                    <td> <!-- Generate button -->
-                                                        <form action='{{url_for("file_pipeline.viewer_3d")}}' method='post'>
-                                                            <input class="form-control" type='hidden' value='{{session_id_3d[1]}}' name="session_id_3d">
-                                                            <input class="form-control" type='hidden' value='browser' name='source'>
-                                                            <input class="btn btn-success" type="submit" value="View">   
-                                                        </form>
-                                                    </td>
-                                                    {% if not config['DEMO'] %}
-                                                    <td> <!-- Delete button -->
-                                                        <form action="{{url_for('file_pipeline.delete_3d')}}" method="post">
-                                                            <input class="form-control" type="hidden"  value="{{session_id_3d[1]}}" name="session_id_3d">
-                                                            <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this 3d render?')" value="Delete">
-                                                        </form>
-                                                    </td>
-                                                    {% endif %}
-                                                </tr>
-                                            {% endfor %}
-                                        </table>               
-                                    </div>
-                                </td>
+                        <!-- Field Values-->
+                        <div style='float: left; text-align: right;'>
+                            {% for field in browserFields %}   
+                                {% if field in study['study_df'] %}
+                                    <p class='form-text-h3'>  {{ study['study_df'][field].iloc[0].value.decode("utf-8") }} </p>
+                                {% else %}
+                                    <p class='form-text-h3'> NO DATA </p>
                                 {% endif %}
-                            </tr> 
-                            {% if not config['DEMO'] %}
-                            <tr>
-                                <td colspan="2", style="text-align: center;"> <!-- Delete button -->
-                                    <form action="{{url_for('file_pipeline.delete')}}" method="post">
-                                        <input type="hidden" name="session_id" value="{{ study[3] }}">
-                                        <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this upload?')" value="Delete Upload">
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endif %}
-                        </table>
+                            {% endfor %}
+                            <p> {{ study['file_count'] }} </p>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- STUDY BUTTONS -->
+                <div id='study-btns' style="margin: 2%; display: flex; justify-content: center;">
+                    <table style="border-spacing: 20px 20px; border: none; align-self: center;">
+                        <tr>
+                            <td> <!-- Submit Job button -->
+                                <form action="{{url_for('file_pipeline.job')}}" method="post">
+                                    <input type="hidden" name="session_id" value="{{ study['session_id'] }}">
+                                    <input class="btn btn-main" type="submit" value="Submit To Machine Learning">
+                                </form>
+                            </td>
+                            {% if not config['DEMO'] %}
+                            <td style="text-align: center;"> <!-- Delete button -->
+                                <form action="{{url_for('file_pipeline.delete')}}" method="post">
+                                    <input type="hidden" name="session_id" value="{{ study['session_id'] }}">
+                                    <input class="btn btn-error" type="submit" onclick="return confirm('Are you sure you want to delete this upload?')" value="Delete Upload">
+                                </form>
+                            </td>
+                            {% endif %}
+
+                            <!-- Dicom Viewer button -->
+                            <!-- <td>  
+                                <form action="{{url_for('file_pipeline.dicom_viewer')}}" method="post">
+                                    <input type="hidden" name="session_id" value="{{ study['session_id'] }}">
+                                    <input class="btn btn-success" type="submit" value="Dicom Viewer">
+                                </form>
+                            </td> -->
+                        </tr> 
+
+                        <!-- 3d object viewer dropdown and submit -->
+                        {% if study['session_id_3ds'] != [] %}
+                        <tr> 
+                            <td colspan="2">
+                                <button type="button" class="collapsible">Generate a past model</button>
+                                <div class="content">
+                                    <table style="border-spacing: 20px 20px;">
+                                        {% for session_id_3d in study['session_id_3ds'] %}
+                                            <tr>
+                                                <td>
+                                                    <p>{{session_id_3d['study_df']}}</p>
+                                                </td>
+                                                <td> <!-- Generate button -->
+                                                    <form action='{{url_for("file_pipeline.viewer_3d")}}' method='post'>
+                                                        <input class="form-control" type='hidden' value='{{session_id_3d[1]}}' name="session_id_3d">
+                                                        <input class="form-control" type='hidden' value='browser' name='source'>
+                                                        <input class="btn btn-success" type="submit" value="View">   
+                                                    </form>
+                                                </td>
+                                                {% if not config['DEMO'] %}
+                                                <td> <!-- Delete button -->
+                                                    <form action="{{url_for('file_pipeline.delete_3d')}}" method="post">
+                                                        <input class="form-control" type="hidden"  value="{{session_id_3d[1]}}" name="session_id_3d">
+                                                        <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this 3d render?')" value="Delete">
+                                                    </form>
+                                                </td>
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                    </table>               
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+
+                    </table>
+                </div>
+                
             </div>
         {% endfor %}
     {% endif %}

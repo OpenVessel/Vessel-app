@@ -211,14 +211,15 @@ def browser():
         # turn bytes of thumbnail into ascii string
         file_thumbnail = base64.b64encode(raw_image).decode('ascii')
 
-
-        all_studies.append([study_df,
-            file_thumbnail,
-            file_count,
-            session_id,
-            session_id_3ds,
-            study_name,
-            description])
+        all_studies.append({
+            'study_df': study_df,
+            'file_thumbnail': file_thumbnail,
+            'file_count': file_count,
+            'session_id': session_id,
+            'session_id_3ds': session_id_3ds,
+            'study_name': study_name,
+            'description': description
+            })
 
     browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
