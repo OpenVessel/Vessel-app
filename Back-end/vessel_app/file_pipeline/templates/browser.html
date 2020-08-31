@@ -106,14 +106,14 @@
                                                     <form action='{{url_for("file_pipeline.viewer_3d")}}' method='post'>
                                                         <input class="form-control" type='hidden' value='{{session_id_3d[1]}}' name="session_id_3d">
                                                         <input class="form-control" type='hidden' value='browser' name='source'>
-                                                        <input class="btn btn-success" type="submit" value="View">   
+                                                        <input class="btn btn-main" type="submit" value="View">   
                                                     </form>
                                                 </td>
                                                 {% if not config['DEMO'] %}
                                                 <td> <!-- Delete button -->
                                                     <form action="{{url_for('file_pipeline.delete_3d')}}" method="post">
                                                         <input class="form-control" type="hidden"  value="{{session_id_3d[1]}}" name="session_id_3d">
-                                                        <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this 3d render?')" value="Delete">
+                                                        <input class="btn btn-error" type="submit" onclick="return confirm('Are you sure you want to delete this 3d render?')" value="Delete">
                                                     </form>
                                                 </td>
                                                 {% endif %}
