@@ -16,7 +16,7 @@ load_dotenv(path.join(basedir,'.flaskenv'))
 class Config:
 
     DEMO = False
-    DEMO_EMAIL = 'sample@example.com'
+    DEMO_EMAIL = 'admin2@example.com'
 
 
     ########### Production config
@@ -25,25 +25,29 @@ class Config:
     #FLASK_APP = 'wsgi.py'
 
     SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
-    
-    ###### DATABASE PATHING  ########### 
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.getcwd() + r"\site.db"
-    #SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
+
+    ###### DATABASE PATHING  ###########
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
+    SQLALCHEMY_BINDS = {
+    'one': "sqlite:///" + os.getcwd() + r"\one.db",
+    '2nd_db': "sqlite:///" + os.getcwd() + r"\two.db"
+    #'2nd_db': 'postgresql://postgres:Sd40dash2@localhost/Vessel-test'
+    }
+    ## worker database is 2nd_db
 
-
-    ### Celery Workers ##########3
+    ### Celery Brokers ##########
     CELERY_BROKER_URL='redis://localhost:6379/0'
     CELERY_RESULT_BACKEND='redis://localhost:6379/0'
 
 
-    ########## reCAPtcha ########### 
+    ########## reCAPtcha ###########
     RECAPTCHA_USE_SSL= False
     RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'
     RECAPTCHA_OPTIONS= {'theme':'white'}
 
-    ########## reCAPtcha Production ########### 
+    ########## reCAPtcha Production ###########
     #RECAPTCHA_USE_SSL= False
     #RECAPTCHA_PUBLIC_KEY='6LdfyvsUAAAAAACFxPddYu-abcnVEf5lB_cKNbMo'
     #RECAPTCHA_PRIVATE_KEY='6LdfyvsUAAAAAGS1HizHkCdkcQe5x8Gr8qPBWqIo'

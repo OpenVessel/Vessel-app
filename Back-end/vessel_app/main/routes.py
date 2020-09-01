@@ -17,8 +17,8 @@ def index():
 
     return render_template('home.html')
 
-@bp.route("/documentation")
-def doc():
-    return render_template('documentation.html')
+@bp.route("/getting_started")
+def getting_started():
+    return render_template('getting_started.html')
 
 

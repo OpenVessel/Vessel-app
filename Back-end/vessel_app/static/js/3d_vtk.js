@@ -1,4 +1,4 @@
-/* We will grab a .VTK source and use filters to edit it 
+/* We will grab a .VTK source and use filters to edit it
 Then we will map it which will turn it into a renderable object
 An actor object will 'emulate' it and it can be displayed by Vtk Render window
 */
@@ -116,6 +116,14 @@ export function importVTK(path){
             // rendering
             widget.render();
             renderer.resetCamera();
+            renderer.getActiveCamera().zoom(.5); //zooms in on the image (less than 1 is zoom out and greater than 1 is in)
+            renderer.getActiveCamera().elevation(100); //rotates back
+            renderer.getActiveCamera().roll(-90); //rotates left
+            //renderer.getActiveCamera().setPosition(0,0,1); //Moves the object to a certain position on the screen
+            //renderer.getActiveCamera().setDirectionOfProjection(5,1,1); //Projects it across the coordinates (actually rotates the image around)
+            //renderer.getActiveCamera().setWindowCenter(-.5,-.7); //moves the window scene around multiple screens i think its for
+            //renderer.getActiveCamera().setViewAngle(45);
+            //renderer.getActiveCamera().azimuth(180);
             renderer.getActiveCamera().elevation(70);
             renderWindow.render();
     });
