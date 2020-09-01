@@ -1,7 +1,5 @@
 # OpenVessel
 
-## NOTE: This version of the webapp was what was used in the September 10 Nittany AI competition.  
-
 [OpenVessel](http://openvessel.org/) is an open-source Flask app that segments out portions of DICOM files using machine learning hosted on celery workers, and displays the result as a 3D objects using VTK.
 
   
