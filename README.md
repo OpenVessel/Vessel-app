@@ -301,7 +301,7 @@ flask db upgrade
 5. Run the command:
 ```
 
-celery -A vessel_app.file_pipeline.celery_tasks.celery worker --loglevel=info -P gevent
+celery -A vessel_app.Drill.drill.celery worker --loglevel=info -P gevent
 
 ```
 

@@ -1,4 +1,4 @@
-###### DEPRECATED ######
+import numpy as np
 
 import os
 import pydicom 
@@ -6,6 +6,7 @@ import numpy as np
 import skimage
 import scipy.ndimage
 
+## displayer
 import sys
 try:    
     import pyvista as pv
@@ -16,7 +17,6 @@ from scipy import misc
 from pydicom import dcmread
 import matplotlib.pyplot as plt
 from io import BytesIO
-import pickle 
 import tempfile
 try:
     import vtk
@@ -117,9 +117,6 @@ def displayer(numpy_mask):
     data = pv.wrap(data_matrix)
 
     pv.set_plot_theme("night")
-    #print(type(data)) #pyvista.core.grid.UniformGrid'
-    #print(dir(data)) #x = pickle.dumps(data) #print(x)
-    #print(BytesIO(data))
     return data
 
 
@@ -318,3 +315,31 @@ def largest_label_volume(im, bg=-1):
         return vals[np.argmax(counts)]
     else:
         return None
+
+
+def run_model(dicom_list, n_clusters=2):
+
+    ## STEP ONE of Masking pipeline 
+    patient = load_scan(dicom_list) ## 3D array
+    print ("Slice Thickness: %f" % patient[0].SliceThickness)
+    print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
+
+    ## STEP TWO of Masking pipeline
+    image_stack = get_pixels_hu(patient)
+
+    ## STEP THREE RESAMPLING
+    print("Shape of CT slice before resampling", image_stack.shape)
+    imgs_after_resamp, spacing = resample(image_stack, patient)
+    print ("Shape after resampling\t", imgs_after_resamp.shape)
+
+    masked_lung = []
+
+    ## STEP FOUR K-MEANS MASKING
+    for img in imgs_after_resamp: #loops through images and applies mask
+        masked_lung.append(make_lungmask_v2(img, n_clusters=n_clusters))
+
+    mask = np.array(masked_lung)
+    data = displayer(mask)
+
+    return data # pyvista object
+

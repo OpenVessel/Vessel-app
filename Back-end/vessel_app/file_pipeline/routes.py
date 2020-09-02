@@ -21,11 +21,12 @@ from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
-from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from .celery_tasks import data_pipeline, query_db_insert, load_data, lung_segmentation, pyvista_call, query_db_insert, resample
-from .utils import request_id, dicom_to_thumbnail
-from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2
 from vessel_app import db, bcrypt, dropzone
+from vessel_app.models import User, Dicom, DicomFormData, Object_3D
+from vessel_app.Drill.drill import Drill
+from vessel_app.Drill.ml_models.segmentation import run_model as segmentation
+from .utils import request_id, dicom_to_thumbnail, unpickle_vtk
+
 
 from . import bp
 
@@ -331,8 +332,16 @@ def viewer_3d():
         # create a session_id_3d
         session_id_3d = str(request_id())
 
+        # create drill and run methods
+        drill = Drill(segmentation, name='segmentation')
+        print('Running ', drill)
+        dicom_data = drill.query_dicom.delay(drill, session_id) # get data
+        # do we need a wait here? LIKE THIS ---> dicom_data = dicom_data.wait(timeout=None, interval=0.5)
+        completion_statement = drill.run_model_and_save.delay(drill, dicom_data, session_id_3d, n_clusters=k) # run model and save result 
+        print(completion_statement)
+
         # Call worker and save result to database
-        result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
+        # result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
         result_output = result.wait(timeout=None, interval=0.5)
 
         #test_data = load_data.delay(session_id)            

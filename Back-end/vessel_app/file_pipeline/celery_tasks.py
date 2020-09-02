@@ -1,3 +1,5 @@
+###### DEPRECATED ######
+
 import pickle
 from vessel_app import db
 from pydicom import dcmread
@@ -6,7 +8,7 @@ from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
 import numpy as np
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D, Dicom2
-from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, make_lungmask_v2
+from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, make_lungmask_v2
 from .utils import request_id
 
 from vessel_app import create_celery_app
@@ -64,7 +66,7 @@ def data_pipeline(session_id, session_id_3d, n_clusters=2):
     # convert pyvista class --> binary
     pickled_vtk = pickle_vtk(data)
 
-## insert object into database calling class from model.py
+    ## insert object into database calling class from model.py
     insert = Object_3D( 
         object_3D = pickled_vtk, 
         session_id=str(session_id),
@@ -77,15 +79,23 @@ def data_pipeline(session_id, session_id_3d, n_clusters=2):
     test = "I am done"
     return test
 
-###
-#### CELERY TASK CHAIN worksflows
-####
-## Serialization for JSON, DICOM, pickle, Query function to move database to another
+
+
+
+########################################################################################################
+
+
+
+
+
+
+#### CELERY TASK CHAIN
+## Serialization for JSON, DICOM, pickle, Query function to move to a second database
 @celery.task()
 def query_db_insert(session_id):
     
-    print("Query succesful")
     dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+    print("celery query succesful")
     blob = dicom_data.dicom_stack
     
     insert = Dicom2(session_id=session_id ,
@@ -93,10 +103,8 @@ def query_db_insert(session_id):
     )
     db.session.add(insert) 
     db.session.commit()
-    #db.session.add(insert) 
-    #db.session.commit()
-    
-    return "test done" ## this has return confirmation that the data was inserted 
+
+    return "test done" # confirmation that the data was inserted 
 
 ### Load_data() pulls data from the database and lost objectt and returns the patient object 
 @celery.task()

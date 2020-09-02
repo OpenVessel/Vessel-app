@@ -1,4 +1,3 @@
-# utils.py
 import uuid
 import logging
 import flask
@@ -11,6 +10,17 @@ import matplotlib.pyplot as plt
 import base64
 from PIL import Image
 from io import BytesIO
+import pickle
+
+try:    
+    import pyvista as pv
+except:
+    print('import pyvista failed')
+
+try:
+    import vtk
+except:
+    print('import vtk failed')
 
 def graphing(file):
         
@@ -86,3 +96,25 @@ def dicom_to_thumbnail(dicom_object):
     tn_bytes = imgToBytes(tn)
 
     return tn_bytes
+
+def pickle_vtk(mesh):
+    writer = vtk.vtkDataSetWriter() # create instance of writer
+    writer.SetInputDataObject(mesh) # input the data as a vtk object
+    writer.SetWriteToOutputString(True) # instead of writing to file
+    writer.SetFileTypeToASCII()
+    writer.Write()
+    to_serialize = writer.GetOutputString()
+
+    output = pickle.dumps(to_serialize, protocol=pickle.HIGHEST_PROTOCOL)
+
+    return output
+
+def unpickle_vtk(data):
+    unpickled_data = pickle.loads(data)
+    reader = vtk.vtkDataSetReader()
+    reader.ReadFromInputStringOn()
+    reader.SetInputString(unpickled_data)
+    reader.Update()
+    data = pv.wrap(reader.GetOutput())
+
+    return data # this is a pyvista object being returned
