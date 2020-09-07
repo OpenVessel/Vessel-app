@@ -33,7 +33,12 @@ from . import bp
 def before_fun():
     internal_endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
     #print(internal_endpoints)
-    print("Output before -------- ",session['last_endpoint'])
+    try:
+        print("Output before -------- ",session['last_endpoint'])
+    except:
+        session['last_endpoint'] = 'nowhere'
+        print("Output before -------- ",session['last_endpoint'])
+    
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
 
         # create session_id
