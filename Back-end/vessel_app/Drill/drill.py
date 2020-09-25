@@ -1,20 +1,21 @@
 from vessel_app.file_pipeline.utils import pickle_vtk
 from vessel_app.models import Dicom, Object_3D
 from vessel_app import create_celery_app, db
+import pickle
 from pydicom import dcmread
-
-celery = create_celery_app()
+from pydicom.filebase import DicomBytesIO
+import vessel_app
 
 class Drill:
     '''
         Base class to handle ML functions and their interactions with the database.
     '''
-    def __init__(self, model_function, name='generic drill'):
+    def __init__(self, model_function, name=''):
         self.model_function = model_function
         self.name = name
 
 
-    @celery.task()
+
     def query_dicom(self, session_id):
         '''
             Return a list of pydicom.dataset.FileDataset objects from the given session_id.
@@ -30,10 +31,9 @@ class Drill:
         for byte_file in data:
             dicom_list.append(dcmread(DicomBytesIO(byte_file)))
 
-        return dicom_data
+        return dicom_list # list of pydicom.dataset.FileDataset
 
 
-    @celery.task()
     def run_model_and_save(self, data, session_id_3d, *args, **kwawrgs):
         '''
             runs the function specified in the constructor of the drill and saves result to db under session_id_3d. Takes data (from a query function), session_id_3d, and any other args and kwargs.
