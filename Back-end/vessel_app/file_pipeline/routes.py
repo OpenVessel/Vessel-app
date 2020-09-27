@@ -21,10 +21,10 @@ from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
-from vessel_app import db, bcrypt, dropzone
+from vessel_app import db, bcrypt, dropzone, create_celery_app
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from vessel_app.Drill.drill import Drill
 from vessel_app.Drill.ml_models.segmentation import run_model as segmentation
+from vessel_app.Drill.job_submit_fields import JobSubmitForm, NumberField, DropdownField
 from .utils import request_id, dicom_to_thumbnail, unpickle_vtk
 
 
@@ -232,9 +232,17 @@ def browser():
 def job():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
+
+        # Populate Job Submit Form
+        k_field = NumberField('K Value (1-20):', 'k', min=1, max=20, placeholder=2, value=2)
+        segmentatation_dd = DropdownField('Segmentation Options:', 'segmentation_options', options={'Bone': 350, 'Blood': 55})
+        job_submit_form = JobSubmitForm('Mask Segmentation')
+        job_submit_form.add_field(k_field)
+        job_submit_form.add_field(segmentatation_dd)
+
     else:
         return 'BAD METHOD', 500
-    return render_template('job_submit.html', session_id=session_id)
+    return render_template('job_submit.html', form = job_submit_form, session_id=session_id)
 
 @bp.route('/delete', methods=['POST'])
 def delete():
@@ -332,29 +340,20 @@ def viewer_3d():
         # create a session_id_3d
         session_id_3d = str(request_id())
 
-        # create drill and run methods
+        # create celery instance
+        celery = create_celery_app() 
+
+        # create drill
+        from vessel_app.Drill.drill import Drill
         drill = Drill(segmentation, name='segmentation')
         print('Running ', drill)
-        dicom_data = drill.query_dicom.delay(drill, session_id) # get data
-        # do we need a wait here? LIKE THIS ---> dicom_data = dicom_data.wait(timeout=None, interval=0.5)
-        completion_statement = drill.run_model_and_save.delay(drill, dicom_data, session_id_3d, n_clusters=k) # run model and save result 
+        dicom_data = drill.query_dicom(session_id) # get data
+        completion_statement = drill.run_model_and_save(dicom_data, session_id_3d, n_clusters=k) # run model and save result 
         print(completion_statement)
 
         # Call worker and save result to database
         # result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
-        result_output = result.wait(timeout=None, interval=0.5)
-
-        #test_data = load_data.delay(session_id)            
-        #print(test_data)
-
-        ## WORKER CALL CHain workflow
-        # celery.chain(query_db_insert() , 
-        # load_data(),
-        # resample(),
-        # lung_segmentation(),
-        # pyvista_call(), 
-        
-        # ).apply()    
+        # result_output = result.wait(timeout=None, interval=0.5)   
 
         
     elif source == "browser":
