@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 
 from vessel_app.models import User
 
-
+### this contains the  Registration forms with validators to require data
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=255)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=2, max=45)])
