@@ -317,7 +317,7 @@ def largest_label_volume(im, bg=-1):
         return None
 
 
-def run_model(dicom_list, n_clusters=2):
+def run_model(dicom_list, n_clusters=2, segmentation_options = 0):
 
     ## STEP ONE of Masking pipeline 
     patient = load_scan(dicom_list) ## 3D array

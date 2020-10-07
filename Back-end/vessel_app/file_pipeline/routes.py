@@ -23,9 +23,8 @@ from base64 import b64encode
 ## From vessel_app functions, classes, and models
 from vessel_app import db, bcrypt, dropzone, create_celery_app
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from vessel_app.Drill.ml_models.segmentation import run_model as segmentation
-from vessel_app.Drill.job_submit_fields import JobSubmitForm, NumberField, DropdownField
 from .utils import request_id, dicom_to_thumbnail, unpickle_vtk
+from vessel_app.API import create_form, create_drill
 
 
 from . import bp
@@ -233,12 +232,8 @@ def job():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
 
-        # Populate Job Submit Form
-        k_field = NumberField('K Value (1-20):', 'k', min=1, max=20, placeholder=2, value=2)
-        segmentatation_dd = DropdownField('Segmentation Options:', 'segmentation_options', options={'Bone': 350, 'Blood': 55})
-        job_submit_form = JobSubmitForm('Mask Segmentation')
-        job_submit_form.add_field(k_field)
-        job_submit_form.add_field(segmentatation_dd)
+
+        job_submit_form = create_form()
 
     else:
         return 'BAD METHOD', 500
@@ -332,23 +327,34 @@ def viewer_3d():
 
 
     if source == 'job_submit':
-        # get request data
-        session_id = request.form.get('session_id')
-        k = int(request.form.get('k'))
-        segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
 
-        # create a session_id_3d
+        # get params for model from form in request
+        form_fields = eval(request.form.get('fields')) # string representation of list needs to be converted to list with eval()
+        model_params = {}
+        for field in form_fields:
+            value = request.form.get(field)
+
+            # turn numeric values into floats
+            if value.isnumeric():
+                try:
+                    value = int(value)
+                except:
+                    value = float(value)
+
+            model_params.update({field: value})
+        
+
+        # get relevant ids
+        session_id = request.form.get('session_id')
         session_id_3d = str(request_id())
 
         # create celery instance
         celery = create_celery_app() 
 
         # create drill
-        from vessel_app.Drill.drill import Drill
-        drill = Drill(segmentation, name='segmentation')
-        print('Running ', drill)
+        drill = create_drill()
         dicom_data = drill.query_dicom(session_id) # get data
-        completion_statement = drill.run_model_and_save(dicom_data, session_id_3d, n_clusters=k) # run model and save result 
+        completion_statement = drill.run_model_and_save(dicom_data, session_id_3d, model_params) # run model and save result 
         print(completion_statement)
 
         # Call worker and save result to database

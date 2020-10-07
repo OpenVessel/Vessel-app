@@ -21,6 +21,7 @@
 
                     <input class="form-control" type='hidden' value='{{session_id}}' name='session_id'>
                     <input class="form-control" type='hidden' value='job_submit' name='source'>
+                    <input class="form-control" type='hidden' value='{{form.get_fields()}}' name='fields'>
         
                     {{form.get_form_html() | safe }}
 

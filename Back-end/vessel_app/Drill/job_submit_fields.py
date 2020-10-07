@@ -10,6 +10,9 @@ class JobSubmitForm:
     def get_form_html(self):
         return '\n'.join([field.get_html() for field in self.fields])
 
+    def get_fields(self):
+        return [field.input_name for field in self.fields]
+
 
 class NumberField:
     def __init__(self, label, input_name, min="", max="", placeholder="", value=""):
