@@ -1,6 +1,6 @@
 from vessel_app.Drill.job_submit_fields import JobSubmitForm, NumberField, DropdownField
 from vessel_app.Drill.drill import Drill
-from vessel_app.Drill.ml_models.segmentation import run_model as segmentation
+from vessel_app.Drill.ml_models.segmentation.model import run_model as segmentation
 
 # Populate Job Submit Form
 
@@ -17,7 +17,7 @@ def create_form():
     return job_submit_form
 
 def create_drill():
-    drill = Drill(segmentation, name='segmentation')
+    drill = Drill(segmentation, name='segmentation', description='This model segments out portions of the 3D model.')
 
     return drill
 

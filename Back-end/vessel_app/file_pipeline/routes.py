@@ -9,6 +9,7 @@ import shutil
 import pickle
 import time
 import logging
+import sys
 from datetime import datetime as dt
 from PIL import Image
 from io import BytesIO
@@ -24,7 +25,7 @@ from base64 import b64encode
 from vessel_app import db, bcrypt, dropzone, create_celery_app
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
 from .utils import request_id, dicom_to_thumbnail, unpickle_vtk
-from vessel_app.API import create_form, create_drill
+from vessel_app.Drill.ml_models.segmentation.driver import create_form, create_drill
 
 
 from . import bp
@@ -227,17 +228,46 @@ def browser():
     all_studies=all_studies,
     browserFields=browserFields)
 
+@bp.route('/choose_model', methods=['POST'])
+def choose_model():
+    if request.method == 'POST':
+        session_id = request.form.get('session_id')
+
+        models_and_forms = []
+
+        # import all models
+
+        # for folder in ml_models:
+        #   from folder.driver import create_form, create_drill
+        #
+        #   drill = create_drill()
+        #   form = create_form()
+        #   models_and_forms.append({
+        #   'drill': drill,
+        #   'form': form
+        # })
+        
+        
+
+        return render_template('choose_model.html', session_id=session_id, models_and_forms = models_and_forms)
+    else:
+        return 'BAD METHOD', 500    
+
 @bp.route('/job', methods=['POST'])
 def job():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
+        model_name = request.form.get('model_name')
 
+        print('Name of model folder:', model_name)
 
+        # get form from <model_name> folder
         job_submit_form = create_form()
 
+        return render_template('job_submit.html', form = job_submit_form, session_id=session_id)
     else:
         return 'BAD METHOD', 500
-    return render_template('job_submit.html', form = job_submit_form, session_id=session_id)
+    
 
 @bp.route('/delete', methods=['POST'])
 def delete():

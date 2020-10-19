@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div id='main-content'>
+    <div class="container">
+        <div class='card' style='margin: 3%;'>
+            <div class="form-group">
+                <h1 class='form-text-h1 colors-on-surface'><b>Choose machine learning model</b></h1>
+                <h2 class='form-text-h2 colors-on-surface'>The model chosen here will be run on the selected data</h2>
+                <form action='{{url_for("file_pipeline.job")}}' method='post'>
+
+                    <input class="form-control" type='hidden' value='{{session_id}}' name='session_id'>
+
+                    <!-- model selection table -->
+                    <div id='model-list' style='margin-top: 3em; margin-bottom: 3em;'>
+                        <select id='select-model-list' class="form-control" name='model_name' size="3">
+                            <option value='segmentation'>Segmentation</option>
+                            <option>Model 2</option>
+                            <option>Model 3</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Model Descriptions-->
+                    <h3 class='form-text-h3 colors-on-surface'>Model Description</h3>
+                    <div id='model-description'>
+                        <!-- description goes here-->
+                    </div>
+
+                    <!-- SUBMIT BUTTON-->
+                    <button action="" class="btn btn-main" type="submit" style="margin-top: 2%;" >Configure Model</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#select-model-list').change(function(){ // when a option is selected
+    var model_descriptions = JSON.parse('{{model_descriptions | tojson}}');
+    $("#model-description").text(model_descriptions[$(this).val()]);
+});
+</script>
+
+{% endblock content %}

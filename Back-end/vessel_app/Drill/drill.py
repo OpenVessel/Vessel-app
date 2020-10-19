@@ -10,9 +10,10 @@ class Drill:
     '''
         Base class to handle ML functions and their interactions with the database.
     '''
-    def __init__(self, model_function, name=''):
+    def __init__(self, model_function, name, description = ''):
         self.model_function = model_function
         self.name = name
+        self.description = description
 
 
 
