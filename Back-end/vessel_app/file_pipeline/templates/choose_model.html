@@ -14,15 +14,16 @@
                     <!-- model selection table -->
                     <div id='model-list' style='margin-top: 3em; margin-bottom: 3em;'>
                         <select id='select-model-list' class="form-control" name='model_name' size="3">
-                            <option value='segmentation'>Segmentation</option>
-                            <option>Model 2</option>
-                            <option>Model 3</option>
+                            {% for model in models_and_forms %}
+                                <option>{{ model }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     
                     <!-- Model Descriptions-->
                     <h3 class='form-text-h3 colors-on-surface'>Model Description</h3>
                     <div id='model-description'>
+                        No model selected
                         <!-- description goes here-->
                     </div>
 
@@ -36,9 +37,12 @@
 
 <script>
     $('#select-model-list').change(function(){ // when a option is selected
-    var model_descriptions = JSON.parse('{{model_descriptions | tojson}}');
-    $("#model-description").text(model_descriptions[$(this).val()]);
+    var models_and_forms = JSON.parse('{{models_and_forms | tojson}}');
+    var selected_description = models_and_forms[$(this).val()];
+    $("#model-description").text(selected_description);
 });
 </script>
+
+
 
 {% endblock content %}

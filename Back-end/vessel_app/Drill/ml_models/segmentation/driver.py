@@ -6,7 +6,7 @@ from vessel_app.Drill.ml_models.segmentation.model import run_model as segmentat
 
 def create_form():
 
-    job_submit_form = JobSubmitForm('Mask Segmentation')
+    job_submit_form = JobSubmitForm('Lung Segmentation')
 
     k_field = NumberField('K Value (1-20):', 'n_clusters', min=1, max=20, placeholder=2, value=2)
     segmentatation_dd = DropdownField('Segmentation Options:', 'segmentation_options', options={'Bone': 350, 'Blood': 55})
@@ -17,7 +17,7 @@ def create_form():
     return job_submit_form
 
 def create_drill():
-    drill = Drill(segmentation, name='segmentation', description='This model segments out portions of the 3D model.')
+    drill = Drill(segmentation, 'Lung Segmentation', description='This model segments out portions of the 3D model.')
 
     return drill
 

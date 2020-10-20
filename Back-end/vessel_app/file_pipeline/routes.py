@@ -24,7 +24,7 @@ from base64 import b64encode
 ## From vessel_app functions, classes, and models
 from vessel_app import db, bcrypt, dropzone, create_celery_app
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D
-from .utils import request_id, dicom_to_thumbnail, unpickle_vtk
+from .utils import request_id, dicom_to_thumbnail, unpickle_vtk, get_ml_drivers
 from vessel_app.Drill.ml_models.segmentation.driver import create_form, create_drill
 
 
@@ -34,12 +34,10 @@ from . import bp
 def before_fun():
     internal_endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
     #print(internal_endpoints)
-    print("Output before -------- ",session['last_endpoint'])
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
 
         # create session_id
         session['id'] = request_id()
-        print('SESSION_ID before request:', session['id'])
 
 
     if current_user.is_authenticated and session['last_endpoint'] == 'file_pipeline.viewer_3d' and request.endpoint != 'static' and request.endpoint in internal_endpoints:
@@ -233,23 +231,19 @@ def choose_model():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
 
-        models_and_forms = []
+        model_descriptions = {}
 
         # import all models
+        from vessel_app.Drill import ml_models
+        drivers = get_ml_drivers(ml_models) # from utils
+        for driver in drivers:
+            drill = driver.create_drill()
+            form = driver.create_form()
+            model_descriptions.update({
+                drill.name: drill.description})
 
-        # for folder in ml_models:
-        #   from folder.driver import create_form, create_drill
-        #
-        #   drill = create_drill()
-        #   form = create_form()
-        #   models_and_forms.append({
-        #   'drill': drill,
-        #   'form': form
-        # })
-        
-        
 
-        return render_template('choose_model.html', session_id=session_id, models_and_forms = models_and_forms)
+        return render_template('choose_model.html', session_id=session_id, models_and_forms=model_descriptions)
     else:
         return 'BAD METHOD', 500    
 
@@ -258,13 +252,17 @@ def job():
     if request.method == 'POST':
         session_id = request.form.get('session_id')
         model_name = request.form.get('model_name')
+        
+        print(f'Job Submit Page ({model_name})')
+        # get form from selected model
+        from vessel_app.Drill import ml_models
+        drivers = get_ml_drivers(ml_models) # from utils
+        for driver in drivers:
+            if driver.create_drill().name == model_name:
+                form = driver.create_form()
+                
 
-        print('Name of model folder:', model_name)
-
-        # get form from <model_name> folder
-        job_submit_form = create_form()
-
-        return render_template('job_submit.html', form = job_submit_form, session_id=session_id)
+        return render_template('job_submit.html', form = form, model_name=model_name, session_id=session_id)
     else:
         return 'BAD METHOD', 500
     
@@ -381,8 +379,15 @@ def viewer_3d():
         # create celery instance
         celery = create_celery_app() 
 
-        # create drill
-        drill = create_drill()
+        # create drill from selected model
+        model_name = request.form.get('model_name')
+        from vessel_app.Drill import ml_models
+        drivers = get_ml_drivers(ml_models) # from utils
+        for driver in drivers:
+            if driver.create_drill().name == model_name:
+                drill = driver.create_drill()
+            
+        # run drill
         dicom_data = drill.query_dicom(session_id) # get data
         completion_statement = drill.run_model_and_save(dicom_data, session_id_3d, model_params) # run model and save result 
         print(completion_statement)
