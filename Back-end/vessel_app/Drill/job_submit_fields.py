@@ -35,7 +35,7 @@ class DropdownField:
 
         self.label = label
         self.input_name = input_name
-        self.options = options # dict of value, label for dropdown
+        self.options = options # dict of (label, value) for dropdown
     
     def get_html(self):
         dropdown_options = ''''''

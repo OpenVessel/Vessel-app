@@ -28,7 +28,7 @@ class Drill:
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
 
         data = pickle.loads(dicom_data.dicom_stack)
-        dicom_list = [] 
+        dicom_list = []
         for byte_file in data:
             dicom_list.append(dcmread(DicomBytesIO(byte_file)))
 

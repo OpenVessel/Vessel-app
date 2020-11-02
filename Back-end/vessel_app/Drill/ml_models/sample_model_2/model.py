@@ -4,15 +4,15 @@ except:
     print('import pyvista failed')
 import numpy as np
 
-def run_model(dicom_list, keyword1, keyword2, keyword3, keyword4):
 
-    def machine_learning(*args):
+def machine_learning(*args):
 
-        data = pv.wrap(np.array(*args))
-        return data
+    data = pv.wrap(np.array(*args))
+    return data # pyvista object
 
-    data = machine_learning(keyword1, keyword2, keyword3, keyword4)
-    
 
+def run_model(dicom_list, my_number, condiment, color, my_number_2):
+
+    data = machine_learning(my_number, condiment, color, my_number_2)
     return data # pyvista object
 
