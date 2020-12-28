@@ -3,12 +3,12 @@
 {% block content %}
 
 
+<!-- VTK renders inside this div -->
+<div id="vtk-container" style="position:relative;"></div> 
 
-<div id="container" style="position:relative;"></div>
-<div>
-    <input type="file" accept=".vti" style="display: none;">
-    <input id="vti-path-holder" type="hidden" value="{{path_data}}">
-</div>
+<!-- VTK gets vti file from path -->
+<input id="vti-path-holder" type="hidden" value="{{path_data}}">
+
 
 <script type="text/javascript" src="{{url_for('static', filename='js/bundle.js')}}"> </script>  
 

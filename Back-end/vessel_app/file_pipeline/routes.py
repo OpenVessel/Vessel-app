@@ -413,8 +413,5 @@ def viewer_3d():
     object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
     print(object_3d_path)
     object_3d_path = object_3d_path.replace("\\", "/")
-    
-
-
 
     return render_template('3d_viewer.html', path_data=object_3d_path)

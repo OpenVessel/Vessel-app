@@ -1,3 +1,5 @@
+// to build bundle.js run 
+// webpack index.jsx bundle.js
 const webpack = require('webpack');
 const resolve = require('path').resolve;
 const path = require('path');

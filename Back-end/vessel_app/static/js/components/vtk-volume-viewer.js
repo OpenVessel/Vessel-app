@@ -25,26 +25,28 @@ export default class VTIViewer extends Component{
     }
 }
 
-function importAndMountVTK(path, rootContainer){   
-    console.log("consolelog owrking")
-    console.log(path);
-    console.log(rootContainer);
+function importAndMountVTK(path, rootContainer){  
+    
+    // Define render window
     const genericRenderer = vtkGenericRenderWindow.newInstance({
         background: [0, 0, 0],
         rootContainer,
     });
-    genericRenderer.setContainer(rootContainer);
+    genericRenderer.setContainer(rootContainer); // connect to <div id="vtk-container"> in 3d_viewer.html
     genericRenderer.resize();
     const renderWindow = genericRenderer.getRenderWindow();
     const renderer = genericRenderer.getRenderer();
     renderWindow.getInteractor().setDesiredUpdateRate(15.0);
+
+
     // Create Widget container
     const widgetContainer = document.createElement('div');
     widgetContainer.style.position = 'absolute';
     widgetContainer.style.top = 'calc(10px + 1em)';
     widgetContainer.style.left = '5px';
     widgetContainer.style.background = 'rgba(255, 255, 255, 0.3)';
-    rootContainer.appendChild(widgetContainer);    
+    rootContainer.appendChild(widgetContainer); 
+    
     // ------------------------ FUNCTIONALITY -------------------------------
     const globalDataRange = [0, 255];
     // -- setting up volume actor & mapper --
@@ -67,8 +69,6 @@ function importAndMountVTK(path, rootContainer){
         .then(() =>{    
             // processsing image data to be displayed nicely
             const imageData = reader.getOutputData(0);
-            
-            console.log(imageData);
             const dataArray = imageData.getPointData().getScalars() || imageData.getPointData().getArrays()[0];        
             const dataRange = dataArray.getRange();
             
@@ -89,8 +89,8 @@ function importAndMountVTK(path, rootContainer){
             );
             mapper.setSampleDistance(sampleDistance);
 
-            // ------  CONFIGUREING ACTOR ---------------
-   
+            // ------  CONFIGURING ACTOR ---------------
+
             actor.getProperty().setRGBTransferFunction(0, lookupTable);
             actor.getProperty().setScalarOpacity(0, piecewiseFunction);
             // actor.getProperty().setInterpolationTypeToFastLinear();
@@ -117,8 +117,8 @@ function importAndMountVTK(path, rootContainer){
             actor.getProperty().setSpecular(0.3);
             actor.getProperty().setSpecularPower(8.0);
             
-            // ------  CONFIGUREING WIDGET ---------------
-            // Somehow necessaryt for viewing???
+            // ------  CONFIGURING WIDGET ---------------
+            // Somehow necessary for viewing?
             
             const widget = vtkVolumeController.newInstance({
                 size: [400, 150],
