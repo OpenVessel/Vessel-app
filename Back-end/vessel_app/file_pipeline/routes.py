@@ -383,6 +383,7 @@ def viewer_3d():
         model_name = request.form.get('model_name')
         from vessel_app.Drill import ml_models
         drivers = get_ml_drivers(ml_models) # from utils
+        
         for driver in drivers:
             if driver.create_drill().name == model_name:
                 drill = driver.create_drill()
