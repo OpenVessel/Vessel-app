@@ -79,7 +79,10 @@ def account():
         if not img_bytes:
             print('no image')
             # no profile image
-            default_image_dir = str(os.getcwd()) + r'/vessel_app/static/img/default_user.png'
+            #default_image_dir = str(os.getcwd()) + r'/vessel_app/static/img/default_user.png'
+            default_image_dir = os.path.join(os.getcwd(), 'Back-end\\vessel_app\static\img\default_user.png')
+            #D:\L_pipe\Vessel-app\Back-end\vessel_app\static\img\default_user.png
+            print(default_image_dir)
             img_obj = Image.open(default_image_dir)
             img_bytes = BytesIO()
             img_obj.save(img_bytes, format='PNG')

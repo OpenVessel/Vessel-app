@@ -43,7 +43,9 @@ def graphing(file):
         ax.set_aspect('auto')
         plt.axis('off')
         strpath = os.getcwd()
-        strFile = os.path.join(strpath, "vessel_app", "static","temp","testplot.jpg")
+        strFile = os.path.join(strpath,"Back-end" , "vessel_app", "static","temp","testplot.jpg")
+        #D:\L_pipe\Vessel-app\Back-end\vessel_app\static\temp\testplot.jpg
+        #'D:\\L_pipe\\Vessel-app\\vessel_app\\Back-end\\static\\temp\\testplot.jpg'
         if os.path.isfile(strFile):
                 os.remove(strFile)   # Opt.: os.system("rm "+strFile)
         plt.savefig(strFile)

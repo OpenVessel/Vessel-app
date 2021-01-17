@@ -26,7 +26,7 @@ export default class VTIViewer extends Component{
 }
 
 function importAndMountVTK(path, rootContainer){   
-    console.log("consolelog owrking")
+    console.log("console log working")
     console.log(path);
     console.log(rootContainer);
     const genericRenderer = vtkGenericRenderWindow.newInstance({

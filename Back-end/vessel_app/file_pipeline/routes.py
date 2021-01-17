@@ -319,7 +319,7 @@ def viewer_3d():
 
 
     # update path_3d
-    temp_dir = os.path.join(os.getcwd(), "vessel_app", "static", "users_3d_objects" )
+    temp_dir = os.path.join(os.getcwd(), "Back-end" ,"vessel_app", "static", "users_3d_objects" )
     temp_user_dir = "user_" + str(current_user.id)
     session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
 
@@ -348,7 +348,7 @@ def viewer_3d():
         drill = Drill(segmentation, name='segmentation')
         print('Running ', drill)
         dicom_data = drill.query_dicom(session_id) # get data
-        completion_statement = drill.run_model_and_save(dicom_data, session_id_3d, n_clusters=k) # run model and save result 
+        completion_statement = drill.run_model_and_save(dicom_data, session_id, session_id_3d, n_clusters=k) # run model and save result 
         print(completion_statement)
 
         # Call worker and save result to database

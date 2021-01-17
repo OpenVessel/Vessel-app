@@ -75,7 +75,9 @@ def get_pixels_hu(slices):
         
         intercept = slices[slice_number].RescaleIntercept
         slope = slices[slice_number].RescaleSlope
-        
+        #intercept = slices[slice_number].RescaleIntercept if 'RescaleIntercept' in slices[0] else -1024
+        #slope = slices[slice_number].RescaleSlope if 'RescaleSlope' in slices[0] else 1
+
         if slope != 1:
             image[slice_number] = slope * image[slice_number].astype(np.float64)
             image[slice_number] = image[slice_number].astype(np.int16)
@@ -325,6 +327,7 @@ def run_model(dicom_list, n_clusters=2):
     print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
 
     ## STEP TWO of Masking pipeline
+    #print(patient[1])
     image_stack = get_pixels_hu(patient)
 
     ## STEP THREE RESAMPLING

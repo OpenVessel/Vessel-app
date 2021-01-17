@@ -34,7 +34,7 @@ class Drill:
         return dicom_list # list of pydicom.dataset.FileDataset
 
 
-    def run_model_and_save(self, data, session_id_3d, *args, **kwawrgs):
+    def run_model_and_save(self, data, session_id, session_id_3d, *args, **kwargs):
         '''
             runs the function specified in the constructor of the drill and saves result to db under session_id_3d. Takes data (from a query function), session_id_3d, and any other args and kwargs.
             returns: done statement 
