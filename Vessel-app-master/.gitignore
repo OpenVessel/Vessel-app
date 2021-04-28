@@ -1,0 +1,20 @@
+
+*.db
+Back-end/migrations/*
+Back-end/vessel_app/static/node_modules/*
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyc
+
+*$py.class
+vessel_env/*
+
+Back-end/__pycache__/wsgi.cpython-37.pyc
+Back-end/__pycache__/wsgi.cpython-37.pyc
+Back-end/vessel_app/auth/__pycache__/__init__.cpython-37.pyc
+Back-end/vessel_app/auth/__pycache__/forms.cpython-37.pyc
+Back-end/vessel_app/auth/__pycache__/routes.cpython-37.pyc
+
+bundle.js
+node_modules/

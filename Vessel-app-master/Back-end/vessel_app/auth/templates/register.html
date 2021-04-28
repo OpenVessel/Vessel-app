@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- Bootstrap-->
+    <script src="{{url_for('static', filename='bootstrap/js/bootstrap.min.js' )}}"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
+
+    <!-- Additional CSS-->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/theme.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/auth.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container-fluid d-flex flex-column" style='height: 100vh;'>
+    <div class='row flex-fill'>
+        <div class="col-sm-7" id='scan-gif' style='background-color: black;'>
+            <img src="{{url_for('static', filename='img/Rotating_Scan.gif')}}" alt='rotating scan' width='100%' height='100%'>
+        </div>
+        <div class="auth-form col-sm-5 text-center" id='register-page'>
+            
+            <!-- BACK BUTTON -->
+            <div style='text-align: left; padding-bottom: 2%;'>
+                <a id='back-btn' href=" {{url_for('main.index')}} " style='font-size:50px;'><i class="ri-arrow-left-circle-line"></i></a>
+            </div>
+
+            <!-- REGISTRATION FORM-->
+            <form action="" method="POST">
+                {{form.hidden_tag() }}
+                <!--- form.validate_on_submit(): will not execute without {{ form.csrf_token }}  -->
+                <img src="{{url_for('static', filename='img/OpenVessel_Logo.png')}}" alt='OpenVessel' height='10%' width='100%'> 
+                <fieldset class="form-group">
+                    <h2 class="sr-only colors-on-secondary">Login Form</h2>
+                    <div class="illustration">
+
+                        <!---  USERNAME  ----->
+                        <div class="form-group" placeholder="Username">
+                            {{ form.username.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                            {% if form.username.errors %}
+                                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span class='colors-error'>{{ error }}</span>
+                                {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.username(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <!--  EMAIL  -->
+                        <div class="form-group" placeholder='Email'>
+                            {{ form.email.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                            {% if form.email.errors %}
+                                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.email(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <!---  PASSWORD ----->
+                        <div class="form-group">
+                            {{ form.password.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                            {% if form.password.errors %}
+                                {{ form.password(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.password(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <!--- Confirm Password  -->
+                        <div class="form-group" placeholder='Confirm Password'>
+                            {{ form.confirm_password.label(class="form-control-label colors-on-secondary form-text-h2") }}
+                            {% if form.confirm_password.errors %}
+                                {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.confirm_password.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.confirm_password(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+
+                        <div class='form-group text-center'>
+                            {{ form.recaptcha }}
+                        </div>
+                        <div class="form-group">
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-main btn-block") }}
+                        </div>
+                </fieldset>
+                <!-- <a class="forgot colors-on-secondary form-text-h3" href="#">Forgot your email or password?</a> -->
+            </form>
+            <div>Already have an account?</div>
+            <a class='form-text-h3' href=" {{url_for('auth.login')}} ">Login</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
