@@ -24,3 +24,5 @@ node_modules/
 *.pyc
 Back-end/vessel_app/auth/__pycache__/__init__.cpython-37.pyc
 Back-end/vessel_app/static/users_3d_objects/user_1/data_object.vti
+Back-end/__pycache__/wsgi.cpython-37.pyc
+Back-end/migrations/__pycache__/env.cpython-37.pyc
