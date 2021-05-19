@@ -17,6 +17,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from vessel_app.config import Config
+import flask_monitoringdashboard as dashboard
+
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -29,13 +32,17 @@ celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 def create_app(config_class=Config):
 
-    app = Flask(__name__, instance_path = 'Vessel-app-master/Back-end/user_3d_objects') ## Global Flask instance application Factory???
+    root_path = os.getcwd()
+    print(root_path)
+    instance_path = root_path + "\\user_3d_objects"
+    app = Flask(__name__, instance_path = instance_path) ## Global Flask instance application Factory???
     app.config.from_object(Config) # reference to config.py
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     dropzone.init_app(app)
     celery.conf.update(app.config)
+    dashboard.bind(app)
     # logs.init_app(app)
 
     login_manager.init_app(app)
@@ -57,6 +64,11 @@ def create_app(config_class=Config):
         app.register_blueprint(main_bp)
         from .file_pipeline import bp as file_pipeline_bp
         app.register_blueprint(file_pipeline_bp)
+        from .submit_job import bp as submit_job_bp
+        app.register_blueprint(submit_job_bp)
+        from .viewer_3d import bp as viewer_3d_bp
+        app.register_blueprint(viewer_3d_bp)
+
 
         #celery -A vessel_app.celery worker -l info -P gevent
 
@@ -81,16 +93,6 @@ def create_app(config_class=Config):
 
         return app
 
-@app.route('/protected/<path:filename>')
-@special_requirement
-def protected(filename):
-	try:
-		return send_from_directory(
-			os.path.join(app.instance_path, ''),
-			filename
-		)
-	except:
-		return redirect(url_for('main'))
     
 def create_celery_app(app=None):
         app = app or create_app(Config)

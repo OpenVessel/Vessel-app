@@ -73,7 +73,6 @@ def update_last_endpoint(response):
     return response
 
 
-
 @bp.route("/upload",  methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -232,14 +231,6 @@ def browser():
     all_studies=all_studies,
     browserFields=browserFields)
 
-@bp.route('/job', methods=['POST'])
-def job():
-    if request.method == 'POST':
-        session_id = request.form.get('session_id')
-    else:
-        return 'BAD METHOD', 500
-    return render_template('job_submit.html', session_id=session_id)
-
 @bp.route('/delete', methods=['POST'])
 def delete():
     if request.method == 'POST':
@@ -293,84 +284,3 @@ def delete_3d():
         return redirect(url_for('main.index'))
 
 
-@bp.route('/dicom_viewer', methods=['POST'])
-def dicom_viewer():
-    if request.method == 'POST':
-        session_id = request.form.get('session_id')
-        print('rendering dicom viewer for ID', session_id)
-        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
-        return render_template('dicom_viewer.html')
-    else:
-        # this should never get called
-        return redirect(url_for('main.index'))
-
-@bp.route('/3d_viewer', methods=['POST'])
-def viewer_3d():
-
-    source = request.form.get('source')
-
-    # you should only get here from browser and job submit
-    if source not in ['browser', 'job_submit']:
-        redirect(url_for('file_pipeline.browser'))
-
-
-    # update path_3d
-    temp_dir = os.path.join(os.getcwd(), "vessel_app", "static", "users_3d_objects" )
-    temp_user_dir = "user_" + str(current_user.id)
-    session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
-
-    if not os.path.isdir(session['path_3d']):
-        os.mkdir(path = session['path_3d'])
-
-    print('getting object_3d from folder:', session['path_3d'])
-
-    print(f'Generating model from {source}')
-
-
-    if source == 'job_submit':
-        # get request data
-        session_id = request.form.get('session_id')
-        k = int(request.form.get('k'))
-        segmentation_options = request.form.get("segmentation_options") # blood, bone, etc.
-
-        # create a session_id_3d
-        session_id_3d = str(request_id())
-
-        # Call worker and save result to database
-        result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
-        result_output = result.wait(timeout=None, interval=0.5)
-
-        #test_data = load_data.delay(session_id)            
-        #print(test_data)
-
-        ## WORKER CALL CHain workflow
-        # celery.chain(query_db_insert() , 
-        # load_data(),
-        # resample(),
-        # lung_segmentation(),
-        # pyvista_call(), 
-        
-        # ).apply()    
-
-        
-    elif source == "browser":
-        session_id_3d = request.form.get('session_id_3d')
-
-    # query database for object_3D
-    data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
-    data_as_pyvista_obj = unpickle_vtk(data.object_3D)
-
-    # save to .vti file
-    object_3d_path = os.path.join(session['path_3d'], "data_object.vti")
-
-
-    data_as_pyvista_obj.save(object_3d_path)
-    print(object_3d_path)
-    object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
-    print(object_3d_path)
-    object_3d_path = object_3d_path.replace("\\", "/")
-    
-
-
-
-    return render_template('3d_viewer.html', path_data=object_3d_path)

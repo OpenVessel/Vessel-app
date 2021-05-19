@@ -67,7 +67,7 @@
                     <table style="border-spacing: 20px 20px; border: none; align-self: center;">
                         <tr>
                             <td> <!-- Submit Job button -->
-                                <form action="{{url_for('file_pipeline.job')}}" method="post">
+                                <form action="{{url_for('submit_job.job')}}" method="post">
                                     <input type="hidden" name="session_id" value="{{ study['session_id'] }}">
                                     <input class="btn btn-main" type="submit" value="Submit To Machine Learning">
                                 </form>
@@ -81,13 +81,6 @@
                             </td>
                             {% endif %}
 
-                            <!-- Dicom Viewer button -->
-                            <!-- <td>  
-                                <form action="{{url_for('file_pipeline.dicom_viewer')}}" method="post">
-                                    <input type="hidden" name="session_id" value="{{ study['session_id'] }}">
-                                    <input class="btn btn-success" type="submit" value="Dicom Viewer">
-                                </form>
-                            </td> -->
                         </tr> 
 
                         <!-- 3d object viewer dropdown and submit -->
@@ -103,7 +96,7 @@
                                                     <p>{{session_id_3d['study_df']}}</p>
                                                 </td>
                                                 <td> <!-- Generate button -->
-                                                    <form action='{{url_for("file_pipeline.viewer_3d")}}' method='post'>
+                                                    <form action='{{url_for("viewer_3d.viewer_3d")}}' method='post'>
                                                         <input class="form-control" type='hidden' value='{{session_id_3d[1]}}' name="session_id_3d">
                                                         <input class="form-control" type='hidden' value='browser' name='source'>
                                                         <input class="btn btn-main" type="submit" value="View">   
