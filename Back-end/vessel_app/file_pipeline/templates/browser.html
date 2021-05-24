@@ -26,7 +26,6 @@
                     <h1 class='form-text-h1'><b>Study Name:</b> {{study['study_name']}} </h1>
                     <p class='form-text-h2'><b>Description:</b> {{study['description']}}</p>
                 </div>
-
                 
                 <div style='padding-bottom: 2%;'>
                     <!-- THUMBNAIL -->
@@ -52,7 +51,7 @@
                         <div style='float: left; text-align: right;'>
                             {% for field in browserFields %}   
                                 {% if field in study['study_df'] %}
-                                    <p class='form-text-h3'>  {{ study['study_df'][field].iloc[0].value.decode("utf-8") }} </p>
+                                    <p class='form-text-h3'>  {{ study['study_df'][field].values[0] }} </p>
                                 {% else %}
                                     <p class='form-text-h3'> NO DATA </p>
                                 {% endif %}
@@ -118,6 +117,34 @@
                         </tr>
                         {% endif %}
 
+                        <tr> 
+                            <td colspan="2">
+                                <button type="button" class="collapsible">Convert data</button>
+                                <div class="content">
+                                    <table style="border-spacing: 20px 20px;">
+                                            <tr>
+                                                <td>
+                                                    <p>"{{ study['session_id'] }}"</p>
+                                                </td>
+                                                <td> <!-- Generate button -->
+                                                    <form action='{{url_for("conversion_code.convert")}}' method='post'>
+                                                        <label for="cars">file type:</label> <select id="cars" name="cars">
+                                                            <option value="matlab">Matlab</option>
+                                                            <option value="png">PNG</option>
+                                                            <option value="jepg">JEPG</option>
+                                                          </select>
+                                                        <input class="form-control" type='hidden' value="{{ study['session_id'] }}" name="session_id">
+                                                        <input class="form-control" type='hidden' value='browser' name='source'>
+                                                        <input class="btn btn-main" type="submit" value="Download"> 
+                                                        
+                                                        
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                    </table>               
+                                </div>
+                            </td>
+                        </tr>
                     </table>
                 </div>
                 

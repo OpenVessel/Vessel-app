@@ -33,7 +33,6 @@ celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 def create_app(config_class=Config):
 
     root_path = os.getcwd()
-    print(root_path)
     instance_path = root_path + "\\user_3d_objects"
     app = Flask(__name__, instance_path = instance_path) ## Global Flask instance application Factory???
     app.config.from_object(Config) # reference to config.py
@@ -68,6 +67,8 @@ def create_app(config_class=Config):
         app.register_blueprint(submit_job_bp)
         from .viewer_3d import bp as viewer_3d_bp
         app.register_blueprint(viewer_3d_bp)
+        from .conversion_code import bp as conversion_code_bp
+        app.register_blueprint(conversion_code_bp)
 
 
         #celery -A vessel_app.celery worker -l info -P gevent

@@ -21,7 +21,7 @@ from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
-from vessel_app.models import User, Dicom, DicomFormData, Object_3D
+from vessel_app.models import User, Dicom, DicomFormData, Object_3D, DicomMetaData
 from .celery_tasks import data_pipeline, query_db_insert, load_data, lung_segmentation, pyvista_call, query_db_insert, resample
 from .utils import request_id, dicom_to_thumbnail
 from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2
@@ -123,6 +123,12 @@ def dropzone_handler():
         median_i = len(dicom_list)//2
         median_dicom = dicom_list[median_i]
 
+        ## Metadata call  ## heres validation code/new class call for metadata checks 
+        study_date = median_dicom.StudyDate
+        study_id = median_dicom.StudyID
+        modality = median_dicom.Modality 
+
+
         ### generate thumbnail from median file
         tn_bytes = dicom_to_thumbnail(median_dicom)
 
@@ -130,6 +136,18 @@ def dropzone_handler():
 
         print("Session dropzone handler", session['id'])
         ## database upload
+
+        meta_data_batch = DicomMetaData( 
+            user_id = current_user.id,
+            study_date = study_date,
+            study_id = study_id, 
+            modality = modality,
+            file_count= file_count_global,
+            session_id=str(session['id']),
+            thumbnail = tn_bytes
+        )
+
+
         batch = Dicom(
             user_id=current_user.id,
             dicom_stack = binary_blob,
@@ -138,6 +156,7 @@ def dropzone_handler():
             session_id=str(session['id'])
             )
 
+        db.session.add(meta_data_batch)
         db.session.add(batch)
         db.session.commit()
 
@@ -167,26 +186,29 @@ def browser():
 
     print('generating browser')
     ###### Query Database and Indexing ######
-    dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
-
+    # dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
+    dicom_meta_data = DicomMetaData.query.filter_by(user_id=current_user.id).all()
+    print(len(dicom_meta_data))
+    # form_data = DicomFormData.query.filter_by(session_id=session_id).all()
     #FileDataset part pydicoms
     all_studies = []
     images_list_path = []
 
     ######  DICOM data to dataframes function ######
     print('---- BROWSER DATA ----')
-    for file_num, k in enumerate(dicom_data): #k is each row in the query database
-        data = pickle.loads(k.dicom_stack)
+    for file_num, k in enumerate(dicom_meta_data): #k is each row in the query database
         raw_image = BytesIO(k.thumbnail).read()
         file_count = k.file_count
         session_id = k.session_id
-
-        print(k.formData)
+        study_id = k.study_id
+        study_date = k.study_date
+        modality = k.modality
+        form_data = DicomFormData.query.filter_by(session_id=session_id).all()
+        print(form_data)
         print('CARD SESSION ID:', session_id)
-
-        study_name = k.formData.study_name
-        description = k.formData.description
-
+        for file_num, j in enumerate(form_data):
+            study_name = j.study_name
+            description = j.description       
         ## session_id_3d
         try:
             session_id_3ds = [(k.date_uploaded, k.session_id_3d) for k in Object_3D.query.filter_by(session_id=session_id).all()]
@@ -195,26 +217,25 @@ def browser():
 
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each
+        print(study_date)
+        print(study_id)
+        print(modality)
 
-        for byte_file in data: # list of all dicom files in binary
-            raw = DicomBytesIO(byte_file)
-            dicom_dict = []
-            for k,v in dcmread(raw).items():
-                try:
-                    pair = (dd(k),v)
-                except KeyError:
-                    pair = (str(k), v)
-                dicom_dict.append(pair)
-            dicom_dict = dict(dicom_dict)
-            # dicom_dict = dict([(dd(k),v) for k,v in dcmread(raw).items()])
-            all_rows_in_study.append(dicom_dict)
-            cols.append(list(dicom_dict.keys()))
+        dicom_dict = {
+            "Study Date":study_date, 
+        "Study ID":study_id, 
+        "Modality":modality
+        }
+
+        all_rows_in_study.append(dicom_dict)
+        cols.append(list(dicom_dict.keys()))
+
         all_encompassing_cols = list(set([x for l in cols for x in l]))     # [[a, b, c], [a, d]] --flatted, set --> [a, b, c, d]
         study_df = pd.DataFrame(all_rows_in_study, columns=all_encompassing_cols)
-
         # turn bytes of thumbnail into ascii string
         file_thumbnail = base64.b64encode(raw_image).decode('ascii')
 
+## we want to keep this study 
         all_studies.append({
             'study_df': study_df,
             'file_thumbnail': file_thumbnail,
@@ -225,11 +246,13 @@ def browser():
             'description': description
             })
 
-    browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
+    browserFields = ["Study Date", "Study ID", "Modality"]
     #print("Print all studies list:",all_studies)
+
+
     return render_template('browser.html',
-    all_studies=all_studies,
-    browserFields=browserFields)
+    all_studies=all_studies, ## all_studies dict?
+    browserFields=browserFields) ## browserFields 
 
 @bp.route('/delete', methods=['POST'])
 def delete():
@@ -238,13 +261,15 @@ def delete():
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
         data_3ds = Object_3D.query.filter_by(session_id=session_id).all()
         dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
+        dicom_meta_data = DicomMetaData.query.filter_by(session_id=session_id).first()
         # dicom and form data
         try:
             db.session.delete(dicom_data)
             db.session.delete(dicom_form_data)
+            db.session.delete(dicom_meta_data)
             print(dicom_data, dicom_form_data, 'deleted successfully')
         except:
-            print('failed to delete', dicom_data, dicom_form_data)
+            print('failed to delete', dicom_data, dicom_form_data,dicom_meta_data )
             return redirect(url_for('errors.internal_error'))
         # 3d data
         if data_3ds != []:
