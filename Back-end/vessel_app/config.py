@@ -17,7 +17,7 @@ class Config:
 
     DEMO = False
     DEMO_EMAIL = 'admin2@example.com'
-
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET")
 
     ########### Production config
     #SECRET_KEY = environ.get('SECRET_KEY')

@@ -19,19 +19,23 @@ from flask_migrate import Migrate
 from vessel_app.config import Config
 import flask_monitoringdashboard as dashboard
 
-
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
 dropzone = Dropzone()
 login_manager = LoginManager()
+jwt = JWTManager()
+cors = CORS()
 # logs = LogSetup()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 
 def create_app(config_class=Config):
 
+    # https://owasp.org/www-project-top-ten/
     root_path = os.getcwd()
     instance_path = root_path + "\\user_3d_objects"
     app = Flask(__name__, instance_path = instance_path) ## Global Flask instance application Factory???
@@ -42,6 +46,8 @@ def create_app(config_class=Config):
     dropzone.init_app(app)
     celery.conf.update(app.config)
     dashboard.bind(app)
+    jwt.init_app(app)
+    cors.init_app(app)
     # logs.init_app(app)
 
     login_manager.init_app(app)
@@ -69,6 +75,10 @@ def create_app(config_class=Config):
         app.register_blueprint(viewer_3d_bp)
         from .conversion_code import bp as conversion_code_bp
         app.register_blueprint(conversion_code_bp)
+        from .global_api import bp as global_api_bp
+        app.register_blueprint(global_api_bp, url_prefix='/api')
+        # flask + react # Last resort
+        # https://www.youtube.com/watch?v=YW8VG_U-m48
 
 
         #celery -A vessel_app.celery worker -l info -P gevent

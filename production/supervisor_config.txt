@@ -8,6 +8,11 @@ stopasgroup=true
 killasgroup=true
 stderr_logfile=/var/log/openvessel/openvessel.err.log
 stdout_logfile=/var/log/openvessel/openvessel.out.log
+[program:fron-end]
+directory=/home/leslie/Vessel-app/Front-end
+command=/home/leslie/Vessel-app/vessel_env/bin/ npm run build 
+stderr_logfile=/var/log/openvessel/front-end.err.log
+stdout_logfile=/var/log/openvessel/front-end.out.log
 [program:celery]
 directory=/home/leslie/Vessel-app/Back-end
 command=/home/leslie/Vessel-app/vessel_env/bin/celery -A vessel_app.file_pipeline.celery_tasks.celery $user=leslie

@@ -34,10 +34,11 @@ def before_fun():
     internal_endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]
     #print(internal_endpoints)
     try:
-        print("Output before -------- ",session['last_endpoint'])
+        # print("Output before -------- ",session['last_endpoint'])
+        pass
     except:
         session['last_endpoint'] = 'nowhere'
-        print("Output before -------- ",session['last_endpoint'])
+        # print("Output before -------- ",session['last_endpoint'])
     
     if current_user.is_authenticated and request.endpoint =='file_pipeline.upload':
 
@@ -204,8 +205,6 @@ def browser():
         study_date = k.study_date
         modality = k.modality
         form_data = DicomFormData.query.filter_by(session_id=session_id).all()
-        print(form_data)
-        print('CARD SESSION ID:', session_id)
         for file_num, j in enumerate(form_data):
             study_name = j.study_name
             description = j.description       
@@ -217,9 +216,6 @@ def browser():
 
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each
-        print(study_date)
-        print(study_id)
-        print(modality)
 
         dicom_dict = {
             "Study Date":study_date, 

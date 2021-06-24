@@ -106,3 +106,85 @@ def viewer_3d():
     
 
     return render_template('3d_viewer.html', path_data=object_3d_path)
+
+@bp.route('/3d_viewer_drill', methods=['POST'])
+def viewer_3d_drill():
+
+    source = request.form.get('source')
+
+    # you should only get here from browser and job submit
+    if source not in ['browser', 'job_submit']:
+        redirect(url_for('file_pipeline.browser'))
+
+
+    # update path_3d
+    temp_dir = os.path.join(os.getcwd(), "vessel_app", "static", "users_3d_objects" )
+    temp_user_dir = "user_" + str(current_user.id)
+    session['path_3d'] = os.path.join(temp_dir, temp_user_dir)
+
+    if not os.path.isdir(session['path_3d']):
+        os.mkdir(path = session['path_3d'])
+
+    print('getting object_3d from folder:', session['path_3d'])
+
+    print(f'Generating model from {source}')
+
+
+    if source == 'job_submit':
+
+        # get params for model from form in request
+        form_fields = eval(request.form.get('fields')) # string representation of list needs to be converted to list with eval()
+        model_params = {}
+        for field in form_fields:
+            value = request.form.get(field)
+
+            # turn numeric values into floats
+            if value.isnumeric():
+                try:
+                    value = int(value)
+                except:
+                    value = float(value)
+
+            model_params.update({field: value})
+        
+
+        # get relevant ids
+        session_id = request.form.get('session_id')
+        session_id_3d = str(request_id())
+        
+        # create drill from selected model
+        model_name = request.form.get('model_name')
+        from vessel_app.Drill import ml_models
+        drivers = get_ml_drivers(ml_models) # from utils
+        for driver in drivers:
+            if driver.create_drill().name == model_name:
+                drill = driver.create_drill()
+            
+        # run drill
+        dicom_data = drill.query_dicom(session_id) # get data
+        completion_statement = drill.run_model_and_save(dicom_data, session_id_3d, model_params) # run model and save result 
+        print(completion_statement)
+
+        # Call worker and save result to database
+        # result = data_pipeline.delay(session_id, session_id_3d, n_clusters=k)
+        # result_output = result.wait(timeout=None, interval=0.5)   
+
+        
+    elif source == "browser":
+        session_id_3d = request.form.get('session_id_3d')
+
+    # query database for object_3D
+    data = Object_3D.query.filter_by(session_id_3d=session_id_3d).first()
+    data_as_pyvista_obj = unpickle_vtk(data.object_3D)
+
+    # save to .vti file
+    object_3d_path = os.path.join(session['path_3d'], "data_object.vti")
+
+
+    data_as_pyvista_obj.save(object_3d_path)
+    print(object_3d_path)
+    object_3d_path = os.path.relpath(object_3d_path, start = "vessel_app")
+    print(object_3d_path)
+    object_3d_path = object_3d_path.replace("\\", "/")
+
+    return render_template('3d_viewer.html', path_data=object_3d_path)

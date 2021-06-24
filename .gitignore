@@ -19,3 +19,8 @@ Back-end/vessel_app/auth/__pycache__/routes.cpython-37.pyc
 bundle.js
 node_modules/
 .DS_Store
+Back-end/vessel_app/data_saved/matlab_session_id_c2f7746e-5a43-4808-a163-d9807ca504ba/matlab_slice_1.mat
+*.mat
+Back-end/vessel_app/data_saved/matlab_session_id_c2f7746e-5a43-4808-a163-d9807ca504ba/session_id_c2f7746e-5a43-4808-a163-d9807ca504ba.zip
+*.png
+*.zip

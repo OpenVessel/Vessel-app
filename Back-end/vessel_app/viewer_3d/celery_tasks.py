@@ -15,7 +15,6 @@ from flask import g
 
 #from vessel_app.file_pipeline.celery_tasks.data_pipeline import celery
 
-
 # @task_prerun.connect
 # def celery_prerun(*args, **kwargs):
 #     #print g
@@ -26,6 +25,7 @@ from flask import g
 #### celery -A vessel_app.celery worker -l info -P gevent
 #### CELERY Task Queue block 
 ## celery -A vessel_app.file_pipeline.celery_tasks.celery worker --loglevel=info -P gevent
+##etc supervisor script 
 #  celery -A vessel_app.viewer_3d.celery_tasks.celery worker --loglevel=info -P gevent
 celery = create_celery_app()
 @celery.task()
