@@ -1,3 +1,4 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/90aacda9-4079-466d-bda6-394177f5ef66/deploy-status)](https://app.netlify.com/sites/frosty-bartik-4a9d3d/deploys)
 # OpenVessel
 
 ## NOTE: This version of the webapp was what was used in the September 10 Nittany AI competition.  
