@@ -83,6 +83,39 @@ class DicomFormData(db.Model):
     def __repr__(self):
         return f"DicomFormData('{self.study_name}', '{self.description}')"
 
+
+class FalseForm(db.Model):
+    __tablename__ = 'FalseForm'
+    id = db.Column(db.Integer, primary_key=True)  
+    session_id = db.Column(db.String(200), db.ForeignKey('dicom.session_id'), nullable=False)
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    study_name = db.Column(db.String(300), nullable=False) 
+    description = db.Column(db.String(1000), nullable=False)
+    
+    # metadata_id = db.Column(db.Integer, db.ForeignKey(DicomMetaData.id), nullable=False)
+    # session_id = db.Column(db.String(200), db.ForeignKey('DicomMetaData.session_id'), nullable=False)
+    def __repr__(self):
+        return f"FalseForm('{self.study_name}', '{self.description}')"
+
+class FalseDicom(db.Model):
+    
+    __tablename__ = 'FalseDicom'
+    ## data unqine id 
+    id = db.Column(db.Integer, primary_key=True)  
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    temp_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    dicom_stack = db.Column(db.LargeBinary, nullable=False)
+    file_count = db.Column(db.Integer, nullable=True) 
+    session_id = db.Column(db.String(200), nullable=False)
+    # formData = db.relationship('FalseForm', uselist=True, backref='author', lazy=True) #uselist one to one relationship
+    
+
+    def __repr__(self):
+        return f"FalseDicom('{self.date_uploaded}')"
+
+
+
+
 class Object_3D(db.Model):
     ## data unqine id 
     id = db.Column(db.Integer, primary_key=True)  

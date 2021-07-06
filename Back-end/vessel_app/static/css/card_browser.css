@@ -6,10 +6,22 @@
 
 .options-bar {
   width:auto; 
-  height:15px;
-  background-color: #111;
+  height:50px;
+  background: whitesmoke;
 }
 
+li.options-bar  {
+  font-size:30px;
+  display: inline;
+  float: right;
+  padding: 10px;
+
+  background: whitesmoke;
+}
+ul.options-bar {
+  padding-right: 30px;
+
+}
 .card {
     /* Add shadows to create the "card" effect */
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -30,9 +42,10 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
-table {
-  border:1px solid #FFFFFF; 
-  float:left;
+.card table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
 }
 
 th td {

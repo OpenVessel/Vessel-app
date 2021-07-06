@@ -11,15 +11,17 @@
 
     <!-- FontAwesome -->
     <!-- Boostrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        <!-- JQuery  -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+        <!-- Javascript Calls  -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='fonts/font-awesome.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='fonts/ionicons.min.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/Header-Blue.css')}}">
+    <!-- <link rel="stylesheet" href="{{url_for('static', filename='css/Header-Blue.css')}}"> -->
 
     <!-- Our CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/theme.css')}}">
@@ -27,56 +29,56 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/file_pipeline.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/card_browser.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/navbar.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/font.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/skeleton.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/normalize.css')}}">
 
-
-    <!-- Fonts -->
+    <!-- Fonts font-family:"mr-eaves-xl-modern"; font-family:"brother-1816";-->
     <link rel="stylesheet" href="https://use.typekit.net/lza0fzc.css">
     <!-- Old font
     <link rel="stylesheet" href="{{url_for('static', filename='css/sanspro.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/lora.css')}}"> -->
 
 
-    <title>Vessel</title>
+    <title>OpenVessel</title>
 
 </head>
 <body>
-<div class="header-blue">
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
-        <div class="container-fluid"><a class="navbar-brand" href="{{ url_for('main.index')}}">OpenVessel</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-                <ul class="navbar-nav mr-auto">
+    <div class="navbar">
+        <ul>
+            <a href="{{ url_for('main.index')}}">OpenVessel</a>
                     {% if config['DEMO'] %}
-                        <li class="nav-item"><a class="nav-link"role="presentation" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
+                        <li><a class="nav-link" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
                     {% else %}
                         {% if current_user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.getting_started') }}">Getting Started</a></li>
-                            <li class="nav-item"><a  class="nav-link" role="presentation" href="{{ url_for('file_pipeline.upload')}}">Upload</a></li>
-                            <li class="nav-item"><a class="nav-link"role="presentation" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
-                            <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('auth.account')}}">Account</a></li>
+                            <li><a class="nav-link"  href="{{ url_for('main.getting_started') }}">Getting Started</a></li>
+                            <li><a class="nav-link" href="{{ url_for('file_pipeline.upload')}}">Upload</a></li>
+                            <li><a class="nav-link" href="{{ url_for('file_pipeline.browser')}}">Browser</a></li>
+                            <li><a class="nav-link" href="{{ url_for('auth.account')}}">Account</a></li>
+                            <li class="nav-item-right"><a class="btn btn-light action-button" href="{{ url_for('auth.logout') }}">Logout</a></li>
                         {% else %}
-                            <li class="nav-item" role="presentation"><a class="nav-link" role="presentation" href="{{ url_for('main.index')}}">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" role="presentation" href="{{ url_for('main.getting_started') }}">Getting Started</a></li>
+                            <li ><a class="nav-link"  href="{{ url_for('main.index')}}">Home</a></li>
+                            <li ><a class="nav-link"  href="{{ url_for('main.getting_started') }}">Getting Started</a></li>
+                            <li ><a class="nav-link"  href="{{ url_for('main.conversion_page')}}"> Convert DICOM </a></li>
                         {% endif %}
                     {% endif %}
                 </ul>
-            </div>
-        </div>
 
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <!-- <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
             {% if not config['DEMO'] %}
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item"><a class="btn btn-light action-button" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    <li class="nav-item-right"><a class="btn btn-light action-button" href="{{ url_for('auth.logout') }}">Logout</a></li>
                 {% endif %}
             {% endif %}
             </ul>
-        </div>
-    </nav>
+        </div> -->
+    </div>
 
     <!-- WEBPAGE GOES HERE -->
     {% block content %}
     
     {% endblock %}
-</div>  
 </body>
 </html>

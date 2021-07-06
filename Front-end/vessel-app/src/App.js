@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 // import './App.css';
 import React, {useState, useMemo} from 'react';
-import Layout from './components/layout';
+import Layout from './components/Layout';
 
 // import react-router
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
@@ -18,6 +18,10 @@ import Register from './pages/Register'
 
 import injectContext from './appContext/UserContext';
 import { TestContext } from './appContext/testContext';
+
+import "./css/theme_skeleton.css"
+import "./css/normalize.css"
+
 // JSX javascript exetension
 function App() {
 
@@ -34,12 +38,18 @@ console.log(providerValue)
 //https://www.youtube.com/watch?v=o__czqXJtqk&ab_channel=PedroTech
 //https://medium.com/javascript-scene/the-missing-introduction-to-react-62837cb2fd76
 
+// initalize used state, state is something inside of compoenent 
+// state is used when a user has done a action and then causes the application to rerender
+
+//isLoggedIn is default false // we check inside the layout if
+
+
   return (
     <div className="App">
       {/* Layout is the navbar plus footer */}
       
       <Router>
-        <Layout title='OpenVessel' isLoggedIn={true}/> 
+        <Layout title='OpenVessel' isLoggedIn={false}/> 
         
           <Switch> 
           

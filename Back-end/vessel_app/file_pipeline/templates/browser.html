@@ -1,6 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="options-bar" >  </div>
+<div class="options-bar" > 
+    <ul class="options-bar">
+        <li class="options-bar">Home</li>
+        <li class="options-bar">Home</li>
+        <li class="options-bar">Home</li>
+    </ul>
+
+
+</div>
 <div class='browser'>
     
     {% if all_studies == [] %}
@@ -27,7 +35,6 @@
                     <h1 class='form-text-h1'><b>Study Name:</b> {{study['study_name']}} </h1>
                     <p class='form-text-h2'><b>Description:</b> {{study['description']}}</p>
                 </div>
-                
                 <div style='padding-bottom: 2%;'>
                     <!-- THUMBNAIL -->
                     <table id='study-tn' style='border: none; margin-right: 2%;'> 
@@ -35,36 +42,39 @@
                             <td> 
                                 <img src="data:image/jpeg;charset=utf-8;base64,{{ study['file_thumbnail']}}" alt="dicom thumbnail">  
                             </td>
+                            <td>
+                                <!-- STUDY INFO METADATA IS SHOWN HERE OF DICOM FILES -->
+                                <div>
+                                    <!-- Field Names-->
+                                    <div style='float: left; text-align: left;'>
+                                        {% for field in browserFields %}
+                                            <p class='form-text-h3'><strong>{{ field }}</strong></p> 
+                                        {% endfor %}
+                                            <p class='form-text-h3'><strong>File Count</strong></p>
+                                    </div>
+
+                                    <!-- Field Values-->
+                                    <div style='float: left; text-align: right;'>
+                                        {% for field in browserFields %}   
+                                            {% if field in study['study_df'] %}
+                                                <p class='form-text-h3'>  {{ study['study_df'][field].values[0] }} </p>
+                                            {% else %}
+                                                <p class='form-text-h3'> NO DATA </p>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <p> {{ study['file_count'] }} </p>
+                                    </div>
+                                </div>
+                            </td>
+                        
                         </tr>
                     </table>
-
-                    <!-- STUDY INFO -->
-                    <div>
-                        <!-- Field Names-->
-                        <div style='float: left; text-align: left;'>
-                            {% for field in browserFields %}
-                                <p class='form-text-h3'><strong>{{ field }}</strong></p> 
-                            {% endfor %}
-                                <p class='form-text-h3'><strong>File Count</strong></p>
-                        </div>
-
-                        <!-- Field Values-->
-                        <div style='float: left; text-align: right;'>
-                            {% for field in browserFields %}   
-                                {% if field in study['study_df'] %}
-                                    <p class='form-text-h3'>  {{ study['study_df'][field].values[0] }} </p>
-                                {% else %}
-                                    <p class='form-text-h3'> NO DATA </p>
-                                {% endif %}
-                            {% endfor %}
-                            <p> {{ study['file_count'] }} </p>
-                        </div>
-                    </div>
+                
                 </div>
                 
                 <!-- STUDY BUTTONS -->
                 <div id='study-btns' style="margin: 2%; display: flex; justify-content: center;">
-                    <table style="border-spacing: 20px 20px; border: none; align-self: center;">
+                    <table style="padding-top:2px; border-spacing: 20px 20px; border: none; align-self: center;">
                         <tr>
                             <td> <!-- Submit Job button -->
                                 <form action="{{url_for('submit_job.job')}}" method="post">
@@ -85,9 +95,10 @@
 
                         <!-- 3d object viewer dropdown and submit -->
                         {% if study['session_id_3ds'] != [] %}
+                    <div style="padding-top:10px;">
                         <tr> 
                             <td colspan="2">
-                                <button type="button" class="collapsible">Generate a past model</button>
+                                <button type="button" class="collapsible">View past result</button>
                                 <div class="content">
                                     <table style="border-spacing: 20px 20px;">
                                         {% for session_id_3d in study['session_id_3ds'] %}
@@ -117,7 +128,7 @@
                             </td>
                         </tr>
                         {% endif %}
-
+                        <!-- button of tables  -->
                         <tr> 
                             <td colspan="2">
                                 <button type="button" class="collapsible">Convert data</button>
@@ -142,10 +153,26 @@
                                                     </form>
                                                 </td>
                                             </tr>
+                                           
                                     </table>               
                                 </div>
                             </td>
                         </tr>
+                        <!-- google drive -->
+                        
+                        <tr> 
+                            <td colspan="2">
+                            <form action='{{url_for("file_pipeline.google_drive")}}' method='post'>
+
+                                <a href="javascript:void(0)" id="render-link">Render the Save to Drive button</a>
+                                <div id="savetodrive-div"></div>
+                            </form>
+                        </td>
+                        </tr>
+
+                    </div> <!-- </div>  -->
+
+
                     </table>
                 </div>
                 
@@ -169,5 +196,17 @@ for (i = 0; i < coll.length; i++) {
     });
 }
 </script>
+
+<script>
+    function renderSaveToDrive() {
+        console.log("called renderSaveToDrive")
+      gapi.savetodrive.render('savetodrive-div', {
+        src: '//example.com/path/to/myfile.pdf',
+        filename: 'My Statement.pdf',
+        sitename: 'My Company Name'
+      });
+    }
+    document.getElementById('render-link').addEventListener('click', renderSaveToDrive);
+  </script>
 
 {% endblock content %}

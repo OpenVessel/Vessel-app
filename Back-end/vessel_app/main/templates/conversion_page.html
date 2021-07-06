@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{{ dropzone.load_css(css_url='/static/css/dropzone.css') }} 
+{{ dropzone.style('border: 2px ridged #06007A; margin: 10px 0 10px; min-height: 400px; max-height: 400px; width: auto; overflow-x: hidden; overflow-y: auto;') }}
+
+<style>
+    .dz-remove {
+        padding-top: 2%;
+    }
+</style>   
+
+<form action="{{ url_for('main.handle_form') }}" enctype="multipart/form-data" method="post" value="{{session}}">
+    <div class='browser'> <!-- browser class because of cards -->
+        <div id='dropzone-and-progress-bar' class='card'> <!-- Progress bar -->
+            <div class="progress" style='height: 30%;'>
+                <div class="progress-bar progress-bar-striped active w3-xlarge" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%; height: 5%;">
+                    <span class="the-progress-text"></span>
+                </div>
+            </div>
+
+            <!-- Dropzone -->
+            {{ dropzone.create() }} <!-- this makes the class dropzone dropzone.css -->
+            {{ dropzone.load_js() }}
+            {{ dropzone.config(custom_options='
+            autoProcessQueue: false, 
+            addRemoveLinks: true, 
+            parallelUploads: 100, 
+            uploadMultiple: true,
+            acceptedFiles:"image/*,.dcm",
+            maxFilesize:10,
+            timeout:300000000000,
+            ' ) }}
+
+            <!-- FORM SUBMIT BUTTON-->
+            <input type="submit" class="btn btn-main btn-block" id="submit" value="Submit and Upload">
+        </div>
+    </div>
+</form>
+
+<div class="card"> 
+<form action='{{url_for("conversion_code.convert")}}' method='post'>
+    <h2> Uploaded data is deleted after conversion or 30 minutes </h2>
+    <label for="file_types">file type:</label> <select id="file_types" name="file_types">
+        <option value="matlab">Matlab</option>
+        <option value="png">PNG</option>
+        <option value="jepg">JEPG</option>
+      </select>
+      <!-- study['session_id'] -->
+    <input class="form-control" type='hidden' value="" name="session_id">
+    <input class="form-control" type='hidden' value='browser' name='source'>
+    <input class="btn btn-main" type="submit" value="Download"> 
+    
+    
+</form>
+</div>
+
+<script>
+
+Dropzone.autoDiscover = false;
+
+$(function() {
+    // Now that the DOM is fully loaded, create the dropzone, and setup the
+    // event listeners
+    var myDropzone = new Dropzone("#myDropzone");
+    myDropzone.on("addedfile", function(file) {
+
+    console.log("Added file");
+
+});
+
+myDropzone.on("totaluploadprogress", function (progress) {
+    console.log( progress);
+    $(".progress-bar").width(progress + '%'); // div tags
+    $(".the-progress-text").text(Math.round(progress) + '%'); // span
+
+});
+
+myDropzone.on("processingmultiple", function (progress) {
+    console.log( progress);
+    
+});
+
+myDropzone.on("processing", function() {
+    myDropzone.options.autoProcessQueue = true;
+});
+
+myDropzone.on("queuecomplete", function (file, formData) {
+        console.log("All files have uploaded ");
+    
+        const xhr = new XMLHttpRequest()
+        const data = new FormData()
+
+        data.append('done', true)
+        xhr.open('POST', '/dropzone_handler')
+        xhr.send(data)
+
+    });
+})
+</script>
+
+{% endblock content %}

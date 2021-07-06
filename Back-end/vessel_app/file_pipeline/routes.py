@@ -86,35 +86,27 @@ file_count_global = 0
 
 @bp.route("/dropzone_handler",  methods=['GET', 'POST'])
 def dropzone_handler():
-
     files_list = []
     done = False
-
     # check if done value exists
     done = bool('done' in request.form.to_dict())
-
     ## request files to list of binary objects
     for key, f in request.files.items():
         if key.startswith('file'):
             files_list.append(f)
-
     file_count = len(files_list)
     binary_files = [file.read() for file in files_list] # list of bytes objects
-
     if not done:
         # add to overall list, but not database
         global all_files, file_count_global
-
         all_files.extend(binary_files)
         file_count_global += file_count
         return ''
 
     else:
         # add all files from post requests to database as one object
-
         dicom_list = []
         for byte_file in all_files: # list of all dicom files in binary
-
             # convert to dicom object
             raw = DicomBytesIO(byte_file)
             dicom_object = dcmread(raw)
@@ -305,3 +297,6 @@ def delete_3d():
         return redirect(url_for('main.index'))
 
 
+@bp.route('/google_drive', methods=['POST', 'GET'])
+def google_drive(): 
+    return 

@@ -1,48 +1,28 @@
 import React, {useContext, useState} from 'react'
 import {Context} from "../appContext/UserContext"
 import {Link} from "react-router-dom";
+import { useHistory } from "react-router";
 
 const Login = () => {
 
-    const{ store, actions } = useContext(Context);
+    const{store, actions } = useContext(Context);
     const[email, setEmail] = useState("");
     const[password, setPassword] = useState("");
-    const token = sessionStorage.getItem("token");
-    console.log("this is your token", token)
-    const handleClick = () => { 
-
-        const opts = { 
-            method:'POST',
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({
-                "email":email,
-                "password": password 
-            })
-        }
-
-        fetch('http://127.0.0.1:5000/api/token', opts)
-            .then(resp => { 
-                if(resp.status === 200) return resp.json();
-                else alert("Error 200 Login.js")
-            }) 
-            .then(data => {
-                //localstorage persenitdata
-                // sessionStorage 
-                console.log("this came from the backend", data)
-                sessionStorage.setItem("token", data.access_token)
-            })
-            .catch(error => {
-                console.error("FETCH ERROR - LOGIN.JS ", error);
-            })
-
-    }
+    const history = useHistory();
     
+    const token = sessionStorage.getItem("token");
+    console.log("this is your token", store.token)
+
+    const handleClick = () => { 
+    actions.login(email, password);
+    };
+    
+    if (store.token && store.token !== "" && store.token != undefined) history.push("/");
     return (
         <div>
             <title>Login</title>
-            {(token && token!=undefined) ? "You are logged in with this token" + token :
+            {(store.token && store.token !== "") ? "You are logged in with this token " + token :
+            
             <div> 
             {/* We have component controller component  */}
             

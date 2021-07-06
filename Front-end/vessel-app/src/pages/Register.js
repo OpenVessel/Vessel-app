@@ -23,7 +23,12 @@ const Register = () => {
                 if(resp.status === 200) return resp.json();
                 else alert("Error 200 Login.js")
             }) 
-            .then()
+            .then(data => {
+                console.log("this came from the backend", data);
+                sessionStorage.setItem("token", data.access_token);
+
+            })
+
             .catch(error => {
                 console.error("FETCH ERROR - LOGIN.JS ", error);
             })

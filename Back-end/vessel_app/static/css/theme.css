@@ -1,7 +1,4 @@
 /* FIX ALL HEIGHT WHITESPACE ISSUES */
-html, body{min-height:100%;}
-body{height:100%;}
-
 /************************************ BACKGROUND COLORS ********************************/
 .colors-primary {
     background-color: #03003E;
@@ -78,63 +75,5 @@ body{height:100%;}
     font-size: 20px;
 }
 
-/******************************************** LINKS ************************************/
-
-/* unvisited link */
-a:link {
-    color: #03003E;
-}
-
-/* visited link */
-a:visited {
-    color: #0c094e;
-}
-
-/* mouse over link */
-a:hover {
-    color: #06007A;
-}
-
-/* selected link */
-a:active {
-    color: rgb(27, 27, 187)07A;
-}
 
 
-/************************************ Buttons  ************************************/
-.btn-main {
-    color: whitesmoke;
-    background-color: #06007A;;
-    border-radius: 5px;
-    outline-width: 0px;
-}
-
-.btn-main:hover {
-    background-color: #179EA1;
-}
-
-
-.btn-main:active:focus {
-    box-shadow: inset 0 0 0 20rem #060250,
-    0 0 1px #060250;
-}
-
-
-.btn-error { 
-    color: whitesmoke;
-    background-color: #660000;
-    border-radius: 5px;
-    outline-width: 0px;
-
-}
-
-.btn-error:hover {
-    color: whitesmoke;
-    background-color: #850303;
-}
-
-.btn-error:active {
-    color: whitesmoke;
-    box-shadow: inset 0 0 0 20rem #3b0101,
-    0 0 1px #3b0101;
-}
