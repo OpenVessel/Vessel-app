@@ -17,7 +17,6 @@ import Account from './pages/Account'
 import Register from './pages/Register'
 
 import injectContext from './appContext/UserContext';
-import { TestContext } from './appContext/testContext';
 
 import "./css/theme_skeleton.css"
 import "./css/normalize.css"
@@ -26,10 +25,10 @@ import "./css/normalize.css"
 function App() {
 
 // useState example through useContext passing
-const [user_value, setValue] = useState('hello from context')
-// useMemo obverse state changes
-const providerValue = useMemo(() => ({user_value, setValue}), [user_value, setValue]);
-console.log(providerValue)
+// const [user_value, setValue] = useState('hello from context')
+// // useMemo obverse state changes
+// const providerValue = useMemo(() => ({user_value, setValue}), [user_value, setValue]);
+// console.log(providerValue)
 
 
 // we defined react routes below
@@ -49,11 +48,10 @@ console.log(providerValue)
       {/* Layout is the navbar plus footer */}
       
       <Router>
-        <Layout title='OpenVessel' isLoggedIn={false}/> 
+        <Layout title='OpenVessel' /> 
         
           <Switch> 
           
-          <TestContext.Provider value={{user_value, setValue}}> 
           <Route path="/" exact component={Home}/>
           <Route path="/login" exact component={Login}/>
           <Route path="/register" exact component={Register}/>
@@ -62,7 +60,7 @@ console.log(providerValue)
           <Route path="/upload" exact component={Upload}/>
           <Route path="/browser" exact component={Browser}/>
           <Route path="/account" exact component={Account}/>
-          </TestContext.Provider>
+          
 
           <Route path="*" exact component={pnf}/>
           </Switch>
@@ -71,8 +69,5 @@ console.log(providerValue)
   );
 
 }
-
-
-
 
 export default injectContext(App);

@@ -1,42 +1,38 @@
 // layout components
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react'
 
 import Footer from './Footer'
 import LoginHeader from './Login_Header'
 import LogoutHeader from './Logout_Header'
+import {Context} from "../appContext/UserContext"
 
 const Layout = (props) => {
-    
+    const{store, actions } = useContext(Context); //re-render when token is recevied
     console.log("Layout output", props.title)
-    console.log("Layout output", props.isLoggedIn)
     
 
     // Hook useState allows changes in data
-    const [userCondition, setUserCondition] = useState(true);
+    // const [userCondition, setUserCondition] = useState(true);
 
-    // Implement debug logic here
-    console.log("Layout - userCondition", userCondition)
-    if (userCondition === true){ 
-
-        // if the user is logged in it loads the Login headers true
-        return (
-            <div>
-                <p> is the user login? {userCondition} </p>
-                <LoginHeader title={props.title} isLoggedIn={props.isLoggedIn} onChange={(value => setUserCondition(value))}/> 
-    
-                <Footer/>
-            </div>
-        )
-
-
-    }
     // if the user is not logged in it loads the logout header false
     return (
-        <div>
-            <LogoutHeader title={props.title} isLoggedIn={props.isLoggedIn}  /> 
+    <div>
+        { !store.token ? 
+            <div>
+            <LogoutHeader title={props.title}  /> 
 
             <Footer/>
         </div>
+            :
+            <div>
+            
+            <LoginHeader title={props.title} /> 
+
+            <Footer/>
+        </div>
+            }
+        
+    </div>
     )
 }
 

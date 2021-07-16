@@ -20,7 +20,6 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
             
         if user:
-            # change return statement on api?
             raise ValidationError('Username is taken chose another.')
             
     def validate_email(self, email):

@@ -27,10 +27,14 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+## React to flask endpoint
+
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
+
+    
     form = RegistrationForm()
     if form.validate_on_submit():
         ## hashed password

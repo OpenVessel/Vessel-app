@@ -164,14 +164,77 @@
   a:hover {
     color: #0FA0CE; }
 
-/* unvisited link */
-a:link {
+
+    div.navbar {
+      padding:1.5rem;
+  
+  }
+  
+  div.navbar a {
+      display: inline;
+      font-family:"brother-1816";
+      border:1px;
+  
+  }
+  
+  .nav-item-right {
+      float:right;
+  
+  }
+  
+  
+  .navbar li {
+      
+      display: inline;
+    }
+    
+    
+  
+  
+  /* navbar-light navbar-expand-md navigation-clean-search */
+  
+  /* ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    
+        overflow: 
+    hidden;
+      background-color: #283D83;
+    } */
+  
+    li a {
+      display: block;
+      
     color: white;
+      text-align: center;
+      
+    padding: 14px 16px;
+      text-decoration: none;
+    }
+    
+    
+    /* Change the link color to #111 (black) on hover */
+    li a:hover {
+      background-color: 
+      #28BDBF;
+    } 
+
+
+
+.navbar a {
+
+  color: white;
+  font-size: 15px;
+}
+/* unvisited link */
+.card a:link {
+    color: #444;
 }
 
 /* visited link */
-a:visited {
-    color: white;
+.card a:visited {
+    color: #444;
 }
 
 /* mouse over link */

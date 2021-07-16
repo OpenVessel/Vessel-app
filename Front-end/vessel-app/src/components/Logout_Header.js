@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useContext, useState} from 'react'
 import {Link} from "react-router-dom";
+// import {Context} from "../appContext/UserContext"
 
 const Logout_Header = (props) => {
+
     console.log("User Logged Out")
     return (
         <header className='header'>
@@ -10,7 +12,7 @@ const Logout_Header = (props) => {
             {/* else  */}
             <Link to="/"> Home </Link>
             <Link to="/Getting_Started"> Getting Started </Link>
-            <Link to="/Login"> Login </Link>
+            {/* <button onClick={() => actions.logout()} className="btn"> Logout </button> */}
             
             {/* <Button onClick={onClick} text='Home'> </Button>
             <Button text='Getting Started'> </Button>

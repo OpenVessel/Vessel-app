@@ -6,6 +6,11 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
+from vessel_app import db, bcrypt
+
+# Form dataclasses 
+from .forms import  RegistrationForm, LoginForm, UpdateAccountForm
+
 # from .models import db
 # from .admin import setup_admin
 from vessel_app.models import User
@@ -55,6 +60,50 @@ def create_token():
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token), 200
 
+
+
+
+# 127.0.0.1/api/heloo
+# So only people with appended token into the request will access the function
+@bp.route('/hello', methods=['GET'])
+@jwt_required()
+def get_hello(): 
+
+    # python dict
+    json = { 
+        "message":"hello world"
+    }
+    return jsonify(json), 200
+
+
+## registration via API 
+@bp.route("/register", methods=['GET', 'POST'])
+def register():
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('main.index'))
+    print(request.json)
+    # so we send the JSON but does formWTF expect something different?
+    form = RegistrationForm()
+    # form.validate_on_submit() is this function expecting csrf token
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        ## hashed password
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password) 
+        db.session.add(user)
+        db.session.commit()
+
+        print('Your account has been created! You are now able to log in', 'success')
+        response_pay_load = { 
+        "message":"Your account has been created! You are now able to log in"
+        }
+        return jsonify(response_pay_load), 200
+    else:
+        print("failed to validate or create a account")
+        response_pay_load = { 
+        "message":"failed to validate or create a account"
+        }
+    return jsonify(response_pay_load), 200
 
 import os.path
 from googleapiclient.discovery import build

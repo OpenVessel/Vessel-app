@@ -1,6 +1,8 @@
-import React from 'react'
+import React, {useContext, useState} from 'react'
 
 const Getting_Started = () => {
+
+    
     return (
         <div>
             <p>this is the getting started page</p>

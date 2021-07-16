@@ -22,6 +22,10 @@ const injectContext = PassedComponent => {
 			})
 		);
 
+		// useEffect is for side-effect independent of rendering
+		// useEffect(callback[, dependencies]); callback is function side-effect logic and dependencies is state 
+		// useEffect explaination https://dmitripavlutin.com/react-useeffect-explanation/
+		// useEffect https://dmitripavlutin.com/react-useeffect-infinite-loop/
 		useEffect(() => {
 			/**
 			 * EDIT THIS!
@@ -29,9 +33,10 @@ const injectContext = PassedComponent => {
 			 * you should do your ajax requests or fetch api requests here. Do not use setState() to save data in the
 			 * store, instead use actions, like this:
 			 **/
-			state.actions.getMessage(); // <---- calling this function from the flux.js actions
+			// state.actions.getMessage(); // <---- calling this function from the flux.js actions
 			state.actions.syncTokenFromSessionStore();
-		}, [state]);
+
+		}, []); // so state(dependencies) to control whne the side-effect to run we are synctoken everytime state
 
 		// The initial value for the context is not null anymore, but the current state of this component,
 		// the context will now have a getStore, getActions and setStore functions available, because they were declared

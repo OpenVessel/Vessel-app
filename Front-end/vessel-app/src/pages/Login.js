@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 
 const Login = () => {
 
-    const{store, actions } = useContext(Context);
+    const{store, actions } = useContext(Context); //re-render when token is recevied
     const[email, setEmail] = useState("");
     const[password, setPassword] = useState("");
     const history = useHistory();
@@ -14,18 +14,20 @@ const Login = () => {
     console.log("this is your token", store.token)
 
     const handleClick = () => { 
-    actions.login(email, password);
+        actions.login(email, password);
     };
     
-    if (store.token && store.token !== "" && store.token != undefined) history.push("/");
+    if (store.token && store.token !== "" && store.token !== undefined) history.push("/");
     return (
         <div>
             <title>Login</title>
-            {(store.token && store.token !== "") ? "You are logged in with this token " + token :
+            {store.token && store.token !== "" && store.token != undefined ? (
+                
+                "You are logged in with this token " + store.token 
             
+            ):(
             <div> 
-            {/* We have component controller component  */}
-            
+                {/* We have component controller component  */}
                 <input type="text" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}  /> 
                 <button onClick={handleClick}> Login </button>
@@ -33,7 +35,7 @@ const Login = () => {
                 <p> Don't have an account?</p>
                 <Link to="/Account"> Account </Link>
             </div>
-            }
+            )}
         </div>
     )
 }
