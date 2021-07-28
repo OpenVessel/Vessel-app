@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 const Logout_Header = (props) => {
 
-    console.log("User Logged Out")
+    console.log("User is Logged Out")
     return (
         <header className='header'>
             <h1 style ={headingStyle}>{props.title} </h1>

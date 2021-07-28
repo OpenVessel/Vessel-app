@@ -1,6 +1,31 @@
-@bp.route('/browser')
+import os
+import pydicom
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import tempfile
+import base64
+import shutil
+import pickle
+import time
+import logging
+from datetime import datetime as dt
+from PIL import Image
+from io import BytesIO
+from pydicom import dcmread
+from pydicom.filebase import DicomBytesIO
+from pydicom.charset import encode_string
+from pydicom.datadict import dictionary_description as dd
+from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response
+from flask_login import current_user, login_required, login_user
+from base64 import b64encode
+from vessel_app.models import User, Dicom, DicomFormData, Object_3D, DicomMetaData
+
+from . import bp
+
+@bp.route('/browser_list')
 @login_required
-def browser():
+def browser_list():
 
     print('generating browser')
     ###### Query Database and Indexing ######
@@ -64,6 +89,6 @@ def browser():
 
     browserFields = ["Study Date", "Study ID", "Patient ID", "Modality"]
     #print("Print all studies list:",all_studies)
-    return render_template('browser.html',
+    return render_template('browser_list_view.html',
     all_studies=all_studies,
     browserFields=browserFields)

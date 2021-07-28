@@ -1,14 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="options-bar" > 
+ <div class="options-bar" >  <!-- sub-nav bar  -->
     <ul class="options-bar">
-        <li class="options-bar">Home</li>
-        <li class="options-bar">Home</li>
-        <li class="options-bar">Home</li>
+        <li class="sub_nav">Home</li>
+        <li class="sub_nav">Home</li>
+       <li class="sub_nav">
+           <a href=' {{url_for("browser.browser_list")}} '> 
+        <span class="material-icons-outlined">
+            </a> 
+        </span>  
+        <li> 
     </ul>
-
-
 </div>
+
 <div class='browser'>
     
     {% if all_studies == [] %}

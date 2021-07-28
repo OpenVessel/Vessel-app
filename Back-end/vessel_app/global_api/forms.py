@@ -1,18 +1,40 @@
 
+from flask import session
 from flask_wtf import FlaskForm, RecaptchaField
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField, validators, Form
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, AnyOf
 
 from vessel_app.models import User
+from wtforms.csrf.session import SessionCSRF
+from datetime import timedelta
 
 
-class RegistrationForm(FlaskForm):
+class SessionBasedForm(Form):
+    header_data = StringField('HeaderData', validators=[DataRequired()])
+    class Meta:
+        csrf = True
+        csrf_class = SessionCSRF
+        csrf_secret = b'EPj00jpfj8Gx1SjnyLxwBBSQfnQ9DJYe0Ym'
+        csrf_time_limit = timedelta(minutes=20)
+        
+        @property
+        def csrf_context(self):
+            return session
+
+
+class RegistrationForm(SessionBasedForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=255)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=2, max=45)])
-    password = PasswordField('Password', validators=[DataRequired()]) ## dont forgot change length of password to 10
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password', message='Passwords must match')]) ## dont forgot change length of password to 10
+    confirm_password = PasswordField('Confirm_password')
+
+    # password = PasswordField('New Password', [
+    #     validators.DataRequired(),
+    #     validators.EqualTo('confirm', message='Passwords must match')
+    # ])
+    # confirm = PasswordField('Repeat Password')
     submit = SubmitField('Register')
     
     def validate_username(self, username):

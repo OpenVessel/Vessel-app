@@ -1,8 +1,12 @@
 const getState = ({ getStore, getActions, setStore }) => {
+	const domainUrl = 'http://127.0.0.1:5000';
+
 	return {
 		//store local session?
 		store: {
 			token: null,
+			csrf_token:null,
+			token_id:null,
 			message: null,
 			demo: [
 				{
@@ -28,6 +32,52 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log("Application just loaded, synching the session storage token")
 				if(token && token !== "" && token !== undefined) setStore({ token: token});
 				
+			},
+
+			// Global session call to GET csrf_token from flask and store in session
+			csrf_token_call: async () => {
+				// csrfTokenState set to default
+				const url = '/api/csrf_token_call';
+				// const data = 'A$1;,BOimZ7i+_t**]Nq3El)!#bG|K'
+				let fetchGetResponse = await fetch(`${domainUrl}${url}`, {
+					method: 'GET',
+					headers: {
+						// Accept: "application/json",
+						"Content-Type": "application/json",
+						
+					},
+					credentials: "include",
+					referrerPolicy: 'no-referrer',
+					mode: 'cors',
+					// body: data
+				});
+				
+				try{
+					const data = await fetchGetResponse.json();
+					console.log("backend_csrf_token_for_single_user", data);
+					// setStore({csrf_token: data.csrf_token}); //setStore login view refresh its hooked to COntext
+					sessionStorage.setItem("csrf_token", data.data);
+					sessionStorage.setItem("token_id", data.token_id);
+					setStore({ csrf_token: data.data, token_id: data.token_id});
+					// console.log(csrf_token)
+					
+					// call this if statement after the token has been put into session
+					// if(csrf_token && csrf_token !== "" && csrf_token !== undefined) setStore({ csrf_token: data.data});
+					
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with inital_csrf_token");
+				}
+
+
+				// let parsedResponse = fetchGetResponse.json();
+				// const csrf_token = sessionStorage.getItem("csrf_token");
+
+				// console.log("Hello ", parsedResponse)
+				// if(csrf_token && csrf_token !== "" && csrf_token !== undefined) setStore({ csrf_token: csrf_token});
+
 			},
 
 			
@@ -73,18 +123,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			registration: async (csrf_token, username, email, password, confirmpassword) => {
+			registration: async (token_id, csrf_token, username, email, password, confirmpassword) => {
 				const opts = { 
 					method:'POST',
 					headers:{
 						"Content-Type":"application/json"
 					},
 					body: JSON.stringify({
+						"token_id":token_id,
 						"csrf_token":csrf_token,
 						"username":username,
 						"email":email,
 						"password": password,
-						"confirmpassword":confirmpassword,
+						"confirm_password":confirmpassword,
 						"submit":"Register"
 					})
 				};

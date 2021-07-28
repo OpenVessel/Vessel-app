@@ -49,7 +49,7 @@ def conversion_page():
     # converts it to the derise type and returns a zip file
     return render_template("conversion_page.html"), session
 
-@bp.route('/form', methods=['POST'])
+@bp.route('/convert_form', methods=['POST'])
 def handle_form():
     
     ## we are going to create a false form 
@@ -69,8 +69,8 @@ def handle_form():
     time.sleep(1.5)
     return ""
 
-@bp.route("/dropzone_handler",  methods=['GET', 'POST'])
-def dropzone_handler():
+@bp.route("/convert_dropzone_handler",  methods=['GET', 'POST'])
+def convert_dropzone_handler():
     files_list = []
     done = False
 

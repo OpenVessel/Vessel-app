@@ -10,6 +10,7 @@ from flask import url_for
 from os import environ, path
 from dotenv import load_dotenv
 
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(path.join(basedir,'.flaskenv'))
 
@@ -18,6 +19,20 @@ class Config:
     DEMO = False
     DEMO_EMAIL = 'admin2@example.com'
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET")
+    
+    ## CORS CONFIG
+    CORS_ALLOW_HEADERS: "*"
+    CORS_ALWAYS_SEND: True
+    CORS_AUTOMATIC_OPTIONS: True
+    CORS_EXPOSE_HEADERS: None
+    CORS_INTERCEPT_EXCEPTIONS: True
+    CORS_MAX_AGE: None
+    CORS_METHODS: ["GET", "HEAD", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"]
+    CORS_ORIGINS: "*" # Origins? 
+    CORS_RESOURCES: r"/*"
+    CORS_SEND_WILDCARD: False
+    CORS_SUPPORTS_CREDENTIALS: True
+    CORS_VARY_HEADER: True
 
     ########### Production config
     #SECRET_KEY = environ.get('SECRET_KEY')
@@ -31,7 +46,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
     SQLALCHEMY_BINDS = {
     'one': "sqlite:///" + os.getcwd() + r"\one.db",
-    '2nd_db': "sqlite:///" + os.getcwd() + r"\two.db"
+    '2nd_db': "sqlite:///" + os.getcwd() + r"\two.db",
     #'2nd_db': 'postgresql://postgres:Sd40dash2@localhost/Vessel-test'
     }
     ## worker database is 2nd_db

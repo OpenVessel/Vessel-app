@@ -10,6 +10,30 @@
   background: whitesmoke;
 }
 
+/* .icon-view-list {
+  background: url("D:/vessel_app/static/img/view-list.png");
+  
+} */
+
+li a {
+  width:auto;
+  font-size:30px;
+  display: inline;
+  float: right;
+
+  padding-bottom: 10px;
+
+}
+
+.sub_nav { 
+  width:auto;
+  font-size:30px;
+  display: inline;
+  float: right;
+
+  padding-bottom: 10px;
+}
+
 li.options-bar  {
   font-size:30px;
   display: inline;

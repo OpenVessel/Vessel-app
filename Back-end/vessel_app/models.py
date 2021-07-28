@@ -129,4 +129,13 @@ class Object_3D(db.Model):
         return f"Object_3D('{self.date_uploaded}')"
 
 
+# class Save_csrf_token(db.Model):
+#     __bind_key__ = 'redis_db'
+#     id = db.Column(db.Integer, primary_key=True)  
+#     csrf_token = db.Column(db.Integer)
+#     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    
+#     def __repr__(self):
+#         return f"save_csrf_token('{self.date_uploaded}')"
+
     __str__ = __repr__

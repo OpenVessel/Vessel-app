@@ -1,5 +1,5 @@
 // layout components
-import React, {useContext, useState} from 'react'
+import React, {useContext} from 'react'
 
 import Footer from './Footer'
 import LoginHeader from './Login_Header'
@@ -7,7 +7,7 @@ import LogoutHeader from './Logout_Header'
 import {Context} from "../appContext/UserContext"
 
 const Layout = (props) => {
-    const{store, actions } = useContext(Context); //re-render when token is recevied
+    const{store } = useContext(Context); //re-render when token is recevied
     console.log("Layout output", props.title)
     
 

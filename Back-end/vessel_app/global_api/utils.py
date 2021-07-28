@@ -1,5 +1,10 @@
 from flask import jsonify, url_for
+import hmac
+import os
 
+from hashlib import sha1
+from datetime import datetime, timedelta
+# https://www.programcreek.com/python/?code=google%2Fgoogleapps-message-recall%2Fgoogleapps-message-recall-master%2Fmessage_recall%2Flib%2Fwtforms%2Fext%2Fcsrf%2Fsession.py
 class APIException(Exception):
     status_code = 400
 
@@ -19,6 +24,33 @@ def has_no_empty_params(rule):
     defaults = rule.defaults if rule.defaults is not None else ()
     arguments = rule.arguments if rule.arguments is not None else ()
     return len(defaults) >= len(arguments)
+
+
+TIME_FORMAT = '%Y%m%d%H%M%S'
+TIME_LIMIT = timedelta(minutes=30)
+
+
+def generate_csrf_token(SECRET_KEY,  csrf_context):
+    if SECRET_KEY is None:
+        raise Exception('must set SECRET_KEY in a subclass of this form for it to work')
+    if csrf_context is None:
+        raise TypeError('Must provide a session-like object as csrf context')
+
+    session = getattr(csrf_context, 'session', csrf_context)
+
+    if 'csrf' not in session:
+        session['csrf'] = sha1(os.urandom(64)).hexdigest()
+
+    csrf_token.csrf_key = session['csrf']
+    if TIME_LIMIT:
+        expires = (datetime.now() + TIME_LIMIT).strftime(TIME_FORMAT)
+        csrf_build = '%s%s' % (session['csrf'], expires)
+    else:
+        expires = ''
+        csrf_build = session['csrf']
+
+    hmac_csrf = hmac.new(SECRET_KEY, csrf_build.encode('utf8'), digestmod=sha1)
+    return '%s##%s' % (expires, hmac_csrf.hexdigest())
 
 def generate_sitemap(app):
     links = ['/admin/']

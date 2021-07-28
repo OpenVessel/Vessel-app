@@ -17,7 +17,6 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from vessel_app.config import Config
-import flask_monitoringdashboard as dashboard
 
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -33,6 +32,11 @@ cors = CORS()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
 
+## AUTOMATE THE REDIS db.create_all tables functionlity
+# os.system("python script.py ")
+# os.system("from multiple_databases import db")
+# os.system("db.create_all(bind=['redis_db'])")
+# os.system("python")
 def create_app(config_class=Config):
 
     # https://owasp.org/www-project-top-ten/
@@ -45,9 +49,8 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     dropzone.init_app(app)
     celery.conf.update(app.config)
-    dashboard.bind(app)
     jwt.init_app(app)
-    cors.init_app(app)
+    cors.init_app(app, supports_credentials=True )
     # logs.init_app(app)
 
     login_manager.init_app(app)
@@ -69,6 +72,8 @@ def create_app(config_class=Config):
         app.register_blueprint(main_bp)
         from .file_pipeline import bp as file_pipeline_bp
         app.register_blueprint(file_pipeline_bp)
+        from .browser import bp as browser_bp
+        app.register_blueprint(browser_bp)
         from .submit_job import bp as submit_job_bp
         app.register_blueprint(submit_job_bp)
         from .viewer_3d import bp as viewer_3d_bp

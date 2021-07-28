@@ -34,6 +34,7 @@ const injectContext = PassedComponent => {
 			 * store, instead use actions, like this:
 			 **/
 			// state.actions.getMessage(); // <---- calling this function from the flux.js actions
+			state.actions.csrf_token_call(); // this calls 
 			state.actions.syncTokenFromSessionStore();
 
 		}, []); // so state(dependencies) to control whne the side-effect to run we are synctoken everytime state
