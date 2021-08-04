@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import tempfile
 import base64
+import json
 import shutil
 import pickle
 import time
@@ -300,3 +301,58 @@ def delete_3d():
 @bp.route('/google_drive', methods=['POST', 'GET'])
 def google_drive(): 
     return 
+
+# Web Access to DICOM Objects (WADO) this needs some desgins 
+def bulk_data_handler(data_element):
+    uri = store_data_and_return_uri(data_element)
+    return uri
+
+@bp.route('/fileCoinCall', methods=['POST', 'GET'])
+def fileCoinCall(): 
+    if request.method == 'POST':
+        print("hello query for FileCoinCall")
+        session_id = request.form.get('session_id')
+        dicom_data = Dicom.query.filter_by(session_id=session_id).first()
+        dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
+        dicom_meta_data = DicomMetaData.query.filter_by(session_id=session_id).first()
+        # <class 'vessel_app.models.Dicom'>
+        print(type(dicom_data.dicom_stack))
+        ## 'bytes' class
+            ## seralizations 
+        data = pickle.loads(dicom_data.dicom_stack)
+        print(type(data)) ## python list into JSON 
+        dicom_list = [] 
+        for byte_file in data:
+            dicom_list.append(dcmread(DicomBytesIO(byte_file)))
+        # https://pydicom.github.io/pydicom/stable/tutorials/dicom_json.html
+        list_of_json_dicom = []
+        for dicom_file in dicom_list:
+            
+            # Web Access to DICOM Objects (WADO) 
+            # list_of_json_dicom.append(dicom_file.to_json(bulk_data_element_handler=bulk_data_handler))
+            # implement URI later or the  https://www.dicomstandard.org/dicomweb/retrieve-wado-rs-and-wado-uri/
+            
+            list_of_json_dicom.append(dicom_file.to_json())
+        print(type(list_of_json_dicom))
+        
+        ## lets save data via the DICOMweb WADO-RS
+        ## encode list of dicom files 
+        json_format = json.dumps(list_of_json_dicom)
+        # print(json_format)
+        data_pass = json_format
+        print(type(json_format))
+        
+        # ## Load_scan funcation is called form the pydicom package
+        # patient = load_scan(dicom_list) ## 3D array
+        # print ("Slice Thickness: %f" % patient[0].SliceThickness)
+        # print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
+        # # <class 'vessel_app.models.Dicom'>
+    ## Our developer choices sending data from python to JS
+
+    ## web3.storage call first 
+
+    ## so we need to query data via user session idea
+
+    return render_template('browser.html',
+            data=data_pass ## all_studies dict?
+            ) ## browserFields 

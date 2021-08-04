@@ -1,5 +1,44 @@
+import React from 'react'
+import  { Redirect} from 'react-router-dom'
+
 const getState = ({ getStore, getActions, setStore }) => {
 	const domainUrl = 'http://127.0.0.1:5000';
+
+	function resolveAfterTime(callback, time, msg) {
+		new Promise(resolve => {
+			setTimeout(() => {
+				resolve(msg);
+
+			}, time);
+		}); 
+		setTimeout(() => {
+			callback(msg);
+		}, 1500);
+		return msg
+		
+	}
+
+		//redirect with js or "middleware"
+	function redirectLogic(msg){
+		console.log("----", msg)
+		console.log(msg === 'Your account has been created! You are now able to log in')
+		console.log(msg ==='Failed to commit data to the database')
+		if(msg ==='Failed to commit data to the database'){
+			console.log("failed to commit" )
+		}
+		
+		if( msg === 'Your account has been created! You are now able to log in'){
+
+		console.log("Redirecting")
+		window.location.replace("http://localhost:3000/login") // replace URL from .env
+		return <Redirect to='/login'  />
+		
+		} else {
+		console.log("Failed Registertion see msg")
+		return msg
+		}
+
+	}
 
 	return {
 		//store local session?
@@ -8,6 +47,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			csrf_token:null,
 			token_id:null,
 			message: null,
+			return_msg:null,
 			demo: [
 				{
 					title: "FIRST",
@@ -149,14 +189,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const data = await resp.json();
 					console.log("this came from the backend", data);
-					// sessionStorage.setItem("token", data.access_token);
-					// setStore({token: data.access_token}); //setStore login view refresh its hooked to COntext
+					sessionStorage.setItem("return_msg", data.message);
+					setStore({return_msg: data.message}); //setStore login view refresh its hooked to COntext
 					return true;
 		
 				}
 				catch(error){
 					console.error("There has been an error with login");
 				}
+			},
+
+			// registration promises to return data it resolves or is error relate to network or lag
+			// we going implement a promise so basically when a user submits reg data we are expecting a return reponse to move 
+			// the user to the login 
+
+			redirect: async (msg) => {
+				console.log('calling');
+				const time = 500 // wait 100 mil for a response from the back-end then we a sec for msg to return
+				
+				// how do we trigger a fuction to run until msg contains a string?
+				var msg = await resolveAfterTime(redirectLogic, time, msg); //https://stackoverflow.com/questions/49774769/javascript-uncaught-syntaxerror-identifier-has-already-been-declared
+				
+				// we could implement call back on resolveAfterTime? https://www.youtube.com/watch?v=ZYb_ZU8LNxs&ab_channel=freeCodeCamp.org
+				// by using callback we form a order between functions 
+				// setTimeout(() => { 
+				// redirectLogic(msg);
+				// }, 2000);
+				
+				return msg
+
+				// fetch("http://127.0.0.1:5000/api/hello", opts)
+				// .then(resp => resp.json())
+				// .then(data => setStore({ message: data.message }))
+				// .catch(
+					
+				// 	error => console.log("Error loading message from backend", error)
+
+				// ); //Unexpected token < in JSON at position 0
+
 			},
 
 

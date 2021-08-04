@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react'
 import {Context} from "../appContext/UserContext"
 //import {Link} from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Register = () => {
 
@@ -14,8 +14,10 @@ const Register = () => {
     // const history = useHistory(); // using to redirect user to login page 
 
     //when the user registers 
+    // failling to redirect because both functions are async
     const handleClick = () => { 
         actions.registration( store.token_id, store.csrf_token, username, email, password, confirmpassword);
+        actions.redirect(store.return_msg);
         // history.push("/login");
     };
     
@@ -38,8 +40,11 @@ const Register = () => {
                 <h4> confirm password</h4>
                 <input id="confirm_password" name="confirm_password" required type="password" placeholder="confirm_password" value={confirmpassword} onChange={(e) => setConfirmpassword(e.target.value)} />
                 </form>
-                <button onClick={handleClick}> Register </button>
+                <button onClick={handleClick} > Register </button>
 
+            </div>
+            <div>
+                <h1> {store.return_msg}</h1>
             </div>
         </div>
     )

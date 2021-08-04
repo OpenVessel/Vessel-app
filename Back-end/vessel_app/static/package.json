@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "vessel",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --hot --mode development",
@@ -17,19 +18,23 @@
     "@babel/core": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
     "@babel/preset-react": "^7.10.1",
+    "autoprefixer": "^9.8.4",
     "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
+    "dotenv": "^10.0.0",
+    "history": "^5.0.0",
     "kw-web-suite": "^10.0.0",
+    "npm": "^7.20.3",
+    "npm-upgrade": "^3.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "webpack": "^4.43.0",
-    "autoprefixer": "^9.8.4",
-    "css-loader": "^3.6.0",
-    "history": "^5.0.0",
     "react-router-dom": "^5.2.0",
     "react-viewerbase": "0.17.6",
     "save-dev": "0.0.1-security",
     "style-loader": "^1.2.1",
-    "vtk.js": "^14.8.1"
+    "vtk.js": "^14.8.1",
+    "web3.storage": "^3.1.0",
+    "webpack": "^4.43.0"
   },
   "devDependencies": {
     "webpack-cli": "^3.3.12"

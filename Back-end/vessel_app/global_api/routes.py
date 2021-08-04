@@ -67,11 +67,29 @@ def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
+## we are actually failing to check !!!!
+
     if email != "test" or password != "test":
         return jsonify({"msg": "Bad username or password"}), 401
 
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token), 200
+
+
+
+# 127.0.0.1/api/upload
+@bp.route('/upload_call', methods=['POST'])
+def upload_call(): 
+    return jsonify(), 200
+
+
+# 127.0.0.1/api/browser
+@bp.route('/browser_call', methods=['POST'])
+def browser_call(): 
+        ## returns a list of data to the browser to the 
+    ## user 
+    return jsonify(), 200
+
 
 # crsf_token_call
 @bp.route('csrf_token_call', methods=['GET'])
@@ -192,6 +210,7 @@ def register():
 
             if request.method == 'POST':
                 ## hashed password
+                ## fails to check if passwords match!!!
                 user = User.query.filter_by(username=username).first()
 
                 if user:
@@ -223,6 +242,15 @@ def register():
                 
                 except:
                     print("SQL insert failed")
+                    
+                    response_pay_load = { 
+                        
+                        "message":"Failed to commit data to the database"
+                        
+                        }
+                    
+                    
+                    return jsonify(response_pay_load), 200
 
                 
             else:
