@@ -176,8 +176,9 @@
                             <!-- {{url_for('file_pipeline.fileCoinCall')}} -->
                             <!-- <form action="{{url_for('file_pipeline.fileCoinCall')}}" method='post'>  -->
                                 <!-- grab element value -->
-                                <input id="session_id" class="session_id_callFileCoin"type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
-                                <input id="buttonPress" class="btn btn_callFileCoin" type="submit" value="Store Data on fileCoinCall">
+                                <input id="session_id" class="session_id_callFileCoin" type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
+                                <input id="{{ study['session_id'] }}" class="btn btn_callFileCoin" type="submit" value="Store Data on fileCoinCall">
+                                
                             <!-- </form>  -->
                         </td>
                         </tr>
@@ -212,11 +213,14 @@ for (i = 0; i < coll.length; i++) {
 <!-- https://javascript.tutorialink.com/passing-json-data-from-flask-to-javascript/ -->
 <!-- https://github.com/nickjj/flask-static-digest -->
 <!-- <script type="text/javascript" src="{{url_for('static', filename='js/web3_call.js')}}"></script> -->
-<script type="text/javascript" src="{{url_for('static', filename='js/fileCoin.js')}}"> </script>  
-<script> 
-
-
-</script> 
+<script id="bundle" type="text/javascript" src="{{url_for('static', filename='js/fileCoin.js')}}" > </script>  
+<!-- <script id="getSpecificSession"> 
+function reply_click(clicked_id)
+  {
+    $("#getSpecificSession").attr("value", clicked_id)
+      console.log(clicked_id);
+  }
+</script>  -->
 <!-- https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data -->
 
 <!-- 

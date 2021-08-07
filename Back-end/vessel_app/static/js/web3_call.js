@@ -30,32 +30,39 @@ function fileCoinData(value) {
     xml.send(dataSend);
     //end function
 }
+
+// var elem = document.querySelector(".btn_callFileCoin");
+// elem.addEventListener('click', function() {
+    
+//     console.log(this.id)
+//     }
+//   });
+
+    // const myScript = document.getElementById('bundle');
+    // let myArgument = myScript.getAttribute('myargument')
+    // console.log(myArgument)
+
+
 // https://stackoverflow.com/questions/52180443/javascript-change-only-one-button-by-click-with-id-and-addeventlistener
 // getElementbyId is only for one element so second button doesnt work 
 // document.getElementById("buttonPress").addEventListener("click", function() {
 document.querySelectorAll('.btn_callFileCoin').forEach(function(btn){
         btn.addEventListener('click', function() {
-      
-    // same bug
-let value = document.getElementById('session_id').value;
+            console.log(this.id)
+            // var inputs = $(".session_id_callFileCoin");
+            // for(var i = 0; i < inputs.length; i++){
+            //     console.log($(inputs[i]).val());
+            // }
+let value = this.id
+console.log("before", value)
 // let value = document.querySelectorAll('.btn_callFileCoin').value;
 // session_id_callFileCoin
-let promise = new Promise(function(resolve, reject) {
-    // executor (the producing code, "singer")
-    let dataR = fileCoinData(value);
-  });
-
-promise.then( 
-        console.log(result)
-    )
-console.log(dataR)
+let dataPass = fileCoinData(value);
 // this song takes time ## producing code
-
+console.log(dataPass)
 // consuming code 
 
 // promise is a special Javascript Object that links the  "producing code" and "consuming code" 
-
-
 
     });
 });
