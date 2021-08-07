@@ -2,7 +2,7 @@ from flask import render_template, current_app, redirect, url_for, request, sess
 from vessel_app.models import User, FalseForm,FalseDicom
 from flask_login import login_user, current_user
 from . import bp
-
+import os
 import time
 import pickle
 from vessel_app import db, bcrypt, dropzone

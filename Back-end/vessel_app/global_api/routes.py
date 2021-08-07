@@ -3,7 +3,7 @@ import requests
 from flask import Flask, request, jsonify, url_for, Blueprint, render_template, send_from_directory, current_app, session
 from .security import validate_header
 from . import bp
-from .utils import generate_sitemap, APIException
+from .utils import generate_sitemap, APIException, password_check
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -17,6 +17,7 @@ from wtforms.csrf.core import CSRF
 # from wtforms.csrf.session import SessionCSRF
 # from .models import db
 # from .admin import setup_admin
+from flask_login import login_user, current_user, logout_user, login_required
 from vessel_app.models import User
 from .connector_redis import save_csrf, check_csrf_token
 ## routes are for your endpoints
@@ -60,7 +61,7 @@ def serve_any_other_file(path):
     return response
 
 # 127.0.0.1/api/token
-@bp.route('/token', methods=['POST'])
+@bp.route('/login_call', methods=['POST'])
 def create_token(): 
 
     print("we receviced a request from")
@@ -72,8 +73,41 @@ def create_token():
     if email != "test" or password != "test":
         return jsonify({"msg": "Bad username or password"}), 401
 
-    access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token), 200
+    if request.method == 'POST':
+        ## we take the json values out of the HTTPS request
+
+        ## we pass them to user.query.filter
+        ## we need validation code for email 
+        email_pass = email
+        password_pass = password
+
+        ## Input validation authen
+        ## we pull the password withthe user name or email
+        user = User.query.filter_by(email=email_pass).first()
+            #     email = StringField('Email', # does email exist?
+            # password = PasswordField('Password', validators=[DataRequired()]) ## password exist is it correct does sit match
+            # remember = BooleanField('Remember Me')
+            # submit = SubmitField('Login')
+            # recaptcha = RecaptchaField()
+
+        ## we check the hash generated on the password
+        if user and bcrypt.check_password_hash(user.password, password):
+            # https://flask-login.readthedocs.io/en/latest/
+            #  https://flask-login.readthedocs.io/en/latest/#flask_login.login_user
+            did_user_login = login_user(user)
+            
+            if did_user_login == True: 
+                ## if login_user returns true we pass the token and redirect trigger to account page to displaye user naem
+                access_token = create_access_token(identity=email)
+                response_pay_load = {  
+                    "message":"Successful Login",
+                    "username":user.name
+                            }
+
+                return access_token, jsonify(response_pay_load), 200
+            else:
+                response_pay_load = {  "message":"Login Unsuccessful. Please check username and password"  }
+                return jsonify(response_pay_load), 200
 
 
 
@@ -170,44 +204,12 @@ def register():
             submit = json_obj['submit']
             print("------",request.form)
             ##wtforms base form class has parameter for formdatta 
+            val, error = password_check(password)
+
+            if val == False:
+                response_pay_load = {"message":error}
+                return jsonify(response_pay_load)
             
-            form = RegistrationForm()
-            print(dir(form))
-
-            # print("hidden tag",form.csrf_context)
-            
-            print(form.csrf_token)
-            current_token = form.csrf_token.current_token
-            print(current_token)
-            # form.csrf_token.pre_validate(form)
-            
-            # dict_update = {'csrf_token':current_token}
-            # form.data.update(dict_update)
-            # print(type(form.data['csrf_token']))
-            # form.data['csrf_token'] = form.csrf_token.current_token## is this a dict?
-            # print(form.data['password'])
-            # print(form.data['confirm_password'])
-            # print(form.username)
-            # print(form.email)
-            # print(form.password)
-            # print(form.confirm_password)
-            # print(form.submit)
-            # print(form.csrf_token)
-            # print(form.errors) #empty
-            #  Note that you cannot add fields in this way, as all fields must exist on the form when processing input data.
-
-            # print(form.hidden_tag())
-            # :param obj:
-            # If `formdata` is empty or not provided, this object is checked for
-            # attributes matching form field names, which will be used for field
-            # values.
-            # dictionary of data
-            # print(form.is_submitted())
-            print(form.errors)
-            print(form.validate())
-
-
-
             if request.method == 'POST':
                 ## hashed password
                 ## fails to check if passwords match!!!
@@ -269,7 +271,7 @@ from google.oauth2.credentials import Credentials
 
 @bp.route('/google_api_call')
 def google_api_call():
-    API_KEY = "AIzaSyBI4_jfbJcd6LhYFJWf0clTYlja6mYyS9Y"
+    API = process.env.GOOGLEAPIKEY
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
     """

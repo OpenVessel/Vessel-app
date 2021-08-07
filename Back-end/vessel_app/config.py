@@ -19,6 +19,7 @@ class Config:
     DEMO = False
     DEMO_EMAIL = 'admin2@example.com'
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET")
+    GOOGLE_API_KEY = os.environ.get("GOOGLEAPIKEY")
     
     ## CORS CONFIG
     CORS_ALLOW_HEADERS: "*"

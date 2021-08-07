@@ -7,10 +7,13 @@ const sourcePath = path.join(__dirname, './js');
 
 const config = {
     devtool: 'eval-source-map',
-    entry: __dirname + '/js/index.jsx', // for VTK entry point is ./src/index.js
+    entry: {
+      vtk: __dirname + '/js/index.jsx', // for VTK entry point is ./src/index.js
+      fileCoin: __dirname + '/js/web3_call.js'
+      },
     output:{ //resolve Promise request to function call back
            path: resolve('../static/js'), // goes to the public directory 
-           filename: 'bundle.js', //
+           filename: '[name].js', //
            publicPath: resolve('../static/js')
     },
     resolve: {

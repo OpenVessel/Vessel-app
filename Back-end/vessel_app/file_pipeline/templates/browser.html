@@ -173,14 +173,12 @@
                             </form>
                         </td>
                         <td colspan="2">
-                            <form action='{{url_for("file_pipeline.fileCoinCall")}}' method='post'>
-                                <!-- User has the choice to store Medical Image Data  -->
-                                <input type="hidden" name="session_id" value="{{ study['session_id'] }}">
-                                <input type="file" accept="application/JSON" style="display: none;">
-                                <input id="data_pass_to_fileCoin" type="hidden" value="{{json_data}}">
-                                <p id="test1"> {{json_data}}</p>
-                                <input id="button_press" class="btn" type="submit" value="Store Data on fileCoinCall">
-                            </form>
+                            <!-- {{url_for('file_pipeline.fileCoinCall')}} -->
+                            <!-- <form action="{{url_for('file_pipeline.fileCoinCall')}}" method='post'>  -->
+                                <!-- grab element value -->
+                                <input id="session_id" class="session_id_callFileCoin"type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
+                                <input id="buttonPress" class="btn btn_callFileCoin" type="submit" value="Store Data on fileCoinCall">
+                            <!-- </form>  -->
                         </td>
                         </tr>
 
@@ -195,6 +193,7 @@
     {% endif %}
 </div>
 
+{% block javascript %}
 <script>
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -211,17 +210,11 @@ for (i = 0; i < coll.length; i++) {
 }
 </script>
 <!-- https://javascript.tutorialink.com/passing-json-data-from-flask-to-javascript/ -->
-<script type="text/javascript" src="{{url_for('static', filename='js/web3_call.js')}}"></script>
+<!-- https://github.com/nickjj/flask-static-digest -->
+<!-- <script type="text/javascript" src="{{url_for('static', filename='js/web3_call.js')}}"></script> -->
+<script type="text/javascript" src="{{url_for('static', filename='js/fileCoin.js')}}"> </script>  
 <script> 
-    var fileCoinData = '{{ data }}'
-    console.log("Hello",fileCoinData)
 
-document.getElementById("button_press").addEventListener("click", function() {
-    
-    console.log(fileCoinData)
-    console.log(mainCall())
-
-});
 
 </script> 
 <!-- https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data -->
@@ -244,5 +237,5 @@ document.getElementById("button_press").addEventListener("click", function() {
     }
     document.getElementById('render-link').addEventListener('click', renderSaveToDrive);
   </script>
-
+{% endblock %}
 {% endblock content %}

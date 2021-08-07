@@ -17,7 +17,7 @@ from pydicom import dcmread
 from pydicom.filebase import DicomBytesIO
 from pydicom.charset import encode_string
 from pydicom.datadict import dictionary_description as dd
-from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response
+from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response, jsonify, make_response
 from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
@@ -309,18 +309,20 @@ def bulk_data_handler(data_element):
 
 @bp.route('/fileCoinCall', methods=['POST', 'GET'])
 def fileCoinCall(): 
+    data_pass = None
+    dataGet = request.get_json(force=True)
+    print(dir(dataGet))
+    print(dataGet['session_id'])
+
     if request.method == 'POST':
         print("hello query for FileCoinCall")
-        session_id = request.form.get('session_id')
+        session_id = dataGet['session_id'] # we removed the form so we are not passing session id 
+        print(session_id)
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
         dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
         dicom_meta_data = DicomMetaData.query.filter_by(session_id=session_id).first()
-        # <class 'vessel_app.models.Dicom'>
-        print(type(dicom_data.dicom_stack))
-        ## 'bytes' class
-            ## seralizations 
+        print(dir(dicom_data))
         data = pickle.loads(dicom_data.dicom_stack)
-        print(type(data)) ## python list into JSON 
         dicom_list = [] 
         for byte_file in data:
             dicom_list.append(dcmread(DicomBytesIO(byte_file)))
@@ -335,24 +337,23 @@ def fileCoinCall():
             list_of_json_dicom.append(dicom_file.to_json())
         print(type(list_of_json_dicom))
         
-        ## lets save data via the DICOMweb WADO-RS
-        ## encode list of dicom files 
-        json_format = json.dumps(list_of_json_dicom)
-        # print(json_format)
-        data_pass = json_format
-        print(type(json_format))
-        
-        # ## Load_scan funcation is called form the pydicom package
-        # patient = load_scan(dicom_list) ## 3D array
-        # print ("Slice Thickness: %f" % patient[0].SliceThickness)
-        # print ("Pixel Spacing (row, col): (%f, %f) " % (patient[0].PixelSpacing[0], patient[0].PixelSpacing[1]))
-        # # <class 'vessel_app.models.Dicom'>
-    ## Our developer choices sending data from python to JS
-
-    ## web3.storage call first 
-
+        ## we have to json dump here
+        # json_format = json.dumps(list_of_json_dicom)
+        # data_pass = json_format
+        ## Call encrpytion here
+        errors = 'no errors'
+        ## web3.storage call first 
+        try:
+        # return redirect(url_for('file_pipeline.browser', data=data_pass))
+            return jsonify(status="success", session_id=session_id, data=list_of_json_dicom, errors=errors)
+            
+        except:
+            print('failed to transfer data to javascript', type(data_pass))
+            flash('failed to upload data to FileCoin')
+            return render_template('500.html')
     ## so we need to query data via user session idea
+    # return redirect(url_for('file_pipeline.browser', data=data_pass))
 
-    return render_template('browser.html',
-            data=data_pass ## all_studies dict?
-            ) ## browserFields 
+    # return render_template('browser.html',
+    #         data=data_pass ## all_studies dict?
+    #         ) ## browserFields 

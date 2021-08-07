@@ -145,7 +145,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// {ip/api/token}
 				// api demo.openvessel.org
 				try{
-					const resp = await fetch('http://127.0.0.1:5000/api/token', opts)
+					const resp = await fetch('http://127.0.0.1:5000/api/login_call', opts)
 					if(resp.status !== 200){
 						alert("There has been some error");
 						return false;

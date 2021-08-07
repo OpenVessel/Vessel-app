@@ -31,3 +31,8 @@ Back-end/vessel_app/static/js/.env
 Back-end/vessel_app/static/temp/testplot.jpg
 Back-end/vessel_app/static/users_3d_objects/user_1/data_object.vti
 Back-end/vessel_app/static/package-lock.json
+Back-end/.flaskenv
+Back-end/vessel_app/global_api/test_API.py
+Back-end/.flaskenv
+Back-end/vessel_app/static/js/fileCoin.js
+Back-end/vessel_app/static/users_3d_objects/user_1/data_object.vti

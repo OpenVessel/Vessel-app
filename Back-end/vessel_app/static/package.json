@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "vessel",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --hot --mode development",

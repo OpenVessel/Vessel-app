@@ -70,3 +70,36 @@ def generate_sitemap(app):
         <p>Start working on your project by following the <a href="https://start.4geeksacademy.com/starters/full-stack" target="_blank">Quick Start</a></p>
         <p>Remember to specify a real endpoint path like: </p>
         <ul style="text-align: left;">"""+links_html+"</ul></div>"
+
+
+def password_check(passwd):
+	
+	SpecialSym =['!', '$', '@', '#', '%']
+	val = True
+	error = ''
+	if len(passwd) < 6:
+		error = 'length should be at least 6'
+		val = False
+		
+	if len(passwd) > 20:
+		error = 'length should be not be greater than 8'
+		val = False
+		
+	if not any(char.isdigit() for char in passwd):
+		error = 'Password should have at least one numeral'
+		val = False
+		
+	if not any(char.isupper() for char in passwd):
+		error = 'Password should have at least one uppercase letter'
+		val = False
+		
+	if not any(char.islower() for char in passwd):
+		error = 'Password should have at least one lowercase letter'
+		val = False
+		
+	if not any(char in SpecialSym for char in passwd):
+		error = 'Password should have at least one of the symbols !$@#'
+		val = False
+
+	if val:
+		return val
