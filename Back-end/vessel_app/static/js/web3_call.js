@@ -6,6 +6,47 @@ export function test(data) {
     console.log(data);
 };
 
+function getAccessToken() { 
+    // push API key only for testing purposings
+    return ''
+  }
+function makeStorageClient() {
+    return new Web3Storage({ token: getAccessToken() })
+}
+//File Constructor
+function makeFileObjects(medical_data) {
+    const obj = { hello: medical_data }
+    const blob = new Blob([JSON.stringify(obj)], {type : 'application/json'})
+  
+    const files = [
+      new File(['contents-of-file-1'], 'plain-utf8.txt'),
+      new File([blob], 'test.json')
+    ]
+    // nott saving test.json file for some reason
+    return files
+
+  }
+
+ //we need array of files 
+ async function uploadDatatoFileCoin(files) {
+    const client = makeStorageClient()
+    const cid = await client.put(files)
+    console.log('stored files with cid:', cid)
+    return cid
+  
+}
+
+export function fileCoinStore(data) { 
+    console.log("Hello FileCoinStore")
+    makeStorageClient()
+    const files = makeFileObjects(data)
+    const cid = uploadDatatoFileCoin(files)
+    console.log("did we recevie cid?", cid)
+
+    // when uploading files put request are bundled into one content achive CAR
+
+}
+
 
 // {{url_for('file_pipeline.fileCoinCall')}}
 function fileCoinData(value) {
@@ -19,7 +60,8 @@ function fileCoinData(value) {
     var dataReply = JSON.parse(this.responseText);
     console.log(dataReply)
     // mainCall(dataReply)
-    test(dataReply)
+    fileCoinStore(dataReply.data)
+
     let dataPass = dataReply
     return dataPass
     };  
@@ -30,18 +72,6 @@ function fileCoinData(value) {
     xml.send(dataSend);
     //end function
 }
-
-// var elem = document.querySelector(".btn_callFileCoin");
-// elem.addEventListener('click', function() {
-    
-//     console.log(this.id)
-//     }
-//   });
-
-    // const myScript = document.getElementById('bundle');
-    // let myArgument = myScript.getAttribute('myargument')
-    // console.log(myArgument)
-
 
 // https://stackoverflow.com/questions/52180443/javascript-change-only-one-button-by-click-with-id-and-addeventlistener
 // getElementbyId is only for one element so second button doesnt work 
@@ -59,7 +89,7 @@ console.log("before", value)
 // session_id_callFileCoin
 let dataPass = fileCoinData(value);
 // this song takes time ## producing code
-console.log(dataPass)
+console.log("data return after call", dataPass)
 // consuming code 
 
 // promise is a special Javascript Object that links the  "producing code" and "consuming code" 
