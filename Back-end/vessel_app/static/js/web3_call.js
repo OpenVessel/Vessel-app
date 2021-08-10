@@ -44,7 +44,7 @@ export function fileCoinStore(data) {
     console.log("did we recevie cid?", cid)
 
     // when uploading files put request are bundled into one content achive CAR
-
+    return cid
 }
 
 
@@ -58,13 +58,11 @@ function fileCoinData(value) {
       // recevice information after request
     xml.onload = function(){
     var dataReply = JSON.parse(this.responseText);
-    console.log(dataReply)
+    console.log("we have data?", dataReply)
     // mainCall(dataReply)
-    fileCoinStore(dataReply.data)
-
-    let dataPass = dataReply
-    return dataPass
+    return dataReply
     };  
+
     var dataSend = JSON.stringify({
     'session_id':session_id
     });
@@ -72,6 +70,60 @@ function fileCoinData(value) {
     xml.send(dataSend);
     //end function
 }
+
+
+
+function cidToBackend(value){
+  var xml = new XMLHttpRequest();
+  var cid = value
+
+  xml.open("POST","http://127.0.0.1:5000/storeCID", true)
+  xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  
+  // what does onload do?
+  xml.onload = function(){
+    var dataReply = JSON.parse(this.responseText);
+    console.log('sucess', dataReply)
+    return 'success'
+    };  
+
+  var dataSend = JSON.stringify({
+    'cid':cid
+    });
+
+    xml.send(dataSend);
+
+
+}
+// https://www.pluralsight.com/guides/handling-nested-promises-using-asyncawait-in-react
+// we want out async function to call Web3Storage then wait for return CID 
+// then POST CID to backend
+async function StoreDataIntoFileCoin(value) {
+  try { 
+  var dataReply = await fileCoinData(value)
+  console.log("try 1st async call", dataReply) // these return undefined?
+  }
+  catch (error) { 
+    console.log("error" + error)  // these return undefined?
+  }
+  finally{ 
+    console.log("finally async call", dataReply)  // these return undefined?
+  }
+  // console.log("async pass from fileCoinData", Data.cid)
+  const cid = await fileCoinStore(dataReply)
+  // immediately one after another.
+  const status = await cidToBackend(cid)
+  return status
+}
+
+// async function cidToBackendCall(cid){
+//   const cidReturn = await cidToBackend(cid)
+//   console.log("async call from backend?", cidReturn.cid)
+//   return cidReturn.cid
+// }
+
+// microtask???
+
 
 // https://stackoverflow.com/questions/52180443/javascript-change-only-one-button-by-click-with-id-and-addeventlistener
 // getElementbyId is only for one element so second button doesnt work 
@@ -84,13 +136,16 @@ document.querySelectorAll('.btn_callFileCoin').forEach(function(btn){
             //     console.log($(inputs[i]).val());
             // }
 let value = this.id
+
 console.log("before", value)
-// let value = document.querySelectorAll('.btn_callFileCoin').value;
-// session_id_callFileCoin
-let dataPass = fileCoinData(value);
-// this song takes time ## producing code
-console.log("data return after call", dataPass)
-// consuming code 
+const storeFS = StoreDataIntoFileCoin(value)
+console.log(storeFS)
+
+// this needs to be contained in promised 
+// let dataPass, cid = fileCoinData(value);
+// // this song takes time ## producing code
+// console.log("CID returned", cid)
+// console.log("data return after call", dataPass)
 
 // promise is a special Javascript Object that links the  "producing code" and "consuming code" 
 

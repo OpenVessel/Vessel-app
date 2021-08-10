@@ -357,3 +357,26 @@ def fileCoinCall():
     # return render_template('browser.html',
     #         data=data_pass ## all_studies dict?
     #         ) ## browserFields 
+
+
+@bp.route('/storeCID', methods=['POST', 'GET'])
+def storeCID(): 
+    data_pass = None
+    dataGet = request.get_json(force=True)
+    print(dataGet)
+    print("test storeCID endpoint", dataGet['cid'])
+
+    if request.method == 'POST':
+        print("store call for CID")
+        session_id = dataGet['cid'] # we removed the form so we are not passing session id 
+        
+        errors = 'no errors'
+        ## web3.storage call first 
+        try:
+        # we successelly saved CID
+            return jsonify(status="success", errors=errors)
+            
+        except:
+            print('failed to save CID')
+            flash('failed to save CID')
+            return render_template('500.html')
