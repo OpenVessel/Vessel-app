@@ -172,15 +172,20 @@
                                 <div id="savetodrive-div"></div>
                             </form>
                         </td>
+                        {% if study['cids'] == [] %}
                         <td colspan="2">
-                            <!-- {{url_for('file_pipeline.fileCoinCall')}} -->
-                            <!-- <form action="{{url_for('file_pipeline.fileCoinCall')}}" method='post'>  -->
-                                <!-- grab element value -->
-                                <input id="session_id" class="session_id_callFileCoin" type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
-                                <input id="{{ study['session_id'] }}" class="btn btn_callFileCoin" type="submit" value="Store Data on fileCoinCall">
-                                
-                            <!-- </form>  -->
+                            <input id="session_id" class="session_id_callFileCoin" type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
+                            <input id="{{ study['session_id'] }}" class="btn btn_callFileCoin" type="submit" value="Store Data on fileCoinCall">
                         </td>
+                        
+                        {% else %}
+                        {% for cid in study['cids'] %}
+                            <td colspan="2">
+                                <input id="session_id" class="session_id_callFileCoin" type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
+                                <input id="{{ cid }}" class="btn btn_RetFileCoin" type="submit" value="Retreive data from FileCoin">
+                            </td>   
+                            {% endfor %}
+                        {% endif %}
                         </tr>
 
                     </div> <!-- </div>  -->
@@ -192,6 +197,23 @@
             </div>
         {% endfor %}
     {% endif %}
+
+</div>
+ <!-- List of Cold Storage  -->
+ <div> 
+    
+    <div class='card' style='width:80%; margin: 3%; background: whitesmoke;'>
+    <h1> Restore Old Datasets </h1>
+        {% for study in all_studies %}
+        {% if study['cids'] == [] %}
+        <p> No files were stored in long term or FileCoin</p> 
+        {% else %}
+        <p> {{ study['cids'] }}</p>  <input id="{{ cid }}" class="btn btn_RetFileCoin" type="submit" value="Retreive data from FileCoin">
+        {% endif %}
+        <!-- print out table of cid according to user id -->
+    {% endfor %}    
+    </div>
+    
 </div>
 
 {% block javascript %}
@@ -214,21 +236,6 @@ for (i = 0; i < coll.length; i++) {
 <!-- https://github.com/nickjj/flask-static-digest -->
 <!-- <script type="text/javascript" src="{{url_for('static', filename='js/web3_call.js')}}"></script> -->
 <script id="bundle" type="text/javascript" src="{{url_for('static', filename='js/fileCoin.js')}}" > </script>  
-<!-- <script id="getSpecificSession"> 
-function reply_click(clicked_id)
-  {
-    $("#getSpecificSession").attr("value", clicked_id)
-      console.log(clicked_id);
-  }
-</script>  -->
-<!-- https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data -->
-
-<!-- 
-<div id="container" style="position:relative;"></div>
-<div>
-    <input type="file" accept="application/JSON" style="display: none;">
-    <input id="data_pass_to_fileCoin" type="hidden" value="{{path_data}}">
-</div> -->
 
 <script>
     function renderSaveToDrive() {

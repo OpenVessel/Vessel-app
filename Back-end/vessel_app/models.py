@@ -129,6 +129,19 @@ class Object_3D(db.Model):
         return f"Object_3D('{self.date_uploaded}')"
 
 
+class Cidtable(db.Model):
+    ## data unqine id 
+    id = db.Column(db.Integer, primary_key=True)  
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    session_id = db.Column(db.String(200), nullable=False)
+    cid = db.Column(db.String(200), nullable=False)
+    #formData = db.relationship('DicomFormData', backref='author', lazy=True)
+    cold_storage_id = db.Column(db.String(200), nullable=False) ## cold_storage just retain the session IDs is listed out for the user to collect data
+
+    def __repr__(self):
+        return f"Cidtable('{self.date_uploaded}')"
+
+
 # class Save_csrf_token(db.Model):
 #     __bind_key__ = 'redis_db'
 #     id = db.Column(db.Integer, primary_key=True)  

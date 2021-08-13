@@ -13,6 +13,23 @@ function getAccessToken() {
 function makeStorageClient() {
     return new Web3Storage({ token: getAccessToken() })
 }
+
+async function retrieveDatatoFileCoin(cid){
+  const client = makeStorageClient()
+  const res = await client.get(cid)
+  console.log('Response from FileCoin[${res.status}] ${res.statusText}')
+  if (!res.ok) {
+    throw new Error(`failed to get ${cid} - [${res.status}] ${res.statusText}`)
+  }
+
+  const files = await res.files()
+  for (const file of files) {
+    console.log(`${file.cid} -- ${file.path} -- ${file.size}`)
+  }
+
+
+}
+
 //File Constructor
 function makeFileObjects(medical_data) {
     const obj = { hello: medical_data }
@@ -28,7 +45,7 @@ function makeFileObjects(medical_data) {
   }
 
  //we need array of files 
- async function uploadDatatoFileCoin(files) {
+async function uploadDatatoFileCoin(files) {
     const client = makeStorageClient()
     const cid = await client.put(files)
     console.log('stored files with cid:', cid)
@@ -73,9 +90,10 @@ function fileCoinData(value) {
 
 
 
-function cidToBackend(value){
+function cidToBackend(cid, value){
   var xml = new XMLHttpRequest();
-  var cid = value
+  var cid = cid
+  var session_id = value
 
   xml.open("POST","http://127.0.0.1:5000/storeCID", true)
   xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -88,7 +106,8 @@ function cidToBackend(value){
     };  
 
   var dataSend = JSON.stringify({
-    'cid':cid
+    'cid':cid,
+    'session_id':session_id
     });
 
     xml.send(dataSend);
@@ -111,43 +130,42 @@ async function StoreDataIntoFileCoin(value) {
   }
   // console.log("async pass from fileCoinData", Data.cid)
   const cid = await fileCoinStore(dataReply)
-  // immediately one after another.
-  const status = await cidToBackend(cid)
+  const status = await cidToBackend(cid, value)
+
   return status
 }
 
-// async function cidToBackendCall(cid){
-//   const cidReturn = await cidToBackend(cid)
-//   console.log("async call from backend?", cidReturn.cid)
-//   return cidReturn.cid
-// }
+async function RetrieveDataFromFileCoin(cid) {
+  var resp = await retrieveDatatoFileCoin(cid)
+
+
+}
+
 
 // microtask???
-
-
 // https://stackoverflow.com/questions/52180443/javascript-change-only-one-button-by-click-with-id-and-addeventlistener
-// getElementbyId is only for one element so second button doesnt work 
-// document.getElementById("buttonPress").addEventListener("click", function() {
+// store data on FileCoin
 document.querySelectorAll('.btn_callFileCoin').forEach(function(btn){
         btn.addEventListener('click', function() {
-            console.log(this.id)
-            // var inputs = $(".session_id_callFileCoin");
-            // for(var i = 0; i < inputs.length; i++){
-            //     console.log($(inputs[i]).val());
-            // }
+console.log(this.id)
 let value = this.id
-
 console.log("before", value)
 const storeFS = StoreDataIntoFileCoin(value)
 console.log(storeFS)
 
-// this needs to be contained in promised 
-// let dataPass, cid = fileCoinData(value);
-// // this song takes time ## producing code
-// console.log("CID returned", cid)
-// console.log("data return after call", dataPass)
-
-// promise is a special Javascript Object that links the  "producing code" and "consuming code" 
-
     });
+});
+
+// reterive data from file coin
+document.querySelectorAll('.btn_RetFileCoin').forEach(function(btn){
+  btn.addEventListener('click', function() {
+console.log(this.id)
+// all the data stored with Web3 goes via IPFS conttent-addressed data
+
+// HTTP gateway
+// Web3.Storage JavaScript client 
+
+
+
+});
 });

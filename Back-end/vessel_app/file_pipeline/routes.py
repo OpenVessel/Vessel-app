@@ -22,7 +22,7 @@ from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 
 ## From vessel_app functions, classes, and models
-from vessel_app.models import User, Dicom, DicomFormData, Object_3D, DicomMetaData
+from vessel_app.models import User, Dicom, DicomFormData, Object_3D, DicomMetaData, Cidtable
 from .celery_tasks import data_pipeline, query_db_insert, load_data, lung_segmentation, pyvista_call, query_db_insert, resample
 from .utils import request_id, dicom_to_thumbnail
 from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample_stack, make_lungmask, displayer, temp_file_db, pickle_vtk, unpickle_vtk, unpickle_vtk_2
@@ -182,6 +182,7 @@ def browser():
     ###### Query Database and Indexing ######
     # dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
     dicom_meta_data = DicomMetaData.query.filter_by(user_id=current_user.id).all()
+    
     print(len(dicom_meta_data))
     # form_data = DicomFormData.query.filter_by(session_id=session_id).all()
     #FileDataset part pydicoms
@@ -204,14 +205,17 @@ def browser():
         ## session_id_3d
         try:
             session_id_3ds = [(k.date_uploaded, k.session_id_3d) for k in Object_3D.query.filter_by(session_id=session_id).all()]
+            cids =  [(k.cid) for k in Cidtable.query.filter_by(session_id=session_id).all()]
+
         except:
             session_id_3ds = []
+            cids = []
 
         all_rows_in_study = [] # [{}, {}, {}]
         cols = [] # list of list of each column for each
 
         dicom_dict = {
-            "Study Date":study_date, 
+        "Study Date":study_date, 
         "Study ID":study_id, 
         "Modality":modality
         }
@@ -231,13 +235,12 @@ def browser():
             'file_count': file_count,
             'session_id': session_id,
             'session_id_3ds': session_id_3ds,
+            'cids':cids,
             'study_name': study_name,
             'description': description
             })
 
     browserFields = ["Study Date", "Study ID", "Modality"]
-    #print("Print all studies list:",all_studies)
-
 
     return render_template('browser.html',
     all_studies=all_studies, ## all_studies dict?
@@ -313,15 +316,26 @@ def fileCoinCall():
     dataGet = request.get_json(force=True)
     print(dir(dataGet))
     print(dataGet['session_id'])
+    
+    cidTableCheck = Cidtable.query.filter_by(cold_storage_id=current_user.id).all()
+    if(cidTableCheck != []):
+        if(cidTableCheck != None):
+            for cidTable in cidTableCheck:
+                checkSession_id = cidTable.session_id
+                if(checkSession_id == dataGet['session_id']):
+                ## if session_id of the data is already uploaded we dont insert new CID 
+                    print("data already stored on fileCoin")
+                    messages = 'data already stored on fileCoin'
+                    errors = 503
+                    return jsonify(status="failure", messages=messages, errors=errors)
+
 
     if request.method == 'POST':
         print("hello query for FileCoinCall")
         session_id = dataGet['session_id'] # we removed the form so we are not passing session id 
-        print(session_id)
         dicom_data = Dicom.query.filter_by(session_id=session_id).first()
         dicom_form_data = DicomFormData.query.filter_by(session_id=session_id).first()
         dicom_meta_data = DicomMetaData.query.filter_by(session_id=session_id).first()
-        print(dir(dicom_data))
         data = pickle.loads(dicom_data.dicom_stack)
         dicom_list = [] 
         for byte_file in data:
@@ -337,9 +351,6 @@ def fileCoinCall():
             list_of_json_dicom.append(dicom_file.to_json())
         print(type(list_of_json_dicom))
         
-        ## we have to json dump here
-        # json_format = json.dumps(list_of_json_dicom)
-        # data_pass = json_format
         ## Call encrpytion here
         errors = 'no errors'
         ## web3.storage call first 
@@ -364,11 +375,37 @@ def storeCID():
     data_pass = None
     dataGet = request.get_json(force=True)
     print(dataGet)
-    print("test storeCID endpoint", dataGet['cid'])
+    print("test store CID endpoint", dataGet['cid'])
 
+
+    cidTableCheck = Cidtable.query.filter_by(cold_storage_id=current_user.id).all()
+    if(cidTableCheck != []):
+        if(cidTableCheck != None):
+            for cidTable in cidTableCheck:
+                checkSession_id = cidTable.session_id
+                if(checkSession_id == dataGet['session_id']):
+                ## if session_id of the data is already uploaded we dont insert new CID 
+                    print("cid already exist is record on OpenVessel DB")
+                    messages = 'cid already exist is record on OpenVessel DB'
+                    errors = 503
+                    return jsonify(status="failure", messages=messages, errors=errors)
+
+
+    ## we need some safety code to check if session ID already uploaded?
     if request.method == 'POST':
         print("store call for CID")
-        session_id = dataGet['cid'] # we removed the form so we are not passing session id 
+        cid = dataGet['cid'] # we removed the form so we are not passing session id 
+        print(cid)
+        print(type(cid))
+        session_id = dataGet['session_id']
+        #so we recevied the CID we need to store it in the database tabel
+        cidTableCall = Cidtable( 
+            session_id = str(session_id),
+            cid = str(cid),
+            cold_storage_id = current_user.id, ## retsoriation mechican for returning deleting data
+        )
+        db.session.add(cidTableCall)
+        db.session.commit()
         
         errors = 'no errors'
         ## web3.storage call first 
@@ -380,3 +417,10 @@ def storeCID():
             print('failed to save CID')
             flash('failed to save CID')
             return render_template('500.html')
+
+@bp.route('/restoreDataObjectCID', methods=['POST', 'GET'])
+def restoreDataObjectCID(): 
+    
+    if request.method == 'POST':
+        print("hello restore Data")
+    return 'pass'
