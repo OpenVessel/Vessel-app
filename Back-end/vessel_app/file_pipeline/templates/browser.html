@@ -179,12 +179,6 @@
                         </td>
                         
                         {% else %}
-                        {% for cid in study['cids'] %}
-                            <td colspan="2">
-                                <input id="session_id" class="session_id_callFileCoin" type="hidden" name="session_id" value="{{ study['session_id'] }}"> 
-                                <input id="{{ cid }}" class="btn btn_RetFileCoin" type="submit" value="Retreive data from FileCoin">
-                            </td>   
-                            {% endfor %}
                         {% endif %}
                         </tr>
 
@@ -200,18 +194,28 @@
 
 </div>
  <!-- List of Cold Storage  -->
- <div> 
-    
-    <div class='card' style='width:80%; margin: 3%; background: whitesmoke;'>
+ <div class='card' style='width:80%; margin: 3%; background: whitesmoke;'> 
     <h1> Restore Old Datasets </h1>
-        {% for study in all_studies %}
+    <div  class="row">
+    {% for study in all_studies %}
         {% if study['cids'] == [] %}
         <p> No files were stored in long term or FileCoin</p> 
         {% else %}
-        <p> {{ study['cids'] }}</p>  <input id="{{ cid }}" class="btn btn_RetFileCoin" type="submit" value="Retreive data from FileCoin">
+        
+        {% for cid in study['cids'] %}
+             
+            <div class="five column">
+                <h4> {{ study['study_name']}} </h4>
+            </div>
+            <div class="seven column">
+                <input id="{{ cid }}" class="btn btn_RetFileCoin" type="submit" value="Retreive data from FileCoin"> 
+            </div>
+            
+            {% endfor %}
         {% endif %}
         <!-- print out table of cid according to user id -->
-    {% endfor %}    
+    {% endfor %}   
+</div> 
     </div>
     
 </div>

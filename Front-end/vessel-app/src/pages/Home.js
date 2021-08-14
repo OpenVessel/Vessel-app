@@ -16,13 +16,14 @@ function Home() {
 
     return (
         <div>
-            <div> Home page</div>
+            <div class="Homepage">
 
             <img src={process.env.PUBLIC_URL + '/images/OpenVessel_Logo.png'} alt="OpenVessel Logo"/>
-            <p> what is? {store.message}</p>
-            <Link to="/login" className="btn btn-primary">Login</Link>
-            <Link to="/register" className="btn btn-primary">Register</Link>
-
+            <div class="box"> 
+            <Link to="/login" className="btn btn-main">Login</Link>
+            <Link to="/register" className=" btn btn-main">Register</Link>
+            </div>
+            </div>
         </div>
     )
 }

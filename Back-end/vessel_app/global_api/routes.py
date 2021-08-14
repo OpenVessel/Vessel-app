@@ -204,11 +204,11 @@ def register():
             submit = json_obj['submit']
             print("------",request.form)
             ##wtforms base form class has parameter for formdatta 
-            val, error = password_check(password)
+            # val, error = password_check(password)
 
-            if val == False:
-                response_pay_load = {"message":error}
-                return jsonify(response_pay_load)
+            # if val == False:
+            #     response_pay_load = {"message":error}
+            #     return jsonify(response_pay_load)
             
             if request.method == 'POST':
                 ## hashed password

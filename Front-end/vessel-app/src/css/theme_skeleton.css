@@ -21,6 +21,17 @@ img {
     width: 50%;
 }
 
+
+.Homepage {
+  padding-top: 125px;
+  height: 80%;
+  width: 100%;
+  text-align: center;
+
+}
+.box {
+  padding: 30px;
+}
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .container {

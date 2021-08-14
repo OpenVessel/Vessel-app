@@ -1,149 +1,212 @@
-
 // import { Web3Storage } from 'web3.storage'
 import { Web3Storage } from 'web3.storage/dist/bundle.esm.min.js'
-// import { dataSend } from 'web3.storage/dist/bundle.esm.min.js'
+
+// Citation
+// https://stackoverflow.com/questions/52180443/javascript-change-only-one-button-by-click-with-id-and-addeventlistener
+// https://www.pluralsight.com/guides/handling-nested-promises-using-asyncawait-in-react
 export function test(data) {
     console.log(data);
 };
 
 function getAccessToken() { 
     // push API key only for testing purposings
-    return ''
+    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE3QTM5MDQ5ZmZBMTk1MDExMGFDOGNhQ0MyQ0YyNmFmNmJjMEUwOWUiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2MjgwMDIzMzkyOTgsIm5hbWUiOiJPcGVuVmVzc2VsIn0.eY7q_BaPj0EuV6dQC2zCD-BEhcHwR741wj1eijwaKS8'
   }
 function makeStorageClient() {
     return new Web3Storage({ token: getAccessToken() })
 }
 
-async function retrieveDatatoFileCoin(cid){
+function retrieveDatatoFileCoin(cid){
   const client = makeStorageClient()
-  const res = await client.get(cid)
-  console.log('Response from FileCoin[${res.status}] ${res.statusText}')
-  if (!res.ok) {
-    throw new Error(`failed to get ${cid} - [${res.status}] ${res.statusText}`)
-  }
+  const res = client.get(cid)
+  // console.log('Response from FileCoin[${res.status}] ${res.statusText}')
+  // if (!res.ok) {
+  //   throw new Error(`failed to get ${cid} - [${res.status}] ${res.statusText}`)
+  // }
 
-  const files = await res.files()
-  for (const file of files) {
-    console.log(`${file.cid} -- ${file.path} -- ${file.size}`)
-  }
-
-
+  return res
 }
 
-//File Constructor
-function makeFileObjects(medical_data) {
-    const obj = { hello: medical_data }
-    const blob = new Blob([JSON.stringify(obj)], {type : 'application/json'})
-  
-    const files = [
-      new File(['contents-of-file-1'], 'plain-utf8.txt'),
-      new File([blob], 'test.json')
-    ]
-    // nott saving test.json file for some reason
-    return files
-
-  }
 
  //we need array of files 
-async function uploadDatatoFileCoin(files) {
+function uploadDatatoFileCoin(files) {
     const client = makeStorageClient()
-    const cid = await client.put(files)
+    const cid = client.put(files)
     console.log('stored files with cid:', cid)
     return cid
   
 }
 
-export function fileCoinStore(data) { 
-    console.log("Hello FileCoinStore")
-    makeStorageClient()
-    const files = makeFileObjects(data)
-    const cid = uploadDatatoFileCoin(files)
-    console.log("did we recevie cid?", cid)
+function fileCoinStore(medical_data, value){
+  return new Promise(function(resolve, reject){
+    // const obj = { hello: medical_data }
+    // const blob = new Blob([JSON.stringify(obj)], {type : 'application/json'})
+    const blob = new Blob([JSON.stringify(medical_data)], {type : 'application/json'})
+    const files = [
+      new File([blob], value + '_test.json')
+    ]
+  
+  resolve(files)
 
-    // when uploading files put request are bundled into one content achive CAR
-    return cid
+    
+
+  });
 }
 
-
-// {{url_for('file_pipeline.fileCoinCall')}}
 function fileCoinData(value) {
-    // we need to pass the value or session idea in the post
-    var xml = new XMLHttpRequest();
-    var session_id = value
-    xml.open("POST","http://127.0.0.1:5000/fileCoinCall", true)
-    xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-      // recevice information after request
-    xml.onload = function(){
-    var dataReply = JSON.parse(this.responseText);
-    console.log("we have data?", dataReply)
-    // mainCall(dataReply)
-    return dataReply
-    };  
+  return new Promise(function(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    let session_id = value
 
-    var dataSend = JSON.stringify({
+    xhr.open("POST","http://127.0.0.1:5000/fileCoinCall", true)
+
+    xhr.onload = function () {
+      if (this.status >= 200 && this.status < 300) {
+        var dataReply = JSON.parse(this.responseText);  
+        resolve(dataReply);
+      } else {
+          reject({
+              status: this.status,
+              statusText: xhr.statusText
+          });
+      }
+    };
+    xhr.onerror = function () {
+      reject({
+          status: this.status,
+          statusText: xhr.statusText
+      });
+  };
+  var dataSend = JSON.stringify({
     'session_id':session_id
     });
 
-    xml.send(dataSend);
-    //end function
+  xhr.send(dataSend);
+
+  });
 }
+function cidToBackend(cid_pass, value) {
+  return new Promise(function(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    var cid = cid_pass
+    let session_id = value
+    
 
+    xhr.open("POST","http://127.0.0.1:5000/storeCID", true)
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 
-
-function cidToBackend(cid, value){
-  var xml = new XMLHttpRequest();
-  var cid = cid
-  var session_id = value
-
-  xml.open("POST","http://127.0.0.1:5000/storeCID", true)
-  xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-  
-  // what does onload do?
-  xml.onload = function(){
-    var dataReply = JSON.parse(this.responseText);
-    console.log('sucess', dataReply)
-    return 'success'
-    };  
-
+    xhr.onload = function () {
+      if (this.status >= 200 && this.status < 300) {
+        var dataReply = JSON.parse(this.responseText);  
+        resolve(dataReply);
+      } else {
+          reject({
+              status: this.status,
+              statusText: xhr.statusText
+          });
+      }
+    };
+    xhr.onerror = function () {
+      reject({
+          status: this.status,
+          statusText: xhr.statusText
+      });
+  };
   var dataSend = JSON.stringify({
     'cid':cid,
     'session_id':session_id
     });
 
-    xml.send(dataSend);
+  xhr.send(dataSend);
 
-
+  });
 }
-// https://www.pluralsight.com/guides/handling-nested-promises-using-asyncawait-in-react
-// we want out async function to call Web3Storage then wait for return CID 
-// then POST CID to backend
+
+function postDatatoBackend(data_pass, cid_pass) {
+  return new Promise(function(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    var data = data_pass
+    var cid = cid_pass
+    
+    
+
+    xhr.open("POST","http://127.0.0.1:5000/restoreDataObjectCID", true)
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+    xhr.onload = function () {
+      if (this.status >= 200 && this.status < 300) {
+        var dataReply = JSON.parse(this.responseText);  
+        resolve(dataReply);
+      } else {
+          reject({
+              status: this.status,
+              statusText: xhr.statusText
+          });
+      }
+    };
+    xhr.onerror = function () {
+      reject({
+          status: this.status,
+          statusText: xhr.statusText
+      });
+  };
+  var dataSend = JSON.stringify({
+    'cid':cid,
+    'data':data
+    });
+
+  xhr.send(dataSend);
+
+  });
+}
+
+
+// Async function called from here
 async function StoreDataIntoFileCoin(value) {
-  try { 
-  var dataReply = await fileCoinData(value)
-  console.log("try 1st async call", dataReply) // these return undefined?
-  }
-  catch (error) { 
-    console.log("error" + error)  // these return undefined?
-  }
-  finally{ 
-    console.log("finally async call", dataReply)  // these return undefined?
-  }
-  // console.log("async pass from fileCoinData", Data.cid)
-  const cid = await fileCoinStore(dataReply)
-  const status = await cidToBackend(cid, value)
+
+  var dataReply = await fileCoinData(value) // async now works
+  var files = await fileCoinStore(dataReply, value) //async now works 
+  var cid = await uploadDatatoFileCoin(files)
+  console.log("did we recevie cid?", cid)
+
+  var status = await cidToBackend(cid, value)
 
   return status
 }
 
 async function RetrieveDataFromFileCoin(cid) {
   var resp = await retrieveDatatoFileCoin(cid)
+  console.log(resp)
+  const files = await resp.files()
+  console.log(files)
+  let read = new FileReader();
+  for (const file of files){
 
+    read.readAsBinaryString(file);
+    let data_pass = read.result
+    read.onloadend = function(){
+    console.log(read.result)
+    postDatatoBackend(read.result, cid)
+    }
+  }
 
 }
 
+// function convertFileToJson(files){
+//   return new Promise (function(resolve, reject) {
+//     for (const file of files){
+//   let read = new FileReader();
+//   read.readAsBinaryString(file);
 
+//   read.onloadend = function(){
+  
+//   let data_pass = read.result
+//   resolve(data_pass);
+//   }
+//   }
+// });
+// }
 // microtask???
-// https://stackoverflow.com/questions/52180443/javascript-change-only-one-button-by-click-with-id-and-addeventlistener
 // store data on FileCoin
 document.querySelectorAll('.btn_callFileCoin').forEach(function(btn){
         btn.addEventListener('click', function() {
@@ -161,7 +224,9 @@ document.querySelectorAll('.btn_RetFileCoin').forEach(function(btn){
   btn.addEventListener('click', function() {
 console.log(this.id)
 // all the data stored with Web3 goes via IPFS conttent-addressed data
-
+let value = this.id
+const retFS = RetrieveDataFromFileCoin(value)
+console.log(retFS)
 // HTTP gateway
 // Web3.Storage JavaScript client 
 

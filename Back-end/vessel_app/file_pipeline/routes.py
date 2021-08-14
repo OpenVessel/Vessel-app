@@ -20,6 +20,7 @@ from pydicom.datadict import dictionary_description as dd
 from flask import render_template, url_for, flash, redirect, request, session, after_this_request, current_app, Response, jsonify, make_response
 from flask_login import current_user, login_required, login_user
 from base64 import b64encode
+from pydicom.dataset import Dataset
 
 ## From vessel_app functions, classes, and models
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D, DicomMetaData, Cidtable
@@ -389,6 +390,7 @@ def storeCID():
                     messages = 'cid already exist is record on OpenVessel DB'
                     errors = 503
                     return jsonify(status="failure", messages=messages, errors=errors)
+                    # redirect(url_for('file_pipeline.browser'))
 
 
     ## we need some safety code to check if session ID already uploaded?
@@ -410,7 +412,8 @@ def storeCID():
         errors = 'no errors'
         ## web3.storage call first 
         try:
-        # we successelly saved CID
+            # we successelly saved CID
+            # we need to redirect to browser somehow
             return jsonify(status="success", errors=errors)
             
         except:
@@ -421,6 +424,14 @@ def storeCID():
 @bp.route('/restoreDataObjectCID', methods=['POST', 'GET'])
 def restoreDataObjectCID(): 
     
+    dataGet = request.get_json(force=True)
     if request.method == 'POST':
+        print(type(dataGet['data']))
+        # test = dataGet['data']
+        # print(json_format['data'])
+        ds1 = pydicom.dataset.Dataset.from_json(dataGet['data'])
+        print(type(ds1))
+        
+
         print("hello restore Data")
-    return 'pass'
+    return jsonify(status="success")
