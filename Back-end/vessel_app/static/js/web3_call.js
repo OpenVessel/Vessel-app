@@ -191,21 +191,6 @@ async function RetrieveDataFromFileCoin(cid) {
   }
 
 }
-
-// function convertFileToJson(files){
-//   return new Promise (function(resolve, reject) {
-//     for (const file of files){
-//   let read = new FileReader();
-//   read.readAsBinaryString(file);
-
-//   read.onloadend = function(){
-  
-//   let data_pass = read.result
-//   resolve(data_pass);
-//   }
-//   }
-// });
-// }
 // microtask???
 // store data on FileCoin
 document.querySelectorAll('.btn_callFileCoin').forEach(function(btn){
