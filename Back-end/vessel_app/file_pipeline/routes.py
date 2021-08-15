@@ -21,6 +21,7 @@ from flask import render_template, url_for, flash, redirect, request, session, a
 from flask_login import current_user, login_required, login_user
 from base64 import b64encode
 from pydicom.dataset import Dataset
+import pydicom.uid
 
 ## From vessel_app functions, classes, and models
 from vessel_app.models import User, Dicom, DicomFormData, Object_3D, DicomMetaData, Cidtable
@@ -183,7 +184,7 @@ def browser():
     ###### Query Database and Indexing ######
     # dicom_data = Dicom.query.filter_by(user_id=current_user.id).all()
     dicom_meta_data = DicomMetaData.query.filter_by(user_id=current_user.id).all()
-    
+    cidPass = Cidtable.query.filter_by(cold_storage_id=current_user.id).all()
     print(len(dicom_meta_data))
     # form_data = DicomFormData.query.filter_by(session_id=session_id).all()
     #FileDataset part pydicoms
@@ -243,9 +244,26 @@ def browser():
 
     browserFields = ["Study Date", "Study ID", "Modality"]
 
+    restoreable_cids  = []
+    for cid in cidPass:
+        cidNumber = cid.cid
+        CidSession_id = cid.session_id
+
+        try:
+            cids =  [(k.cid) for k in Cidtable.query.filter_by(session_id=CidSession_id).all()]
+        except:
+            cids = []
+        print(cidNumber)
+
+        restoreable_cids.append({
+            'cids':cids,
+            'session_id':CidSession_id
+        })
+
     return render_template('browser.html',
     all_studies=all_studies, ## all_studies dict?
-    browserFields=browserFields) ## browserFields 
+    browserFields=browserFields,
+    restoreable_cids=restoreable_cids) ## browserFields 
 
 @bp.route('/delete', methods=['POST'])
 def delete():
@@ -425,13 +443,93 @@ def storeCID():
 def restoreDataObjectCID(): 
     
     dataGet = request.get_json(force=True)
+    
+    # Cidtable.query.filter_by(cid=dataGet['cid'])
+    
+    #Check if data is already in existence for the user
+    cidTableCheck = Cidtable.query.filter_by(cid=dataGet['cid']).all()
+    if(cidTableCheck != []):
+        if(cidTableCheck != None):
+            for cidTable in cidTableCheck:
+                checkSession_id = cidTable.session_id
+                if(checkSession_id):
+                    DicomCheck = Dicom.query.filter_by(session_id=checkSession_id).all()
+                    for dicom_row in DicomCheck:
+                        DataSessionID = dicom_row.session_id
+                    try: 
+                        print("its does exit!",DataSessionID)
+                        return jsonify(message="SessionID is exist in database already")
+                    except NameError: 
+                        DataSessionID = None
+                        print("it does not exsit")
+
     if request.method == 'POST':
-        print(type(dataGet['data']))
-        # test = dataGet['data']
-        # print(json_format['data'])
-        ds1 = pydicom.dataset.Dataset.from_json(dataGet['data'])
-        print(type(ds1))
+        test3 = json.loads(dataGet["data"])
+        # print(test3["data"]) #    print(test2['session_id'])
+                # TypeError: string indices must be integers
+        print(type(test3["data"]))
+        print(len(test3["data"]))
+
+        dicom_list = [] 
+        for test in test3["data"]:
+            y = json.loads(test)
+            ds1 = pydicom.dataset.Dataset.from_json(y)
+            
+            ds1.ensure_file_meta()
+            ds1.fix_meta_info(enforce_standard=True)
+            print(ds1.file_meta)
+            ds1.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
+
+            # Works!!
+            # <class 'pydicom.dataset.Dataset'>
+            dicom_list.append(ds1)
+
+        median_i = len(dicom_list)//2
+        median_dicom = dicom_list[median_i]
+
+        ## Metadata call  ## heres validation code/new class call for metadata checks 
+        study_date = median_dicom.StudyDate
+        study_id = median_dicom.StudyID
+        modality = median_dicom.Modality 
+
+        ### generate thumbnail from median file
+        tn_bytes = dicom_to_thumbnail(median_dicom)
+        binary_blob = pickle.dumps(all_files)
+
+        OldSession_ID = cidTable.session_id
+        ## database upload
+        file_count_restore = len(dicom_list)
+        meta_data_batch = DicomMetaData( 
+            user_id = current_user.id,
+            study_date = study_date,
+            study_id = study_id, 
+            modality = modality,
+            file_count= file_count_restore,
+            session_id=str(OldSession_ID),
+            thumbnail = tn_bytes
+        )
+
+        study_name = "Restored Study Name"
+        description = "Resttored description"
         
+        formData = DicomFormData(
+            study_name=study_name,
+            description=description,
+            session_id=str(OldSession_ID)
+        )
+
+        batch = Dicom(
+            user_id=current_user.id,
+            dicom_stack = binary_blob,
+            thumbnail = tn_bytes,
+            file_count= file_count_global,
+            session_id=str(OldSession_ID)
+            )
+
+        db.session.add(meta_data_batch)
+        db.session.add(formData)
+        db.session.add(batch)
+        db.session.commit()
 
         print("hello restore Data")
     return jsonify(status="success")

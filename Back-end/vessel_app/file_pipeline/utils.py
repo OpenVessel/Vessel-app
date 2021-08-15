@@ -21,7 +21,9 @@ def graphing(file):
         sag_aspect = ps[1]/ss
         cor_aspect = ss/ps[0]
         # create 3D array
-        img_shape = list(file.pixel_array.shape)
+        test = file.pixel_array
+        test2 = test.shape
+        img_shape = list(test2)
         img_shape.append(1)
         img3d = np.zeros(img_shape)
         # fill 3D array with the images from the files

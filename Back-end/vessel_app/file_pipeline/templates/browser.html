@@ -2,8 +2,8 @@
 {% block content %}
  <div class="options-bar" >  <!-- sub-nav bar  -->
     <ul class="options-bar">
-        <li class="sub_nav">Home</li>
-        <li class="sub_nav">Home</li>
+        <!-- <li class="sub_nav">Home</li> -->
+        <!-- <li class="sub_nav">Home</li> -->
        <li class="sub_nav">
            <a href=' {{url_for("browser.browser_list")}} '> 
         <span class="material-icons-outlined">
@@ -197,7 +197,7 @@
  <div class='card' style='width:80%; margin: 3%; background: whitesmoke;'> 
     <h1> Restore Old Datasets </h1>
     <div  class="row">
-    {% for study in all_studies %}
+    {% for study in restoreable_cids %}
         {% if study['cids'] == [] %}
         <p> No files were stored in long term or FileCoin</p> 
         {% else %}
