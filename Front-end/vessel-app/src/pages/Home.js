@@ -19,9 +19,10 @@ function Home() {
             <div class="Homepage">
 
             <img src={process.env.PUBLIC_URL + '/images/OpenVessel_Logo.png'} alt="OpenVessel Logo"/>
-            <div class="box"> 
-            <Link to="/login" className="btn btn-main">Login</Link>
-            <Link to="/register" className=" btn btn-main">Register</Link>
+            <div className="box"> 
+            {/* className="btn btn-main" */}
+            <Link className="btn-main" to="/login" >Login</Link>
+            <Link  className="btn-main" to="/register" >Register</Link>
             </div>
             </div>
         </div>

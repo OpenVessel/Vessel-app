@@ -8,6 +8,8 @@ const Login_Header = (props) => {
     
     const{store, actions } = useContext(Context);
     const history = useHistory();
+    // so if user clicks logut it sets token null via actions.logout action
+    if (store.token || store.token == "" || store.token == undefined) history.push("/");
 
 
     const handleClick = () => { 
@@ -20,7 +22,6 @@ const Login_Header = (props) => {
             <div>
             <h1>{props.title} </h1>
             {/* if user is authenticated */}
-            <Link to="/"> Home </Link>
             <Link to="/Getting_Started"> Getting Started </Link>
             <Link to="/Upload"> Upload </Link>
             <Link to="/Browser"> Browser </Link>

@@ -64,34 +64,39 @@ def serve_any_other_file(path):
 @bp.route('/login_call', methods=['POST'])
 def create_token(): 
 
-    print("we receviced a request from")
+    print("we receviced a request from", request.remote_addr)
+    username = request.json.get("username", None)
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-## we are actually failing to check !!!!
-
-    if email != "test" or password != "test":
-        return jsonify({"msg": "Bad username or password"}), 401
-
     if request.method == 'POST':
         ## we take the json values out of the HTTPS request
-
+        print("hellloooooofrom react")
         ## we pass them to user.query.filter
         ## we need validation code for email 
-        email_pass = email
+        username_pass = username
         password_pass = password
-
+        print("username ",username_pass)
+        print("password",password_pass)
         ## Input validation authen
         ## we pull the password withthe user name or email
-        user = User.query.filter_by(email=email_pass).first()
+        user = User.query.filter_by(username=username_pass).first()
+            
+        # Validate if user exist 
+        print(bcrypt.check_password_hash(user.password, password))
+        print(username == user.username)
+        print(type(user.username))
+        print(username != user.username)
+        if username != user.username:
+            return jsonify({"msg": "Bad username"}), 401
             #     email = StringField('Email', # does email exist?
             # password = PasswordField('Password', validators=[DataRequired()]) ## password exist is it correct does sit match
             # remember = BooleanField('Remember Me')
             # submit = SubmitField('Login')
             # recaptcha = RecaptchaField()
-
+        print(user)
         ## we check the hash generated on the password
-        if user and bcrypt.check_password_hash(user.password, password):
+        if  bcrypt.check_password_hash(user.password, password):
             # https://flask-login.readthedocs.io/en/latest/
             #  https://flask-login.readthedocs.io/en/latest/#flask_login.login_user
             did_user_login = login_user(user)
@@ -101,13 +106,19 @@ def create_token():
                 access_token = create_access_token(identity=email)
                 response_pay_load = {  
                     "message":"Successful Login",
-                    "username":user.name
+                    "username":user.username,
+                    "email":user.email,
+                    "access_token":access_token
                             }
 
-                return access_token, jsonify(response_pay_load), 200
+                return jsonify(response_pay_load), 200
             else:
                 response_pay_load = {  "message":"Login Unsuccessful. Please check username and password"  }
-                return jsonify(response_pay_load), 200
+            return jsonify(response_pay_load), 200
+
+        else:
+            response_pay_load = {  "message":"Login Unsuccessful. Please check username and password"  }
+            return jsonify(response_pay_load), 200
 
 
 
@@ -189,13 +200,6 @@ def register():
         if json_obj['csrf_token'] == token:
             print("Tokens Match approved")
             print(request.json)
-            
-            # {'token_id': 'csrf_token_4ff9119e-543f-46bf-935a-d3c185a72b97', 
-            # 'csrf_token': 'ImU1ZTc1ZTVmZWExODBkOTEzOWI1ZTM4MTMyMTc3ZjI5NjdiMjFkOTYi.YQCBcQ.77-f_Usz2kHhTyA6rk8Tq35Z_ek', 
-            # 'username': 'test', 'email': 'test@gmail.com', 
-            # 'password': 'test',
-            #  'confirmpassword': 'test', 
-            # 'submit': 'Register'}
 
             username = json_obj['username']
             email = json_obj['email']
@@ -203,12 +207,6 @@ def register():
             confirmpassword = json_obj['confirm_password']
             submit = json_obj['submit']
             print("------",request.form)
-            ##wtforms base form class has parameter for formdatta 
-            # val, error = password_check(password)
-
-            # if val == False:
-            #     response_pay_load = {"message":error}
-            #     return jsonify(response_pay_load)
             
             if request.method == 'POST':
                 ## hashed password
@@ -345,4 +343,78 @@ def polygon_call_api():
 #https://github.com/firelyteam/fhir-net-api
 #http://docs.simplifier.net/fhirnetapi/
 #https://github.com/firelyteam/fhir-net-api
-#
+
+
+@bp.route("/account",  methods=['GET', 'POST'])
+def account():
+
+    print("test request", request.method)
+    json_obj = request.json
+    print(json_obj)
+
+    username = json_obj['username']
+    email = json_obj['email']
+    password = json_obj['password']
+    confirmpassword = json_obj['confirm_password']
+    submit = json_obj['submit']
+
+    if request.method == 'POST':
+        print("user is changing account checking csrf cache")
+        token_id = json_obj['token_id']
+        token = check_csrf_token(token_id, True)
+        print(token)
+        
+        if json_obj['csrf_token'] == token:
+
+            change_user = User.query.filter_by()
+
+            admin = User.query.filter_by(username='admin').first()
+            admin.email = 'my_new_email@example.com'
+            db.session.commit()
+
+            user = User.query.get(5)
+            user.name = 'New Name'
+            db.session.commit()
+
+        ## did usuer change emaiL? 
+        ## did user change username?
+        # picture data uploaded  passed to
+            if form.picture.data:
+                ## we extract image 
+                image_data = request.files[form.picture.name].read()
+                img_obj = Image.open(BytesIO(image_data))
+
+                # save bytes image to database
+                img_bytes = BytesIO()
+                img_obj.save(img_bytes, format='PNG')
+                img_bytes = img_bytes.getvalue()
+                current_user.image_file = img_bytes
+
+            current_user.username = form.username.data
+            current_user.email = form.email.data
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('auth.account'))
+        elif request.method == 'GET':
+            form.username.data = current_user.username
+            form.email.data = current_user.email
+
+            print('getting user image')
+            img_bytes = current_user.image_file
+
+            if not img_bytes:
+                print('no image')
+                # no profile image
+                default_image_dir = str(os.getcwd()) + r'/vessel_app/static/img/default_user.png'
+                img_obj = Image.open(default_image_dir)
+                img_bytes = BytesIO()
+                img_obj.save(img_bytes, format='PNG')
+                img_bytes = img_bytes.getvalue()
+            
+            
+            raw_image = BytesIO(img_bytes).read()  
+            profile_image = b64encode(raw_image).decode('ascii')
+
+        return render_template('account.html', title='Account', image_file=profile_image, form=form)
+
+

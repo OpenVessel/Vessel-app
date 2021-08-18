@@ -6,18 +6,20 @@ import { useHistory } from "react-router";
 const Login = () => {
 
     const{store, actions } = useContext(Context); //re-render when token is recevied
-    const[email, setEmail] = useState("");
+    const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
     const history = useHistory();
     
     const token = sessionStorage.getItem("token");
     console.log("this is your token", store.token)
 
+    // async and react? // so when actions.login returns with true we redirect to account page
     const handleClick = () => { 
-        actions.login(email, password);
+        console.log("loggin")
+        actions.login(username, password);
     };
     
-    if (store.token && store.token !== "" && store.token !== undefined) history.push("/");
+    if (store.token && store.token !== "" && store.token !== undefined) history.push("/Account");
     return (
         <div>
             <title>Login</title>
@@ -28,7 +30,7 @@ const Login = () => {
             ):(
             <div> 
                 {/* We have component controller component  */}
-                <input type="text" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                 <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}  /> 
                 <button onClick={handleClick}> Login </button>
                 <h1> {store.return_msg}</h1>

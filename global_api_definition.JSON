@@ -1,0 +1,21 @@
+{
+    "comments":{ 
+        "description":"API for all microservice containers to follow when coding",
+    },
+    "user":{ 
+        "description": "Represents a single user in the system",
+        "fields" [
+            {"name":"id", "type": "string"},
+            {"name":"email", "type": "string", "required": false, "annotations":["personal_data"]},
+            {"name":"name", "type": "name", "annotations":["personal_data"]},
+            {"name":"status", "type": "user_status", "default":"active"}     
+        ]
+    },
+}
+
+# {'token_id': 'csrf_token_4ff9119e-543f-46bf-935a-d3c185a72b97', 
+    # 'csrf_token': 'ImU1ZTc1ZTVmZWExODBkOTEzOWI1ZTM4MTMyMTc3ZjI5NjdiMjFkOTYi.YQCBcQ.77-f_Usz2kHhTyA6rk8Tq35Z_ek', 
+    # 'username': 'test', 'email': 'test@gmail.com', 
+    # 'password': 'test',
+    #  'confirmpassword': 'test', 
+    # 'submit': 'Register'}

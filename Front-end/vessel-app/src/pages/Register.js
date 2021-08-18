@@ -25,8 +25,13 @@ const Register = () => {
     return (
         <div>
             <title>Register</title>
-            <div> 
+
+
+            <div className="container"> 
+            <div className="row">
             {/* We have component controller component  */}
+            <div className="one columns">one</div>
+            <div className="ten columns">ten
                 <form action="" method="POST" name="register-form">
                 {/* we can GET csrf from flask store local session */}
                 <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
@@ -40,8 +45,10 @@ const Register = () => {
                 <h4> confirm password</h4>
                 <input id="confirm_password" name="confirm_password" required type="password" placeholder="confirm_password" value={confirmpassword} onChange={(e) => setConfirmpassword(e.target.value)} />
                 </form>
-                <button onClick={handleClick} > Register </button>
-
+                <button className="btn-main" onClick={handleClick} > Register </button>
+            </div>
+            <div className="one columns">one</div>
+            </div>
             </div>
             <div>
                 <h1> {store.return_msg}</h1>

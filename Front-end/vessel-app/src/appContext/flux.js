@@ -18,6 +18,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 		
 	}
 
+	function imageDatatoBlob(image_data, value){
+		return new Promise(function(resolve, reject){
+		  // const obj = { hello: medical_data }
+		  // const blob = new Blob([JSON.stringify(obj)], {type : 'application/json'})
+		  const blob = new Blob([JSON.stringify(image_data)], {type : 'application/json'})
+		resolve(Blob)
+		});
+	}
+
 		//redirect with js or "middleware"
 	function redirectLogic(msg){
 		console.log("----", msg)
@@ -47,6 +56,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			csrf_token:null,
 			token_id:null,
 			message: null,
+			email:null, 
+			username:null,
 			return_msg:null,
 			demo: [
 				{
@@ -111,13 +122,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("There has been an error with inital_csrf_token");
 				}
 
-
-				// let parsedResponse = fetchGetResponse.json();
-				// const csrf_token = sessionStorage.getItem("csrf_token");
-
-				// console.log("Hello ", parsedResponse)
-				// if(csrf_token && csrf_token !== "" && csrf_token !== undefined) setStore({ csrf_token: csrf_token});
-
 			},
 
 			
@@ -130,14 +134,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// action login
 			//
-			login: async (email, password) => {
+			login: async (username, password) => {
 				const opts = { 
 					method:'POST',
 					headers:{
 						"Content-Type":"application/json"
 					},
 					body: JSON.stringify({
-						"email":email,
+						"username": username,
 						"password": password 
 					})
 				};
@@ -154,7 +158,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await resp.json();
 					console.log("this came from the backend", data);
 					sessionStorage.setItem("token", data.access_token);
+					sessionStorage.setItem("username", data.username);
+					sessionStorage.setItem("email", data.email);
 					setStore({token: data.access_token}); //setStore login view refresh its hooked to COntext
+					setStore({username: data.username})
+					setStore({email: data.email})
 					return true;
 		
 				}
@@ -182,6 +190,45 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// basically allowing the react user to register via API 
 				try{
 					const resp = await fetch('http://127.0.0.1:5000/api/register', opts)
+					if(resp.status !== 200){
+						alert("There has been some error");
+						return false;
+					}
+
+					const data = await resp.json();
+					console.log("this came from the backend", data);
+					sessionStorage.setItem("return_msg", data.message);
+					setStore({return_msg: data.message}); //setStore login view refresh its hooked to COntext
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with login");
+				}
+			},
+
+
+			changeAccount: async (token_id, csrf_token, username, email, password, Webpage, image_data) => {
+				console.log("testt change account")
+				// const blob = imageDatatoBlob(image_data)
+				const opts = { 
+					method:'POST',
+					headers:{
+						"Content-Type":"application/json"
+					},
+					body: JSON.stringify({
+						"token_id":token_id,
+						"csrf_token":csrf_token,
+						"username":username,
+						"email":email,
+						"password": password,
+						"image_data":image_data,
+						"submit": Webpage
+					})
+				};
+				// basically allowing the react user to register via API 
+				try{
+					const resp = await fetch('http://127.0.0.1:5000/api/account', opts)
 					if(resp.status !== 200){
 						alert("There has been some error");
 						return false;

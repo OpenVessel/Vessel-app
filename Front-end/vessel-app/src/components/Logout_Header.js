@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react'
 import {Link} from "react-router-dom";
 // import {Context} from "../appContext/UserContext"
-
 const Logout_Header = (props) => {
-
+    
+    // history redirects when user logs out
     console.log("User is Logged Out")
     return (
         <header className='header'>
