@@ -15,6 +15,7 @@ import Upload from './pages/Upload'
 import Browser from './pages/Browser'
 import Account from './pages/Account'
 import Register from './pages/Register'
+import Buy from './pages/Buy'
 
 import injectContext from './appContext/UserContext';
 
@@ -60,7 +61,7 @@ function App() {
           <Route path="/upload" exact component={Upload}/>
           <Route path="/browser" exact component={Browser}/>
           <Route path="/account" exact component={Account}/>
-          
+          <Route path="/buy" exact component={Buy}/>          
 
           <Route path="*" exact component={pnf}/>
           </Switch>
