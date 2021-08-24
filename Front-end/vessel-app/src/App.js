@@ -17,6 +17,8 @@ import Account from './pages/Account'
 import Register from './pages/Register'
 import ContactInfo from './pages/ContactInfo'
 import IdVerification  from './pages/IdVerification'
+import Buy from './pages/Buy'
+
 import injectContext from './appContext/UserContext';
 
 import "./css/theme_skeleton.css"
@@ -64,6 +66,7 @@ function App() {
           <Route path="/ContactInfo" exact component={ContactInfo}/>
           <Route path="/IdVerification" exact component={IdVerification}/>
 
+          <Route path="/buy" exact component={Buy}/>          
 
           <Route path="*" exact component={pnf}/>
           </Switch>

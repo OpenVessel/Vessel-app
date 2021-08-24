@@ -26,6 +26,7 @@ const Login_Header = (props) => {
             <Link to="/Upload"> Upload </Link>
             <Link to="/Browser"> Browser </Link>
             <Link to="/Account"> Account </Link>
+            <Link to="/Buy"> Buy </Link>
             
             {/* for the user to logout whenever they click this button */}
             {/* <Button onChange={(event => props.onChange(event.target.value))}  onClick={handleClick} text='Log out' value={userCondition} > </Button> */}

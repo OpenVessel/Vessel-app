@@ -40,3 +40,4 @@ Back-end/vessel_app/static/users_3d_objects/user_1/data_object.vti
 Back-end/.flaskenv
 Back-end/vessel_app/static/js/vtk.js
 Back-end/vessel_app/static/js/vtk.js
+*.env

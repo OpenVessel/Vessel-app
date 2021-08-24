@@ -127,10 +127,19 @@ def upload_call():
     return jsonify(), 200
 
 
-# 127.0.0.1/api/browser
+# 127.0.0.1/api/browser_call
 @bp.route('/browser_call', methods=['POST'])
 def browser_call(): 
         ## returns a list of data to the browser to the 
+    ## user 
+    return jsonify(), 200
+
+# 127.0.0.1/api/buy_call
+@bp.route('/buy_call', methods=['GET','POST'])
+def buy_call(): 
+    ## returns a list of data to the browser to the 
+    print("Hello from the buy page")
+    print(request.method)
     ## user 
     return jsonify(), 200
 
