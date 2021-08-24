@@ -18,7 +18,7 @@ from wtforms.csrf.core import CSRF
 # from .models import db
 # from .admin import setup_admin
 from flask_login import login_user, current_user, logout_user, login_required
-from vessel_app.models import User
+from vessel_app.models import User, ContactInfo, Verify
 from .connector_redis import save_csrf, check_csrf_token
 ## routes are for your endpoints
 
@@ -85,7 +85,6 @@ def create_token():
         # Validate if user exist 
         print(bcrypt.check_password_hash(user.password, password))
         print(username == user.username)
-        print(type(user.username))
         print(username != user.username)
         if username != user.username:
             return jsonify({"msg": "Bad username"}), 401
@@ -162,6 +161,147 @@ def create_csrf_token():
 
     return jsonify(data=token_passing, token_id=token_id, success=True)
 
+# 127.0.0.1/api/browser
+@bp.route('/contactInfo', methods=['POST','GET'])
+def contactInfo(): 
+    json_obj = request.json
+    token_id = json_obj['token_id']
+    username_pass = json_obj['username']
+    user = User.query.filter_by(username=username_pass).first()
+
+    if request.method == 'POST':
+        token = check_csrf_token(token_id, True)
+        if json_obj['csrf_token'] == token:
+            print("Tokens Match approved")
+            print(request.json)
+
+
+            phonenumber = json_obj['phonenumber']
+            residentialaddress = json_obj['residentialaddress']
+            city = json_obj['city']
+            zipcode = int(json_obj['zipcode'])
+            submit = json_obj['submit']
+            print(phonenumber)
+            print(residentialaddress)
+            print(city)
+            print(zipcode)
+            print(user.id)
+
+
+
+            if submit == 'ContactInfo':
+                print("hello?")
+                contactinfo = ContactInfo(
+                    user_id=user.id,
+                    username=username_pass,
+                    phonenumber=phonenumber,
+                    residentialaddress=residentialaddress,
+                    city=city,
+                    zipcode=zipcode
+                )
+                db.session.add(contactinfo)
+                
+                try:
+                    db.session.commit()
+                    print('ContactInfo has been created! You are now able to log in', 'success')
+                    response_pay_load = { 
+                        
+                        "message":"ContactInfo, You are now able to log in",
+                        "username":username_pass,
+                        }
+                    
+                    return jsonify(response_pay_load), 200
+                
+                except:
+                    print("SQL insert failed")
+                    response_pay_load = { 
+                        "message":"Failed to commit data to the database for ContactInfo"
+                        }
+                    return jsonify(response_pay_load), 200
+
+                
+            else:
+                print("failed to validate or create a account")
+                response_pay_load = { 
+                    "message":"failed to validate or create a account ContactInfo"
+                    }
+                return jsonify(response_pay_load), 200
+
+
+# 200	OK
+# 400	BAD REQUEST
+# 401	UNAUTHORIZED
+# 403	FORBIDDEN
+# 404	NOT FOUND
+# 417	EXPECTATION FAILED
+# 500	INTERNAL SERVER ERROR
+
+@bp.route('/Verification', methods=['POST','GET'])
+def Verification(): 
+    json_obj = request.json
+    token_id = json_obj['token_id']
+    # username_pass = json_obj['username']
+    username_pass = 'test'
+    print(username_pass)
+    user = User.query.filter_by(username=username_pass).first()
+
+    if request.method == 'POST':
+        token = check_csrf_token(token_id, True)
+        if json_obj['csrf_token'] == token:
+            print("Tokens Match approved")
+            print(request.json)
+
+
+        # "token_id":token_id,
+		# 				"csrf_token":csrf_token,
+		# 				"username":username,
+		# 				"ssn":ssn, 
+		# 				"DOB":DOB,						
+		# 				"citizenship":citizenship,						
+		# 				"submit":"Verification"
+        ## bcrypt 
+            ssn = json_obj['ssn']
+            citizenship = json_obj['citizenship']
+            DOB = json_obj['DOB']
+            submit = json_obj['submit']
+            print(ssn)
+            print(citizenship)
+            print(DOB)
+            print(user.id)
+            pass_id = user.id
+            if submit == 'Verification':
+                print("hello?")
+                
+                print("hello?")
+                # db.session.add(dbVerify)
+                # db.session.commit()
+                Verify(username=username_pass, ssn=ssn, dob=DOB, citizenship=citizenship)
+
+                try:
+                    db.session.commit()
+                    print('Verification has been created! You are now able to log in', 'success')
+                    response_pay_load = { 
+                        
+                        "message":"Verification, You are now able to log in",
+                        "username":username_pass,
+                        }
+                    
+                    return jsonify(response_pay_load), 200
+                
+                except:
+                    print("SQL insert failed")
+                    response_pay_load = { 
+                        "message":"Failed to commit data to the database for Verification"
+                        }
+                    return jsonify(response_pay_load), 200
+
+                
+            else:
+                print("failed to Verification")
+                response_pay_load = { 
+                    "message":"failed to validate or create a account Verification"
+                    }
+                return jsonify(response_pay_load), 200
 
 ## Ankr 
 ## Eth 
@@ -183,10 +323,7 @@ def get_hello():
 ## registration via API 
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
-    # registeration API checks token in redis to match the token that was originally generated database 
-    ## against registeration requestion to match and then 
-    ## if it doesnt deined request registration
-    # if it does match put userdata into the database
+
     print("test request", request.method)
     json_obj = request.json
     ## we call check_csrf see if it existing if not deined request
@@ -195,7 +332,6 @@ def register():
         print("someone is registering checking csrf cache")
         token_id = json_obj['token_id']
         token = check_csrf_token(token_id, True)
-        print(token)
         
         if json_obj['csrf_token'] == token:
             print("Tokens Match approved")
@@ -204,8 +340,12 @@ def register():
             username = json_obj['username']
             email = json_obj['email']
             password = json_obj['password']
+            firstname = json_obj['firstname']
+            lastname = json_obj['lastname']
             confirmpassword = json_obj['confirm_password']
             submit = json_obj['submit']
+            
+
             print("------",request.form)
             
             if request.method == 'POST':
@@ -226,7 +366,10 @@ def register():
                 user = User(
                     username=username, 
                     email=email, 
-                    password=hashed_password) 
+                    password=hashed_password, 
+                    lastname=lastname,
+                    firstname=firstname
+                    ) 
 
                 db.session.add(user)
                 try:
@@ -234,8 +377,9 @@ def register():
                     print('Your account has been created! You are now able to log in', 'success')
                     response_pay_load = { 
                         
-                        "message":"Your account has been created! You are now able to log in"
-                        
+                        "message":"Your account has been created! You are now able to log in",
+                        "firstname":firstname,
+                        "username":username
                         }
                     
                     return jsonify(response_pay_load), 200
@@ -246,7 +390,7 @@ def register():
                     response_pay_load = { 
                         
                         "message":"Failed to commit data to the database"
-                        
+
                         }
                     
                     
@@ -416,5 +560,7 @@ def account():
             profile_image = b64encode(raw_image).decode('ascii')
 
         return render_template('account.html', title='Account', image_file=profile_image, form=form)
+
+
 
 

@@ -39,8 +39,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 		if( msg === 'Your account has been created! You are now able to log in'){
 
 		console.log("Redirecting")
-		window.location.replace("http://localhost:3000/login") // replace URL from .env
-		return <Redirect to='/login'  />
+		window.location.replace("http://localhost:3000/contactInfo") // replace URL from .env
+		return <Redirect to='/contactInfo'  />
 		
 		} else {
 		console.log("Failed Registertion see msg")
@@ -59,6 +59,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			email:null, 
 			username:null,
 			return_msg:null,
+			firstname:null,
 			demo: [
 				{
 					title: "FIRST",
@@ -171,7 +172,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			registration: async (token_id, csrf_token, username, email, password, confirmpassword) => {
+			registration: async (token_id, csrf_token, firstname, lastname, username, email, password, confirmpassword) => {
 				const opts = { 
 					method:'POST',
 					headers:{
@@ -180,6 +181,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({
 						"token_id":token_id,
 						"csrf_token":csrf_token,
+						"firstname":firstname, 
+						"lastname":lastname,						
 						"username":username,
 						"email":email,
 						"password": password,
@@ -198,7 +201,86 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await resp.json();
 					console.log("this came from the backend", data);
 					sessionStorage.setItem("return_msg", data.message);
-					setStore({return_msg: data.message}); //setStore login view refresh its hooked to COntext
+					sessionStorage.setItem("firstname", data.firstname);
+					sessionStorage.setItem("username", data.username);
+					setStore({return_msg: data.message});
+					setStore({firstname:data.firstname}); 
+					setStore({username:data.username});//setStore login view refresh its hooked to COntext
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with login");
+				}
+			},
+
+			contactinfo: async ( token_id, csrf_token, phonenumber, residentialaddress, username, city, zipcode) => {
+				const opts = { 
+					method:'POST',
+					headers:{
+						"Content-Type":"application/json"
+					},
+					body: JSON.stringify({
+						"token_id":token_id,
+						"csrf_token":csrf_token,
+						"phonenumber":phonenumber, 
+						"residentialaddress":residentialaddress,						
+						"username":username,
+						"city":city,
+						"zipcode": zipcode,
+						"submit":"ContactInfo"
+					})
+				};
+				// basically allowing the react user to register via API 
+				try{
+					const resp = await fetch('http://127.0.0.1:5000/api/contactInfo', opts)
+					if(resp.status !== 200){
+						alert("There has been some error");
+						return false;
+					}
+
+					const data = await resp.json();
+					console.log("this came from the backend", data);
+					sessionStorage.setItem("return_msg", data.message);
+					setStore({return_msg: data.message});
+
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with login");
+				}
+			},
+
+			Verification: async ( token_id, csrf_token, username, ssn, DOB, citizenship) => {
+				const opts = { 
+					method:'POST',
+					headers:{
+						"Content-Type":"application/json"
+					},
+					body: JSON.stringify({
+						"token_id":token_id,
+						"csrf_token":csrf_token,
+						"username":username,
+						"ssn":ssn, 
+						"DOB":DOB,						
+						"citizenship":citizenship,						
+						"submit":"Verification"
+					})
+				};
+				// basically allowing the react user to register via API 
+				try{
+					const resp = await fetch('http://127.0.0.1:5000/api/Verification', opts)
+					if(resp.status !== 200){
+						alert("There has been some error");
+						return false;
+					}
+
+					const data = await resp.json();
+					console.log("this came from the backend", data);
+					sessionStorage.setItem("return_msg", data.message);
+					setStore({return_msg: data.message});
+
 					return true;
 		
 				}

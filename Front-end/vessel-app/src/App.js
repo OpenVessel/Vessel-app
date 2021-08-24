@@ -15,7 +15,8 @@ import Upload from './pages/Upload'
 import Browser from './pages/Browser'
 import Account from './pages/Account'
 import Register from './pages/Register'
-
+import ContactInfo from './pages/ContactInfo'
+import IdVerification  from './pages/IdVerification'
 import injectContext from './appContext/UserContext';
 
 import "./css/theme_skeleton.css"
@@ -46,24 +47,27 @@ function App() {
   return (
     <div className="App">
       {/* Layout is the navbar plus footer */}
-      
+
       <Router>
+      
         <Layout title='OpenVessel' /> 
         
           <Switch> 
           
           <Route path="/" exact component={Home}/>
           <Route path="/login" exact component={Login}/>
-          <Route path="/register" exact component={Register}/>
-          
           <Route path="/getting_started" exact component={GettingStarted}/>
           <Route path="/upload" exact component={Upload}/>
           <Route path="/browser" exact component={Browser}/>
           <Route path="/account" exact component={Account}/>
-          
+          <Route path="/register" exact component={Register}/>
+          <Route path="/ContactInfo" exact component={ContactInfo}/>
+          <Route path="/IdVerification" exact component={IdVerification}/>
+
 
           <Route path="*" exact component={pnf}/>
           </Switch>
+          
         </Router>
     </div>
   );

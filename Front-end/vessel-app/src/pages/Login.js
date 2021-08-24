@@ -28,14 +28,26 @@ const Login = () => {
                 "You are logged in with this token " + store.token 
             
             ):(
-            <div> 
+            <div className="container card_login"> 
+                <div className="row"> 
                 {/* We have component controller component  */}
+                <div>
+                <div className="five column"> 
                 <input type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                </div>
+                <div className="five column"> 
                 <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}  /> 
-                <button onClick={handleClick}> Login </button>
+                </div>
+                <button className="btn-main" onClick={handleClick}> Login </button>
                 <h1> {store.return_msg}</h1>
+                
+                
+                <Link to="/Register"> 
                 <p> Don't have an account?</p>
-                <Link to="/Account"> Account </Link>
+                </Link>
+
+                </div>
+                </div>
             </div>
             )}
         </div>
