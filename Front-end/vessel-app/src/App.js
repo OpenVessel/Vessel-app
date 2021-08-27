@@ -18,7 +18,7 @@ import Register from './pages/Register'
 import ContactInfo from './pages/ContactInfo'
 import IdVerification  from './pages/IdVerification'
 import Buy from './pages/Buy'
-
+import Emf from './pages/EMF'
 import injectContext from './appContext/UserContext';
 
 import "./css/theme_skeleton.css"
@@ -49,7 +49,7 @@ function App() {
   return (
     <div className="App">
       {/* Layout is the navbar plus footer */}
-
+      
       <Router>
       
         <Layout title='OpenVessel' /> 
@@ -58,6 +58,7 @@ function App() {
           
           <Route path="/" exact component={Home}/>
           <Route path="/login" exact component={Login}/>
+          <Route path="/EMF" exact component={Emf}/>
           <Route path="/getting_started" exact component={GettingStarted}/>
           <Route path="/upload" exact component={Upload}/>
           <Route path="/browser" exact component={Browser}/>

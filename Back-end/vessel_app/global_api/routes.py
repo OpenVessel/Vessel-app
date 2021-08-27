@@ -18,7 +18,7 @@ from wtforms.csrf.core import CSRF
 # from .models import db
 # from .admin import setup_admin
 from flask_login import login_user, current_user, logout_user, login_required
-from vessel_app.models import User, ContactInfo, Verify
+from vessel_app.models import UserReact, ContactInfo, Verify
 from .connector_redis import save_csrf, check_csrf_token
 ## routes are for your endpoints
 
@@ -29,6 +29,14 @@ from .connector_redis import save_csrf, check_csrf_token
 # # print(request.form)
 # # print(request.endpoint)
 # # print(request.remote_addr)
+
+# 200	OK
+# 400	BAD REQUEST
+# 401	UNAUTHORIZED
+# 403	FORBIDDEN
+# 404	NOT FOUND
+# 417	EXPECTATION FAILED
+# 500	INTERNAL SERVER ERROR
 
 ENV = os.getenv("FLASK_ENV")
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates\\')
@@ -170,13 +178,99 @@ def create_csrf_token():
 
     return jsonify(data=token_passing, token_id=token_id, success=True)
 
-# 127.0.0.1/api/browser
+
+
+## registration via API 
+@bp.route("/register", methods=['GET', 'POST'])
+def register():
+
+    print("test request", request.method)
+    json_obj = request.json
+    ## we call check_csrf see if it existing if not deined request
+    ## if it does exist go on to form registration to automatically past csrf to 
+    if request.method == 'POST':
+        print("someone is registering checking csrf cache")
+        token_id = json_obj['token_id']
+        token = check_csrf_token(token_id, True)
+        
+        if json_obj['csrf_token'] == token:
+            print("Tokens Match approved")
+            print(request.json)
+
+            username = json_obj['username']
+            email = json_obj['email']
+            password = json_obj['password']
+            firstname = json_obj['firstname']
+            lastname = json_obj['lastname']
+            confirmpassword = json_obj['confirm_password']
+            submit = json_obj['submit']
+            
+
+            print("------",request.form)
+            
+            if request.method == 'POST':
+                ## hashed password
+                ## fails to check if passwords match!!!
+                user = User.query.filter_by(username=username).first()
+
+                if user:
+                    print("username already exist")
+
+                user = User.query.filter_by(email=email).first()
+            
+                if user:
+                    print("email already exist")
+
+                hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') 
+                
+                user = UserReact(
+                    username=username, 
+                    email=email, 
+                    password=hashed_password, 
+                    lastname=lastname,
+                    firstname=firstname
+                    ) 
+
+                db.session.add(user)
+                try:
+                    db.session.commit()
+                    print('Your account has been created! You are now able to log in', 'success')
+                    response_pay_load = { 
+                        
+                        "message":"Your account has been created! You are now able to log in",
+                        "firstname":firstname,
+                        "username":username
+                        }
+                    
+                    return jsonify(response_pay_load), 200
+                
+                except:
+                    print("SQL insert failed")
+                    
+                    response_pay_load = { 
+                        
+                        "message":"Failed to commit data to the database"
+
+                        }
+                    
+                    
+                    return jsonify(response_pay_load), 200
+
+                
+            else:
+                print("failed to validate or create a account")
+                response_pay_load = { 
+                    "message":"failed to validate or create a account"
+                    }
+                return jsonify(response_pay_load), 200
+
+# 127.0.0.1/api/contactInfo
 @bp.route('/contactInfo', methods=['POST','GET'])
 def contactInfo(): 
     json_obj = request.json
     token_id = json_obj['token_id']
     username_pass = json_obj['username']
-    user = User.query.filter_by(username=username_pass).first()
+    user = UserReact.query.filter_by(username=username_pass).first()
 
     if request.method == 'POST':
         token = check_csrf_token(token_id, True)
@@ -236,15 +330,6 @@ def contactInfo():
                     }
                 return jsonify(response_pay_load), 200
 
-
-# 200	OK
-# 400	BAD REQUEST
-# 401	UNAUTHORIZED
-# 403	FORBIDDEN
-# 404	NOT FOUND
-# 417	EXPECTATION FAILED
-# 500	INTERNAL SERVER ERROR
-
 @bp.route('/Verification', methods=['POST','GET'])
 def Verification(): 
     json_obj = request.json
@@ -252,7 +337,7 @@ def Verification():
     # username_pass = json_obj['username']
     username_pass = 'test'
     print(username_pass)
-    user = User.query.filter_by(username=username_pass).first()
+    user = UserReact.query.filter_by(username=username_pass).first()
 
     if request.method == 'POST':
         token = check_csrf_token(token_id, True)
@@ -312,6 +397,19 @@ def Verification():
                     }
                 return jsonify(response_pay_load), 200
 
+
+# Plaid intergration 
+## for our user we buy Candrano for them 
+## to Pay OpenVessel Account to depoist it into Stake Pool
+    ## because OpenVessel Account has power to withdraw and depoist Sums into the Pool
+
+## For development for now we allow users to buy Candrano and keep it in their account
+@bp.route('/PlaidEntryPoint', methods=['POST','GET'])
+def PlaidEntryPoint(): 
+
+    return 'pass'
+
+
 ## Ankr 
 ## Eth 
 ## https://apis.ankr.com/332b544115a14ccfb34df2d597d39207/b7b94fefa553f7c5f61f4736bd8a49d6/eth/fast/main
@@ -328,90 +426,6 @@ def get_hello():
     }
     return jsonify(json), 200
 
-
-## registration via API 
-@bp.route("/register", methods=['GET', 'POST'])
-def register():
-
-    print("test request", request.method)
-    json_obj = request.json
-    ## we call check_csrf see if it existing if not deined request
-    ## if it does exist go on to form registration to automatically past csrf to 
-    if request.method == 'POST':
-        print("someone is registering checking csrf cache")
-        token_id = json_obj['token_id']
-        token = check_csrf_token(token_id, True)
-        
-        if json_obj['csrf_token'] == token:
-            print("Tokens Match approved")
-            print(request.json)
-
-            username = json_obj['username']
-            email = json_obj['email']
-            password = json_obj['password']
-            firstname = json_obj['firstname']
-            lastname = json_obj['lastname']
-            confirmpassword = json_obj['confirm_password']
-            submit = json_obj['submit']
-            
-
-            print("------",request.form)
-            
-            if request.method == 'POST':
-                ## hashed password
-                ## fails to check if passwords match!!!
-                user = User.query.filter_by(username=username).first()
-
-                if user:
-                    print("username already exist")
-
-                user = User.query.filter_by(email=email).first()
-            
-                if user:
-                    print("email already exist")
-
-                hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') 
-                
-                user = User(
-                    username=username, 
-                    email=email, 
-                    password=hashed_password, 
-                    lastname=lastname,
-                    firstname=firstname
-                    ) 
-
-                db.session.add(user)
-                try:
-                    db.session.commit()
-                    print('Your account has been created! You are now able to log in', 'success')
-                    response_pay_load = { 
-                        
-                        "message":"Your account has been created! You are now able to log in",
-                        "firstname":firstname,
-                        "username":username
-                        }
-                    
-                    return jsonify(response_pay_load), 200
-                
-                except:
-                    print("SQL insert failed")
-                    
-                    response_pay_load = { 
-                        
-                        "message":"Failed to commit data to the database"
-
-                        }
-                    
-                    
-                    return jsonify(response_pay_load), 200
-
-                
-            else:
-                print("failed to validate or create a account")
-                response_pay_load = { 
-                    "message":"failed to validate or create a account"
-                    }
-                return jsonify(response_pay_load), 200
 
 import os.path
 from googleapiclient.discovery import build
@@ -463,7 +477,13 @@ def google_api_call():
     
     return "pass"
 
-# machine learning its goes to anothe database or server
+
+def polygon_call_api():
+    return
+
+
+#### API query for HL7 
+## ingestion framewor# machine learning its goes to anothe database or server
 
 ##
 ## After step 25th we are intergrating into existing medical software platforms 
@@ -471,13 +491,7 @@ def google_api_call():
 ## #https://fhir.epic.com/Documentation?docId=developerguidelines
 
 ##
-## polygon calls
-def polygon_call_api():
-    return
-
-
-#### API query for HL7 
-## ingestion framework 
+## polygon callsk 
 # message = 'MSH|^~\&|GHH LAB|ELAB-3|GHH OE|BLDG4|200202150930||ORU^R01|CNTRL-3456|P|2.4\r'
 # message += 'PID|||555-44-4444||EVERYWOMAN^EVE^E^^^^L|JONES|196203520|F|||153 FERNWOOD DR.^^STATESVILLE^OH^35292||(206)3345232|(206)752-121||||AC555444444||67-A4335^OH^20030520\r'
 # message += 'OBR|1|845439^GHH OE|1045813^GHH LAB|1554-5^GLUCOSE|||200202150730||||||||555-55-5555^PRIMARY^PATRICIA P^^^^MD^^LEVEL SEVEN HEALTHCARE, INC.|||||||||F||||||444-44-4444^HIPPOCRATES^HOWARD H^^^^MD\r'

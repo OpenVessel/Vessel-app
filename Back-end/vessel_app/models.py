@@ -14,19 +14,33 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False )
     email = db.Column(db.String(120), unique=True, nullable=False )
+    image_file = db.Column(db.LargeBinary, nullable=True)
+    password = db.Column(db.String(60), nullable=False)
+    dicom = db.relationship('Dicom', backref='author', lazy=True)
+
+    def __repr__(self):
+        return f"User('{self.username}','{self.email}', '{self.image_file}')"
+
+
+class UserReact(db.Model, UserMixin):
+
+    __tablename__ = 'UserReact'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique=True, nullable=False )
+    email = db.Column(db.String(120), unique=True, nullable=False )
     firstname = db.Column(db.String(120), unique=False, nullable=False )
     lastname = db.Column(db.String(120), unique=False, nullable=False )
     image_file = db.Column(db.LargeBinary, nullable=True)
     password = db.Column(db.String(60), nullable=False)
-    dicom = db.relationship('Dicom', backref='author', lazy=True)
+    dicom = db.relationship('Dicom', backref='dicom', lazy=True)
     ContactInfo = db.relationship('ContactInfo', backref='contactinfo', lazy=True)
     Verify = db.relationship('Verify', backref='verify', lazy=True)
 
     
 
     def __repr__(self):
-        return f"User('{self.username}','{self.email}', '{self.image_file}')"
-
+        return f"UserReact('{self.username}','{self.email}', '{self.image_file}')"
 class ContactInfo(db.Model, UserMixin):
 
     __tablename__ = 'ContactInfo'
@@ -38,7 +52,7 @@ class ContactInfo(db.Model, UserMixin):
     residentialaddress = db.Column(db.String(120), unique=False, nullable=False )
     city = db.Column(db.String(120), unique=False, nullable=False )
     zipcode = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('UserReact.id'), nullable=False)
 
     def __repr__(self):
         return f"ContactInfo('{self.date_uploaded}')"
@@ -54,7 +68,7 @@ class Verify(db.Model, UserMixin):
     ssn = db.Column(db.String(120), unique=True, nullable=False)
     dob = db.Column(db.String(120), unique=False, nullable=False )
     citizenship = db.Column(db.String(120), unique=False, nullable=False )
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('UserReact.id'), nullable=False)
 
     def __repr__(self):
         return f"Verify('{self.date_uploaded}')"
@@ -86,6 +100,7 @@ class Dicom(db.Model):
     id = db.Column(db.Integer, primary_key=True)  
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    userReact_id = db.Column(db.Integer, db.ForeignKey('UserReact.id'), nullable=True)
     dicom_stack = db.Column(db.LargeBinary, nullable=False)
     thumbnail = db.Column(db.LargeBinary, nullable=False)
     file_count = db.Column(db.Integer, nullable=True) 

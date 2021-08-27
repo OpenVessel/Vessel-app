@@ -1,6 +1,22 @@
 import React, {useState} from 'react'
 
 // Research Hooks, look up useState.
+// Plaid Auth, identity users reduce fraud, Balance
+// Finanical insights transactions, investments, Liabilities 
+// Lending/Credit
+
+// Plaid Link Front-end Integration
+// Public token exchange return frontt back end for access_token indefinite call all product endpoints 
+// Backend integration
+
+// Secure HTTPS
+// Multi-factor authentication 
+// Data permissinoning managment 
+
+// Plaid Link integration React and React native 
+// Auth goes to payment processor
+
+// Plaid Identity customer return compare on fail either or not factor they own account or not
 
 const Buy = () => {
     const[money, setMoney] = useState("")

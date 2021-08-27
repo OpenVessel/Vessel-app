@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+
+  ubuntu:
+    build: ./Back-end
+    container_name: vessel_app
+    restart: always
+    environment:
+      - APP_NAME=MyFlaskApp
+      ## expose ports internally to other containers on the network 
+    expose:
+      - 8080
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ## ports maps ports on the host machine to the container itself host:contianer
+    ports:
+      - "80:80"
+
+  redis:
+    build: ./redis
+    container_name: redis_celery
+    restart: always
+    # redis port for internal use only for celery broker
+    ports: 
+      - 6379:6379

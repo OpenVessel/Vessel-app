@@ -11,7 +11,7 @@ const IdVerification = () => {
     const[DOB, setDob] = useState("");
     const[ssn, setSsnname] = useState("");
     const[citizenship, setCitizenship] = useState("");
-    const title = 'Verification'
+    let title = 'Verification'
     const username = store.username
      // using to redirect user to login page 
 

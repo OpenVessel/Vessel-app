@@ -44,7 +44,9 @@ img {
 
 }
 
-
+.form-input p{
+  color:red;
+}
 .row_background {
   padding:20px;
   background-color: #D7D7D7 !important;
@@ -70,7 +72,7 @@ img {
 
 .SideBar {
   font-size:16px;
-  background: #28BDBF;
+  background-color: whitesmoke !important;
   padding:10px;
 }
 
@@ -81,6 +83,142 @@ img {
 
 .SideBar p{ 
   color: black;  
+  font-weight: 100;
+  text-align: left;
+}
+/* Navbar improvements */
+
+/* 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+   margin-bottom: 20px;
+} */
+
+.NavbarItems {
+  /* background:linear-gradient(90deg, rgb(110, 94, 254) 0%, rgba(73, 63,252,1 ) 100%); */
+  /* background: linear-gradient(360deg, rgb(6, 0, 122) 10%, rgb(28,192,194) 95%); */
+  background: #FFFF;
+  /* height:80px; */
+  display:flex;
+  flex-direction: row ;
+  justify-content:flex-start;
+  align-items:center;
+  font-size:1.2rem;
+}
+
+.navbar-logo {
+  color:#2A3C3A;
+  justify-self:start;
+  margin-left:0px;
+  cursor:pointer;
+  font-size:25px;
+}
+
+/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+.nav-menu {
+  display:grid;
+  grid-template-columns:repeat(5, auto);
+  grid-gap:10px;
+  list-style: none;
+  text-align:center;
+  justify-content:space-evenly;
+  
+  /* width:70vw;
+  justify-content:end;
+  margin-right:2rem; */
+  margin-left: 20px;
+
+}
+
+.nav-links {
+  color:#2A3C3A;
+  
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+}
+
+.nav-links:hover {
+  background-color:#06007A;
+  transition:all 0.2s ease-out;
+
+}
+
+/* mobile navlinks */
+.nav-links-mobile{
+  display:none;
+}
+
+.menu-icon {
+  display:none;
+}
+
+@media screen and (max-width:660px) {
+  .NavbarItems {
+    position:relative;
+  }
+
+  .nav-menu {
+    display:flex;
+    flex-direction:column;
+    width: 100%;
+    height: 500px;
+    position: absolute;
+    top:80px;
+    left:-100%;
+    opacity:1;
+    transition:all 0.5s ease;
+  }
+
+  .nav-menu.active {
+    background-color: #fff;
+    left:0;
+    opacity:1;
+    transition: all 0.5s ease;
+    z-index:1;
+  }
+
+  .nav-links {
+    text-align:center;
+    padding:2rem;
+    width:100%;
+    display:table;
+  }
+
+  .nav-links:hover{
+  background-color: #7577fa;
+  top:0;
+  left:0;
+  transform:translate(25%,50%);
+}
+
+.menu-icon {
+  display:block;
+  position:absolute;
+  top:0;
+  right:0;
+  transform: translate(-100%, 60%);
+  font-size:1.8 rem;
+  cursor:pointer;
+}
+
+.fa-bars{
+  color:black;
+  font-size: 2rem;
+}
+
+.fa-times{
+  color:black;
+  font-size: 2rem;
+
+}
+
+/* .nav-links-mobile{
+
+} */
+
+
 }
 
 /* Grid
@@ -220,13 +358,17 @@ img {
     min-height:100%;
     font-size: 62.5%; }
   body {
-    background: linear-gradient(135deg, #06007A, #1CC0C2);
+    /* background: linear-gradient(135deg, #06007A, #1CC0C2); */
+    background-color: #06007A;
     background-repeat: no-repeat;
     font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
     line-height: 1.6;
     font-weight: 400;
     height:100%;
-    font-family: "brother-1816", "mr-eaves-xl-modern";
+    
+    font-family: brother-1816, sans-serif;
+    font-weight: 700;
+    font-style: normal;
     color:white; 
 }
   
@@ -266,8 +408,13 @@ img {
   /* Links
   –––––––––––––––––––––––––––––––––––––––––––––––––– */
   /******************************************** LINKS ************************************/
+
   a {
-    color: #1EAEDB; }
+    text-decoration:none;
+    background-color: transparent;
+    color: #2A3C3A !important;  
+    font-size: 20px;  
+  }
   a:hover {
     color: #0FA0CE; }
 
@@ -278,7 +425,7 @@ a:link {
 
 /* visited link */
 a:visited {
-    color: white;
+    color: #2A3C3A;
 }
 
 /* mouse over link */
@@ -374,6 +521,30 @@ a:active {
     0 0 1px #3b0101;
 }
 
+
+.card_page { 
+  background: whitesmoke;  
+  margin:3%;
+  padding:10px;
+}
+
+#progressBarContainer {
+  margin: 20px;
+  width: 350px;
+  height: 8px;
+}
+
+#myProgress {
+  width: 80%;
+  margin-left: 10%;
+  background-color: grey;
+}
+
+#myBar {
+  width: 1%;
+  height: 30px;
+  background-color: green;
+}
 
 /* Card Classes */
 
