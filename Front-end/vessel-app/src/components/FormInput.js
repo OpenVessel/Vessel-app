@@ -13,7 +13,7 @@ const FormInput = ({submitForm}) => {
 
     return (
         <div>
-             <form action="" method="POST" name="register-form" onSubmit={handleSubmit}>
+             <form action="" method="POST" name="register-form" onSubmit={handleSubmit} noValidate>
                         {/* we can GET csrf from flask store local session */}
                         <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
                         <input id="csrf_token_passback" name="csrf_token_passback" type="hidden" value={store.csrf_token}/> 
@@ -99,7 +99,16 @@ const FormInput = ({submitForm}) => {
 
                             {errors.confirmpassword && <p>{errors.confirmpassword}</p>}
 
+                            <button className='form-input-btn' type='submit'>
+                            Sign up
+                            </button>
+                            <span className='form-input-login'>
+                            Already have an account? Login <a href='#'>here</a>
+                            </span>
+
+
                             </div>
+                           
                         </div>
                         </form>
         </div>

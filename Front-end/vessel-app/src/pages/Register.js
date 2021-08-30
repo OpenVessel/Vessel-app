@@ -24,10 +24,7 @@ const Register = () => {
         setIsSubmitted(true);
     }
     const [isSubmitted, setIsSubmitted] = useState(false)
-    const handleClick = (isSubmitted) => { 
-        // how to past data to handleClick? after validation?
-        console.log("isSubmitted?", isSubmitted)
-    };
+
     
     console.log(store.csrf_token)
     return (
@@ -50,7 +47,6 @@ const Register = () => {
                         {!isSubmitted ? <FormInput submitForm={submitForm}/> : <FormSuccess/> }
                         {/* well fix the button is simply not connected */}
                         {/* <Link to="/contactInfo">  */}
-                        <button className="btn-main" onClick={handleClick(isSubmitted)} > Register </button>
                         {/* </Link> */}
 
                     </div>

@@ -26,10 +26,11 @@ const useForm = (callback, validate) => {
     e.preventDefault();
 
     setErrors(validate(values));
+    // if validate returns false on x setIsSubmitting is not set to True
     setIsSubmitting(true);
 
     if(isSubmitting) {
-      console.log(test)
+      console.log(isSubmitting, "test")
             actions.registration( 
                 store.token_id, 
                 store.csrf_token, 
