@@ -18,14 +18,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 		
 	}
 
-	function imageDatatoBlob(image_data, value){
-		return new Promise(function(resolve, reject){
-		  // const obj = { hello: medical_data }
-		  // const blob = new Blob([JSON.stringify(obj)], {type : 'application/json'})
-		  const blob = new Blob([JSON.stringify(image_data)], {type : 'application/json'})
-		resolve(Blob)
-		});
-	}
+	// function imageDatatoBlob(image_data, value){
+	// 	return new Promise(function(resolve, reject){
+	// 	  // const obj = { hello: medical_data }
+	// 	  // const blob = new Blob([JSON.stringify(obj)], {type : 'application/json'})
+	// 	  const blob = new Blob([JSON.stringify(image_data)], {type : 'application/json'})
+	// 	resolve(Blob)
+	// 	});
+	// }
 
 		//redirect with js or "middleware"
 	function redirectLogic(msg){
@@ -337,7 +337,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const time = 500 // wait 100 mil for a response from the back-end then we a sec for msg to return
 				
 				// how do we trigger a fuction to run until msg contains a string?
-				var msg = await resolveAfterTime(redirectLogic, time, msg); //https://stackoverflow.com/questions/49774769/javascript-uncaught-syntaxerror-identifier-has-already-been-declared
+				var msgboon = await resolveAfterTime(redirectLogic, time, msg); //https://stackoverflow.com/questions/49774769/javascript-uncaught-syntaxerror-identifier-has-already-been-declared
 				
 				// we could implement call back on resolveAfterTime? https://www.youtube.com/watch?v=ZYb_ZU8LNxs&ab_channel=freeCodeCamp.org
 				// by using callback we form a order between functions 
@@ -345,7 +345,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// redirectLogic(msg);
 				// }, 2000);
 				
-				return msg
+				return msgboon
 
 				// fetch("http://127.0.0.1:5000/api/hello", opts)
 				// .then(resp => resp.json())

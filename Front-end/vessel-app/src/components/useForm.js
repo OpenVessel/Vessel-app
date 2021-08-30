@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-
+import {useContext, useState, useEffect } from 'react';
+import {Context} from "../appContext/UserContext"
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({
     username: '',
@@ -9,8 +9,10 @@ const useForm = (callback, validate) => {
     password: '',
     confirmpassword: ''
   });
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {store, actions} = useContext(Context);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -25,6 +27,19 @@ const useForm = (callback, validate) => {
 
     setErrors(validate(values));
     setIsSubmitting(true);
+
+    if(isSubmitting) {
+      console.log(test)
+            actions.registration( 
+                store.token_id, 
+                store.csrf_token, 
+                values.firstname, 
+                values.lastname, 
+                values.username, 
+                values.email,
+                values.password, 
+                values.confirmpassword);
+    }
 
   };
 

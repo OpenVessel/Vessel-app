@@ -6,7 +6,6 @@ const Account = () => {
       
   const{store, actions } = useContext(Context);
   const[email, setEmail] = useState("");
-  const[password, setPassword] = useState("");
   const Webpage = 'Account'
   const username = store.username
   const DisplayEmail = store.email
@@ -38,7 +37,6 @@ const Account = () => {
           store.csrf_token, 
           username, 
           email,
-          password,
           Webpage,
           image
           );

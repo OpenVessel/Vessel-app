@@ -88,7 +88,7 @@ def create_token():
         print("password",password_pass)
         ## Input validation authen
         ## we pull the password withthe user name or email
-        user = User.query.filter_by(username=username_pass).first()
+        user = UserReact.query.filter_by(username=username_pass).first()
             
         # Validate if user exist 
         print(bcrypt.check_password_hash(user.password, password))
@@ -211,12 +211,12 @@ def register():
             if request.method == 'POST':
                 ## hashed password
                 ## fails to check if passwords match!!!
-                user = User.query.filter_by(username=username).first()
+                user = UserReact.query.filter_by(username=username).first()
 
                 if user:
                     print("username already exist")
 
-                user = User.query.filter_by(email=email).first()
+                user = UserReact.query.filter_by(email=email).first()
             
                 if user:
                     print("email already exist")

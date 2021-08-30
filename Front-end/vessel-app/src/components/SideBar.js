@@ -3,7 +3,7 @@ import React from 'react';
 class SideBar extends React.Component {
     render(){ 
         console.log(this.props.title)
-    if(this.props.title =='Register'){
+    if(this.props.title ==='Register'){
         return ( 
             <div>
                 <div className="SideBar">
@@ -25,7 +25,7 @@ class SideBar extends React.Component {
             </div>
             );
         } 
-        if(this.props.title == 'ContactInfo'){ 
+        if(this.props.title === 'ContactInfo'){ 
             return( 
             <div>
                 <div className="SideBar">
@@ -50,7 +50,7 @@ class SideBar extends React.Component {
 
         }
         
-        if(this.props.title == 'Verification'){ 
+        if(this.props.title === 'Verification'){ 
             return( 
             <div>
                 <div className="SideBar">

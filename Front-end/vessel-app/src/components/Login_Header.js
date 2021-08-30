@@ -9,7 +9,7 @@ const Login_Header = (props) => {
     const{store, actions } = useContext(Context);
     const history = useHistory();
     // so if user clicks logut it sets token null via actions.logout action
-    if (store.token || store.token == "" || store.token == undefined) history.push("/");
+    if (store.token || store.token === "" || store.token === undefined) history.push("/");
     let title = 'OpenVessel'
 
     const handleClick = () => { 

@@ -4,25 +4,12 @@ import {Context} from "../appContext/UserContext"
 import { Link } from "react-router-dom";
 import SideBar from "../components/SideBar.js";
 import  { Redirect} from 'react-router-dom'
-import useForm from '../useForm'
-import validate from '../validateInfo';
-import FormSuccess from '../FormSuccess';
+import FormSuccess from '../components/FormSuccess';
 import { ErrorSharp } from '@material-ui/icons';
-
+import FormInput from '../components/FormInput';
 
 const Register = () => {
     const {store, actions} = useContext(Context);
-    const [isSubmitted, setIsSubmitted] = useState(false)
-
-    function submitForm() {
-        setIsSubmitted(true);
-    }
-
-    const { handleChange, handleSubmit, values, errors } = useForm(
-        submitForm,
-        validate
-      );
-
     // const[csrf_token_passback, setCsrftoken] = useState("");
     // const[username, setUsername] = useState("");
     // const[firstname, setFirstname] = useState("");
@@ -33,23 +20,16 @@ const Register = () => {
 
     let title = 'Register'
     // failling to redirect because both functions are async
-    const handleClick = () => { 
+    function submitForm() {
+        setIsSubmitted(true);
+    }
+    const [isSubmitted, setIsSubmitted] = useState(false)
+    const handleClick = (isSubmitted) => { 
         // how to past data to handleClick? after validation?
-
-        actions.registration( 
-            store.token_id, 
-            store.csrf_token, 
-            values.firstname, 
-            values.lastname, 
-            values.username, 
-            values.email,
-            values.password, 
-            values.confirmpassword);
+        console.log("isSubmitted?", isSubmitted)
     };
     
     console.log(store.csrf_token)
-    console.log(isSubmitted)
-    if(!isSubmitted) {
     return (
         <div>
             <div className="container card_registeration">
@@ -66,107 +46,18 @@ const Register = () => {
                         premium </b> that can be taken out in 6 months for the total of $600. </h6>
 
                         <b><p>Please enter your full legal name. Your legal name should match any form of government ID.</p></b>
-                        <form action="" method="POST" name="register-form" onSubmit={handleSubmit}>
-                        {/* we can GET csrf from flask store local session */}
-                        <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
-                        <input id="csrf_token_passback" name="csrf_token_passback" type="hidden" value={store.csrf_token}/> 
-                        <div className="row inner-row ">
-                            <div className="four columns"> 
-                                
-                                {/* First Name Section */}
-                                <input
-                                type="text" 
-                                name="firstname"
-                                placeholder="First Name" 
-                                className="form-input"
-                                value={values.firstname} 
-                                onChange={handleChange} 
-                                />
-                                {errors.firstname && <p>{errors.firstname}</p>}
-                            </div>
-                            <div className="four columns"> 
-                                {/* Last Name */}
-                                <input 
-                                type="text" 
-                                name="lastname"
-                                className="form-input"
-                                placeholder="Last Name" 
-                                value={values.lastname} 
-                                onChange={handleChange} />
-                                {errors.lastname && <p>{errors.lastname}</p>}
-                            </div>
-                        </div>
 
-                        <div className="row inner-row">
-                            <div className="four columns"> 
-                                {/* username input */}
-                                <input 
-                                type="text" 
-                                name="username"
-                                placeholder="username"
-                                className="form-input" 
-                                value={values.username} 
-                                onChange={handleChange} 
-                                />
-                                {errors.username && <p>{errors.username}</p>}
-                            </div>
-                            <div className="four columns"> 
-                                {/* Email Input */}
-                                <input 
-                                type="text" 
-                                name="email"
-                                placeholder="email" 
-                                className="form-input"
-                                value={values.email} 
-                                onChange={handleChange}
-                                />
-                                {errors.email && <p>{errors.email}</p>}
-                            </div>
-                        </div>
-
-                        <div className="row inner-row">
-                            <div className="four columns"> 
-                            {/* password input */}
-                                <input id="password"
-                                placeholder="password" 
-                                required type="password" 
-                                name="password"
-                                className="form-input"
-                                value={values.password} 
-                                onChange={handleChange} 
-                                /> 
-                                {errors.password && <p>{errors.password}</p>}
-                            </div>
-
-                            <div className="four columns"> 
-                            
-                            {/* Confirm Input */}
-                            <input 
-                            id="confirm_password" 
-                            name="confirmpassword" 
-                            required type="password" 
-                            className="form-input"
-                            placeholder="Confirm Password" 
-                            value={values.confirmpassword} 
-                            onChange={handleChange}/>
-
-                            {errors.confirmpassword && <p>{errors.confirmpassword}</p>}
-
-                            </div>
-                        </div>
-                        </form>
-                        <Link to="/contactInfo"> 
-                        <button className="btn-main" onClick={handleClick} > Register </button>
-                        </Link>
-
-                        <a>  </a>
+                        {!isSubmitted ? <FormInput submitForm={submitForm}/> : <FormSuccess/> }
+                        {/* well fix the button is simply not connected */}
+                        {/* <Link to="/contactInfo">  */}
+                        <button className="btn-main" onClick={handleClick(isSubmitted)} > Register </button>
+                        {/* </Link> */}
 
                     </div>
                     <div className="four columns"> 
                     <SideBar title={title}> </SideBar>    
                     </div>
                 </div> {/*   parent row */}
-                <h1> {store.return_msg}</h1>
             </div>
 
                 </div>
@@ -180,8 +71,7 @@ const Register = () => {
         </div>
         
         );
-    }
-    return <FormSuccess/>
+    
 }
 
 export default Register
