@@ -8,14 +8,14 @@ class SideBar extends React.Component {
             <div>
                 <div className="SideBar">
                         <div className="row outer-row">
-                            <h6> Out-of-Pocket Insurance Premium </h6>
+                            <h5> Out-of-Pocket Insurance Premium </h5>
                             <p> 
                             Make monthly payments of low-end $150 to pay off any
                             medical bills with small to large ducbuitles debt. 
                             To high-end of premium of $300. 
                             </p>
     
-                            <h6> Premium with Interest</h6>
+                            <h5> Premium with Interest</h5>
                             <p> After 6 months of paying Premiums you are allowed to 
                             withdraw your contributions in total but with contiuned contributions 
                             start building interest and increases with subsequent contributions.

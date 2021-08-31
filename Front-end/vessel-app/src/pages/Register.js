@@ -37,8 +37,8 @@ const Register = () => {
                 {/* <div className="one column">hello</div> */}
                     <div className="eight columns card_registeration">
                     
-                    <img src={process.env.PUBLIC_URL + '/images/OV_Logo_Black.png'} alt="OpenVessel2 Logo"/>
-                        <h4> <b>Cover any out-pocket cost! </b> </h4>
+                    <img className="image" src={process.env.PUBLIC_URL + '/images/OV_Logo_Black.png'} alt="OpenVessel2 Logo"/>
+                        <h3> <b>Cover any out-pocket cost! </b> </h3>
                         <h6> OpenVessel let's you pay any medical bill for $100 a month as <b> invested
                         premium </b> that can be taken out in 6 months for the total of $600. </h6>
 

@@ -23,7 +23,7 @@ const Login = () => {
     return (
         <div>
             <title>Login</title>
-            {store.token && store.token !== "" && store.token != undefined ? (
+            {store.token && store.token !== "" && store.token !== undefined ? (
                 
                 "You are logged in with this token " + store.token 
             

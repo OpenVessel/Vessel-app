@@ -65,6 +65,11 @@ img {
   object-fit: contain;
 }
 
+/* autocomplete css */
+.autocss{
+  background-color: #fff !important;
+  color:#2A3C3A !important;
+}
 
 .box {
   padding: 30px;
@@ -86,6 +91,12 @@ img {
   font-weight: 100;
   text-align: left;
 }
+
+.form-input-login {
+  color:#2A3C3A;
+}
+
+
 /* Navbar improvements */
 
 /* 
@@ -585,6 +596,15 @@ height: 100%;
 .inner-row {
   margin-top: 0%;
   margin-left: 2%;
+}
+
+.inner-row p {
+  margin:2%;
+  color:red;
+}
+
+.image{
+  margin-bottom: 3%;
 }
 
 .outer-row{

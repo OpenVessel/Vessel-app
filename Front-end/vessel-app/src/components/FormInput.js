@@ -98,8 +98,9 @@ const FormInput = ({submitForm}) => {
                             onChange={handleChange}/>
 
                             {errors.confirmpassword && <p>{errors.confirmpassword}</p>}
-
-                            <button className='form-input-btn' type='submit'>
+                            </div>
+                            <div className="four columns"> 
+                            <button className='btn-main form-input-btn' type='submit'>
                             Sign up
                             </button>
                             <span className='form-input-login'>

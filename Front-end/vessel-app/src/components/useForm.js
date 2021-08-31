@@ -7,7 +7,8 @@ const useForm = (callback, validate) => {
     lastname:'',
     email: '',
     password: '',
-    confirmpassword: ''
+    confirmpassword: '',
+    ValidateRequest:false
   });
 
   const [errors, setErrors] = useState({});
@@ -26,10 +27,9 @@ const useForm = (callback, validate) => {
     e.preventDefault();
 
     setErrors(validate(values));
-    // if validate returns false on x setIsSubmitting is not set to True
     setIsSubmitting(true);
 
-    if(isSubmitting) {
+    if(isSubmitting && errors.ValidateRequest === true) {
       console.log(isSubmitting, "test")
             actions.registration( 
                 store.token_id, 

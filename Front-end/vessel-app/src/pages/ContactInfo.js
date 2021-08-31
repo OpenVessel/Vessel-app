@@ -4,8 +4,8 @@ import {Context} from "../appContext/UserContext"
 import { Link } from "react-router-dom";
 import SideBar from "../components/SideBar.js";
 import { useHistory } from "react-router-dom";
-import { Search } from "@material-ui/icons"
-
+// import { Search } from "@material-ui/icons"
+import PlacesAutocomplete, {geocodeByAddress,} from "react-places-autocomplete";
 
 
 
@@ -27,6 +27,41 @@ const ContactInfo = () => {
     const username = store.username
     // failling to redirect because both functions are async
 
+    function submitForm() {
+        setIsSubmitted(true);
+    }
+    const [isSubmitted, setIsSubmitted] = useState(false)
+
+    const handleSelect = async value => {
+        const results = await geocodeByAddress(value);
+        console.log(results)
+        console.log(results["0"])
+        let objAddr = results["0"]
+        let objInfo = objAddr["address_components"]
+    
+        let routeObj = objInfo["0"]
+        let townNameObj = objInfo["1"]
+        let townShipObj = objInfo["2"]
+        let countyNameObj = objInfo["3"]
+        let stateNameObj = objInfo["4"]
+        let countryNameObj = objInfo["5"]
+        let postalCodeObj = objInfo["6"]
+
+        let routeName = routeObj["long_name"]
+        let townName = townNameObj["long_name"]
+        let townShipName = townShipObj["long_name"]
+        let countyName = countyNameObj["long_name"]
+        let stateName = stateNameObj["long_name"]
+        let countryName = countryNameObj["long_name"]
+        let postalName = postalCodeObj["long_name"]
+
+
+        setResidentialAddress(value);
+        setStatename(stateName);
+        setCity(townName);
+        setZipCode(postalName);
+      };
+    
 
     // <script async
 //     src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap">
@@ -65,23 +100,6 @@ const ContactInfo = () => {
     //     })
     // }, []);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const handleClick = () => { 
         actions.contactinfo( store.token_id, store.csrf_token, phonenumber, residentialaddress, username, city, zipcode);
 
@@ -111,14 +129,48 @@ const ContactInfo = () => {
                             <div className="five column">     
                                 <input type="tel" placeholder="Phone Number" value={phonenumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                                 <br></br>
-                                <input type="text" placeholder="Residential Address" value={residentialaddress} onChange={(e) => setResidentialAddress(e.target.value)} />
-                                
-                                <div className="search"> 
-                                <span> <Search/> </span>
-                                <input type="text"/> 
+                                <PlacesAutocomplete
+                                value={residentialaddress}
+                                onChange={setResidentialAddress}
+                                onSelect={handleSelect}
+                            >
+
+                                {/* render props */}
+                            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                    <div>
+                                        <input {...getInputProps({ placeholder: "Type address" })} />
+
+                                        
+                                        <div className="autocomplete-dropdown-container autocss">
+                                            {loading && <div><p> Loading... </p></div>}
+                                            {suggestions.map(suggestion => {
+                                                const className = suggestion.active
+                                                ? 'suggestion-item--active'
+                                                : 'suggestion-item';
+                                                // inline style for demonstration purpose
+                                                const style = suggestion.active
+                                                ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                                                : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                                                return (
+                                                <div
+                                                    {...getSuggestionItemProps(suggestion, {
+                                                    className,
+                                                    style,
+                                                    })}
+                                                >
+                                                    <span>{suggestion.description}</span>
+                                                </div>
+                                            );
+                                        })}
+                                        </div>
+                                    </div>
+                                    )}
+                            </PlacesAutocomplete>
+
+
                                 </div>
                             </div>
-                        </div>
+                        {/* </div> */}
 
                         
                         <div className="row inner-row"> 
@@ -132,13 +184,13 @@ const ContactInfo = () => {
                             <input type="text" placeholder="State" value={state} onChange={(e) => setStatename(e.target.value)} />
                             </div>
                             <div className="two column">    
-                            <input id="" placeholder="Zip code" value={zipcode} onChange={(e) => setZipCode(e.target.value)}  /> 
+                            <input id="text" type="text" pattern="[0-9]{5}" placeholder="Zip code" value={zipcode} onChange={(e) => setZipCode(e.target.value)}  /> 
                             </div>
                         </div>
                         </form>
-                        <Link to="/IdVerification"> 
+                        {/* <Link to="/IdVerification">  */}
                         <button className="btn-main" onClick={handleClick} > Continue </button>
-                        </Link>
+                        {/* </Link> */}
                 {/*   parent row */}
                 <div className="four columns"> 
                     <SideBar title={title}> </SideBar>    
