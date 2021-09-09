@@ -1,13 +1,20 @@
 import {useContext, useState, useEffect } from 'react';
 import {Context} from "../appContext/UserContext"
-const useForm = (callback, validate) => {
+
+const useFormContactInfo = (callback, validate) => {
   const [values, setValues] = useState({
-    username: '',
-    firstname:'',
-    lastname:'',
-    email: '',
-    password: '',
-    confirmpassword: '',
+    state: '',
+    phonenumber:'',
+    residentialaddress:'',
+    username:'',
+    city: '',
+    zipcode: '',
+    routeName: '',
+    townName: '',
+    townShipName: '',
+    countyName: '',
+    stateName: '',
+    countryName: '',
     ValidateRequest:false
   });
 
@@ -27,19 +34,26 @@ const useForm = (callback, validate) => {
     e.preventDefault();
 
     setErrors(validate(values));
+    //we have to implement does user exist already logic or email? 
+    // server side validation
     setIsSubmitting(true);
-
+    console.log(errors.ValidateRequest)
     if(isSubmitting && errors.ValidateRequest === true) {
       console.log(isSubmitting, "test")
-            actions.registration( 
-                store.token_id, 
-                store.csrf_token, 
-                values.firstname, 
-                values.lastname, 
-                values.username, 
-                values.email,
-                values.password, 
-                values.confirmpassword);
+      actions.contactinfo( 
+        store.token_id, 
+        store.csrf_token, 
+        values.phonenumber, 
+        values.residentialaddress,
+        values.username,
+        values.city,
+        values.zipcode,
+        values.state, 
+        values.stateName,
+        values.routeName,
+        values.townName,
+        values.countryName,
+        );
     }
 
   };
@@ -56,4 +70,4 @@ const useForm = (callback, validate) => {
   return { handleChange, handleSubmit, values, errors };
 };
 
-export default useForm;
+export default useFormContactInfo;

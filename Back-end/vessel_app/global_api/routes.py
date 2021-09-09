@@ -175,8 +175,14 @@ def create_csrf_token():
         if token_passing == check_obj:
             print("Preflight check", token_passing == check_obj)
         
+        response_pay_load = { 
+                        
+                        "message":None,
+                        
+                        }
+                    
 
-    return jsonify(data=token_passing, token_id=token_id, success=True)
+    return jsonify(data=token_passing, data2=response_pay_load, token_id=token_id, success=True)
 
 
 
@@ -272,6 +278,9 @@ def contactInfo():
     username_pass = json_obj['username']
     user = UserReact.query.filter_by(username=username_pass).first()
 
+    ## does user exist alread?
+    # Contact infocheck
+
     if request.method == 'POST':
         token = check_csrf_token(token_id, True)
         if json_obj['csrf_token'] == token:
@@ -282,14 +291,22 @@ def contactInfo():
             phonenumber = json_obj['phonenumber']
             residentialaddress = json_obj['residentialaddress']
             city = json_obj['city']
+            state = json_obj['state']
+            stateName = json_obj['stateName']
+            routeName = json_obj['routeName']
+            countryName = json_obj['countryName']
+            townName = json_obj['townName']
             zipcode = int(json_obj['zipcode'])
             submit = json_obj['submit']
             print(phonenumber)
             print(residentialaddress)
+            print(username_pass)
             print(city)
             print(zipcode)
             print(user.id)
 
+        # phonenumber has to be unique errors need a return statement when errors
+        # if phonenumber == :
 
 
             if submit == 'ContactInfo':
@@ -306,6 +323,7 @@ def contactInfo():
                 
                 try:
                     db.session.commit()
+                    
                     print('ContactInfo has been created! You are now able to log in', 'success')
                     response_pay_load = { 
                         
@@ -358,9 +376,9 @@ def Verification():
             citizenship = json_obj['citizenship']
             DOB = json_obj['DOB']
             submit = json_obj['submit']
-            print(ssn)
-            print(citizenship)
-            print(DOB)
+            print("ssn",ssn)
+            print("citizenship",citizenship)
+            print("DOB",DOB)
             print(user.id)
             pass_id = user.id
             if submit == 'Verification':
@@ -369,7 +387,12 @@ def Verification():
                 print("hello?")
                 # db.session.add(dbVerify)
                 # db.session.commit()
-                Verify(username=username_pass, ssn=ssn, dob=DOB, citizenship=citizenship)
+                Verify(
+                user_id=user.id,
+                username=username_pass, 
+                ssn=ssn, 
+                dob=DOB, 
+                citizenship=citizenship)
 
                 try:
                     db.session.commit()

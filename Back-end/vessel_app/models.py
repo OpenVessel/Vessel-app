@@ -37,8 +37,6 @@ class UserReact(db.Model, UserMixin):
     ContactInfo = db.relationship('ContactInfo', backref='contactinfo', lazy=True)
     Verify = db.relationship('Verify', backref='verify', lazy=True)
 
-    
-
     def __repr__(self):
         return f"UserReact('{self.username}','{self.email}', '{self.image_file}')"
 class ContactInfo(db.Model, UserMixin):

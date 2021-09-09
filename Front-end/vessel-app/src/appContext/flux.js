@@ -110,6 +110,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// setStore({csrf_token: data.csrf_token}); //setStore login view refresh its hooked to COntext
 					sessionStorage.setItem("csrf_token", data.data);
 					sessionStorage.setItem("token_id", data.token_id);
+					sessionStorage.setItem("return_msg",null)
 					setStore({ csrf_token: data.data, token_id: data.token_id});
 					// console.log(csrf_token)
 					
@@ -161,9 +162,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					sessionStorage.setItem("token", data.access_token);
 					sessionStorage.setItem("username", data.username);
 					sessionStorage.setItem("email", data.email);
-					setStore({token: data.access_token}); //setStore login view refresh its hooked to COntext
-					setStore({username: data.username})
-					setStore({email: data.email})
+					setStore({token: data.access_token, username: data.username, email: data.email }); //setStore login view refresh its hooked to COntext
+
 					return true;
 		
 				}
@@ -203,9 +203,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					sessionStorage.setItem("return_msg", data.message);
 					sessionStorage.setItem("firstname", data.firstname);
 					sessionStorage.setItem("username", data.username);
-					setStore({return_msg: data.message});
-					setStore({firstname:data.firstname}); 
-					setStore({username:data.username});//setStore login view refresh its hooked to COntext
+					setStore({return_msg: data.message, firstname:data.firstname, username:data.username});
+					//setStore login view refresh its hooked to COntext
 					return true;
 		
 				}
@@ -214,7 +213,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			contactinfo: async ( token_id, csrf_token, phonenumber, residentialaddress, username, city, zipcode) => {
+			contactinfo: async ( 
+				token_id, 
+				csrf_token, 
+				phonenumber, 
+				residentialaddress, 
+				username,
+				city, 
+				zipcode, 
+				state, 
+				stateName, 
+				routeName,
+				townName, 
+				countryName
+				) => {
 				const opts = { 
 					method:'POST',
 					headers:{
@@ -228,6 +240,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"username":username,
 						"city":city,
 						"zipcode": zipcode,
+						"state": state,
+						"stateName":stateName ,
+						"routeName":routeName,
+						"townName": townName,
+						"countryName": countryName,
 						"submit":"ContactInfo"
 					})
 				};

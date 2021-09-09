@@ -1,8 +1,8 @@
 import React, {useContext, useState} from 'react'
 import {Context} from "../appContext/UserContext"
-import useForm from './useForm'
+import useForm from '../formCode/useForm'
 import validate from '../validateInfo';
-    
+import { Link } from 'react-router-dom';
 const FormInput = ({submitForm}) => {
     const {store, actions} = useContext(Context);
 
@@ -13,7 +13,7 @@ const FormInput = ({submitForm}) => {
 
     return (
         <div>
-             <form action="" method="POST" name="register-form" onSubmit={handleSubmit} noValidate>
+             <form action="" method="POST" name="register-form"  autocomplete="off" onSubmit={handleSubmit} noValidate>
                         {/* we can GET csrf from flask store local session */}
                         <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
                         <input id="csrf_token_passback" name="csrf_token_passback" type="hidden" value={store.csrf_token}/> 
@@ -50,6 +50,7 @@ const FormInput = ({submitForm}) => {
                                 <input 
                                 type="text" 
                                 name="username"
+                                autocomplete="new-password"
                                 placeholder="username"
                                 className="form-input" 
                                 value={values.username} 
@@ -77,6 +78,7 @@ const FormInput = ({submitForm}) => {
                                 <input id="password"
                                 placeholder="password" 
                                 required type="password" 
+                                autocomplete="new-password"
                                 name="password"
                                 className="form-input"
                                 value={values.password} 
@@ -100,11 +102,12 @@ const FormInput = ({submitForm}) => {
                             {errors.confirmpassword && <p>{errors.confirmpassword}</p>}
                             </div>
                             <div className="four columns"> 
+                            
                             <button className='btn-main form-input-btn' type='submit'>
                             Sign up
                             </button>
                             <span className='form-input-login'>
-                            Already have an account? Login <a href='#'>here</a>
+                            Already have an account? Login <Link to="/Login">  here</Link>
                             </span>
 
 

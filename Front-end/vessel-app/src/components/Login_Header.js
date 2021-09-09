@@ -16,7 +16,10 @@ const Login_Header = (props) => {
         actions.logout();
         
     };
-    
+    // logout only works when I referesh the page 
+    window.onload = function () {
+    document.getElementById("logout").onclick = handleClick;
+    }
     return (
         <header>
             <div>
@@ -29,7 +32,8 @@ const Login_Header = (props) => {
                 <button className="btn"> Login Required </button>
             </Link>
             :
-                <button onClick={handleClick} className="btn"> Logout </button>
+                <div></div>
+
             }
 
 

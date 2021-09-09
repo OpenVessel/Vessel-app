@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react'
 import {Context} from "../appContext/UserContext"
 import {Link} from "react-router-dom";
 import { useHistory } from "react-router";
+// src\images\OV_Logo_Black.svg
 
 const Login = () => {
 
@@ -28,25 +29,35 @@ const Login = () => {
                 "You are logged in with this token " + store.token 
             
             ):(
-            <div className="container card_login"> 
-                <div className="row"> 
+            <div className="flex-container"> 
+            <div className="flex-child card_login"> 
+                <div className="row flex-child rowLogin"> 
                 {/* We have component controller component  */}
-                <div>
-                <div className="five column"> 
-                <input type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                </div>
-                <div className="five column"> 
-                <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}  /> 
-                </div>
-                <button className="btn-main" onClick={handleClick}> Login </button>
-                <h1> {store.return_msg}</h1>
+                {/* src\images\OV_Logo_Black.svg */}
                 
-                
-                <Link to="/Register"> 
-                <p> Don't have an account?</p>
-                </Link>
-
+                <div className="headerleft" > 
+                <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />
+                    <b> <h2 className="headerleft">Log In</h2> </b> 
+                    </div>
+                    <p> Pay off medical debt, make emergrency funds with return on interest woth OpenVessel. </p>
+                    <br></br>
+                    <div className="five column"> 
+                    <input type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                    </div>
+                    <div className="five column"> 
+                    <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}  /> 
+                    </div>
+                    <button className="btn-main" onClick={handleClick}> Login </button>
+                    <h1> {store.return_msg}</h1>
+                    
+                    
+                    <Link to="/Register"> 
+                    <p> Don't have an account?</p>
+                    </Link>
                 </div>
+            </div>
+                <div className="flex-child card_login2">
+                <p>Hello</p> 
                 </div>
             </div>
             )}

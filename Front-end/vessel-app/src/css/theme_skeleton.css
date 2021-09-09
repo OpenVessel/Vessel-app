@@ -1,6 +1,7 @@
 
 /* Table of contents
 ––––––––––––––––––––––––––––––––––––––––––––––––––
+- Navbar improvements 
 - Grid
 - Base Styles
 - Typography
@@ -14,6 +15,8 @@
 - Utilities
 - Clearing
 - Media Queries
+https://stackoverflow.com/questions/63013774/make-login-form-responsive-with-flexbox
+
 */
 
 img { 
@@ -94,6 +97,71 @@ img {
 
 .form-input-login {
   color:#2A3C3A;
+}
+
+
+/* Login box improvement */
+/* 9/1/2021 */
+
+.flex-container {
+  display: flex;  
+  flex-direction: row;
+  position:absolute;
+  top:0px;
+  right:0px;
+  bottom:0px;
+  left:0px;
+}
+@media (max-width: 800px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+.flex-child {
+  flex: 1;
+}  
+
+.flex-child:first-child {
+  margin-right: 0px;
+} 
+
+/* Login Section lefthand side */
+.rowLogin {
+  padding: 50px;
+  margin-left: auto;
+  margin-right: auto !important;
+  width: 600px;
+  text-align: center;
+  
+}
+
+/* card login right had side  */
+.card_login2 { 
+  background: #06007A;  
+  margin:3%;
+  padding:10px; 
+}
+/* card login text */
+.card_login2 p { 
+ color:#FFF;
+}
+
+.card_login {
+  padding:20px;
+background: white;
+height: 100%;
+  
+}
+
+.headerleft {
+  text-align: left;
+}
+
+
+.card_page { 
+  background: whitesmoke;  
+  margin:3%;
+  padding:10px;
 }
 
 
@@ -228,9 +296,17 @@ img {
 /* .nav-links-mobile{
 
 } */
-
-
 }
+
+/* input size for date of birth */
+::-webkit-datetime-edit { padding: 1em; }
+/* ::-webkit-datetime-edit-fields-wrapper { background: silver; } */
+::-webkit-datetime-edit-text { color: #0FA0CE; padding: 0 0.3em; }
+::-webkit-datetime-edit-month-field { color: #2A3C3A; }
+::-webkit-datetime-edit-day-field { color: #2A3C3A; }
+::-webkit-datetime-edit-year-field { color: #2A3C3A; }
+/* ::-webkit-inner-spin-button { display: none; } */
+/* ::-webkit-calendar-picker-indicator { background: orange; } */
 
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -491,6 +567,42 @@ a:active {
     cursor: pointer;
     outline: none;
 }
+
+.btn-deposit {
+  color: #fff !important;
+  background-color: #06007A !important; 
+  border-radius: 5px;
+  outline-width: 0px;
+  display: inline-block;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 0px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 15px;
+  font-family: inherit;
+  border: none;
+  
+  box-shadow: 0px 7px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-deposit:hover {
+  background-color: #179EA1;
+  /* box-shadow: 0px 15px 20px rgba(23, 158, 161, 0.2); */
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+
+.btn-deposit:active:focus {
+  box-shadow: inset 0 0 0 20rem #060250,
+  0 0 1px #060250;
+}
+
 /* .button:hover {
   background-color: #2EE59D;
   box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
@@ -532,12 +644,7 @@ a:active {
     0 0 1px #3b0101;
 }
 
-
-.card_page { 
-  background: whitesmoke;  
-  margin:3%;
-  padding:10px;
-}
+/* ProgressBar css */
 
 #progressBarContainer {
   margin: 20px;
@@ -557,6 +664,11 @@ a:active {
   background-color: green;
 }
 
+.ProgressBar {
+
+
+}
+
 /* Card Classes */
 
 .card_button { 
@@ -570,12 +682,6 @@ height: 100%;
   
 }
 
-.card_login {
-  padding:20px;
-background: white;
-height: 100%;
-  
-}
 
 .card_registeration div {
   padding:20px;
@@ -607,10 +713,6 @@ height: 100%;
   margin-bottom: 3%;
 }
 
-.outer-row{
-  
-}
-
 .side-row{
   padding:20px;
   margin: 3%;
@@ -620,7 +722,82 @@ height: 100%;
   width:80%; margin: 3%; background: whitesmoke;
 }
 
+/* render cards Coverage */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 
+.card {
+  flex: 0 1 calc(25% - 1em);
+}
+
+/* different medias for carsds */
+
+@media screen and (min-width: 40em) {
+  .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+  }
+
+  .card {
+      flex: 0 1 calc(50% - 1em);
+  }
+}
+
+@media screen and (min-width: 60em) {
+
+  .card {
+      flex: 0 1 calc(25% - 1em);
+  }
+}
+
+
+
+
+
+/* 
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 1px solid silver;
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+.RenderUpload { 
+  -webkit-flex-wrap: wrap;
+  flex-wrap:wrap ;
+}
+
+.wrap    { 
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}  
+.wrap li {
+  background: gold;
+}
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 1px solid silver;
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+} */
 
   .button,
   button,

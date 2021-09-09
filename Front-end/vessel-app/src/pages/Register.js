@@ -37,7 +37,7 @@ const Register = () => {
                 {/* <div className="one column">hello</div> */}
                     <div className="eight columns card_registeration">
                     
-                    <img className="image" src={process.env.PUBLIC_URL + '/images/OV_Logo_Black.png'} alt="OpenVessel2 Logo"/>
+                    <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />
                         <h3> <b>Cover any out-pocket cost! </b> </h3>
                         <h6> OpenVessel let's you pay any medical bill for $100 a month as <b> invested
                         premium </b> that can be taken out in 6 months for the total of $600. </h6>
@@ -59,8 +59,10 @@ const Register = () => {
                 </div>
                 <div className="row row_background"> 
                 <p>
-                All paid premiums will be despoited into collective collateral pool,
+                All paid premiums will be deposited into OpenVessel Financials LLC uitilize in a finanical instrustment collective collateral pool,
                 which is the finanical intrustment uitilized to pay your medical bill through the power of the blockchain 
+
+                Emergency Medical Funds are not collateralized in the public pool or what's known as "collective premium collateral pool". 
                 </p>
                 </div>
 
