@@ -137,9 +137,18 @@ img {
 
 /* card login right had side  */
 .card_login2 { 
-  background: #06007A;  
-  margin:3%;
-  padding:10px; 
+  background-size: cover;       
+  background-position: center center;              
+  height: 100%;
+  background-repeat: no-repeat;
+  background-image:  
+              linear-gradient(180deg, 
+              rgba( 145, 146, 122, 0.62), 
+              rgb(27, 120, 229)), url( 
+'../images/shutterstock_1771500629.jpg'); 
+            width: 100%; 
+            padding:20px;
+            
 }
 /* card login text */
 .card_login2 p { 
@@ -195,6 +204,35 @@ height: 100%;
   font-size:25px;
 }
 
+.PostionImg { 
+  text-align: left;
+  
+}
+
+.SubNavStyle a {
+
+  font-size:18px !important;
+}
+
+
+/* TextBoxCenter */
+.TextBoxCenter { 
+
+  margin:3%;
+  padding:10px; 
+  color:#fff;
+  text-align: center;
+}
+.TextBoxCenter h1 { 
+  color:#fff; 
+}
+.TextBoxCenter p { 
+  font-size: 5 px; 
+}
+.TextBoxCenter img { 
+  width: 155px;				/* width of image (px or % or auto) */
+  height: auto;				/* height of image (px or % or auto) */
+}
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 .nav-menu {
   display:grid;
@@ -547,15 +585,15 @@ a:active {
 
 
 .btn-main {
-    color: #2A3C3A !important;
-    background-color: whitesmoke;
+    color: #fff !important;
+    background-color: #1B78E5;
     border-radius: 5px;
     outline-width: 0px;
     display: inline-block;
     border: none;
     padding: 10px 20px;
     margin: 5px;
-    border-radius: 0px;
+    border-radius: 3px;
     cursor: pointer;
     text-decoration: none;
     font-size: 15px;

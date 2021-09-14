@@ -31,6 +31,7 @@ const useForm = (callback, validate) => {
     setErrors(validate(values));
     setIsSubmitting(true);
 
+
     if(isSubmitting && errors.ValidateRequest === true) {
       console.log(isSubmitting, "test")
             actions.registration( 
@@ -42,13 +43,25 @@ const useForm = (callback, validate) => {
                 values.email,
                 values.password, 
                 values.confirmpassword);
+                
+                console.log(window.sessionStorage.getItem("return_msg"))
+              // submit on request Success this triggers redirect?
+    // setReturnMsg(window.sessionStorage.getItem("return_msg"))
+    // if(msg === 'Your account has been created! You are now able to log in'){ 
+    //   console.log
+    // 
+    // }
+    const moveOn = false
+    console.log(errors.ValidateRequest)
+    if(errors.ValidateRequest === true) {
+            console.log("hello movOn Trigger")
+            if(window.sessionStorage.getItem("return_msg") === 'Your account has been created! You are now able to log in') { 
+                const moveOn = true
+            }
+          }  
+  
+            
     }
-
-    setReturnMsg(window.sessionStorage.getItem("return_msg"))
-    if(msg === 'Your account has been created! You are now able to log in'){ 
-      actions.redirect(msg)
-    }
-
   };
 
   useEffect(
@@ -60,7 +73,7 @@ const useForm = (callback, validate) => {
     [errors]
   );
 
-  return { handleChange, handleSubmit, values, errors };
+  return { handleChange, handleSubmit, values, errors};
 };
 
 export default useForm;

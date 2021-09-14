@@ -18,8 +18,9 @@ from wtforms.csrf.core import CSRF
 # from .models import db
 # from .admin import setup_admin
 from flask_login import login_user, current_user, logout_user, login_required
-from vessel_app.models import UserReact, ContactInfo, Verify
+from vessel_app.models import UserReact, ContactInfo, Verify, Checkpoint, AuthTable
 from .connector_redis import save_csrf, check_csrf_token
+from .authAPI import CreateAccessCode, SubmitUserConsent
 ## routes are for your endpoints
 
 ## Request notes
@@ -241,13 +242,18 @@ def register():
                 try:
                     db.session.commit()
                     print('Your account has been created! You are now able to log in', 'success')
+                    # when user account is created we make Checkpoint table
                     response_pay_load = { 
                         
                         "message":"Your account has been created! You are now able to log in",
                         "firstname":firstname,
                         "username":username
                         }
-                    
+                    # the checkpoint table or the VerificatioStatus is created when user is created
+                    VerificationStatus = Checkpoint(username=username, userMade=True, userContactInfo=False, userVerify=False)
+                    db.session.add(VerificationStatus)
+                    db.session.commit()
+
                     return jsonify(response_pay_load), 200
                 
                 except:
@@ -316,6 +322,7 @@ def contactInfo():
                     username=username_pass,
                     phonenumber=phonenumber,
                     residentialaddress=residentialaddress,
+                    state=state,
                     city=city,
                     zipcode=zipcode
                 )
@@ -330,7 +337,13 @@ def contactInfo():
                         "message":"ContactInfo, You are now able to log in",
                         "username":username_pass,
                         }
-                    
+
+                    # we update the verification status of the user
+                    VerificationStatus = Checkpoint.query.filter_by(username=username_pass).first()
+                    VerificationStatus.userContactInfo = True
+                    db.session.add(VerificationStatus)
+                    db.session.commit()
+
                     return jsonify(response_pay_load), 200
                 
                 except:
@@ -352,9 +365,7 @@ def contactInfo():
 def Verification(): 
     json_obj = request.json
     token_id = json_obj['token_id']
-    # username_pass = json_obj['username']
-    username_pass = 'test'
-    print(username_pass)
+    username_pass = json_obj['username']
     user = UserReact.query.filter_by(username=username_pass).first()
 
     if request.method == 'POST':
@@ -363,15 +374,6 @@ def Verification():
             print("Tokens Match approved")
             print(request.json)
 
-
-        # "token_id":token_id,
-		# 				"csrf_token":csrf_token,
-		# 				"username":username,
-		# 				"ssn":ssn, 
-		# 				"DOB":DOB,						
-		# 				"citizenship":citizenship,						
-		# 				"submit":"Verification"
-        ## bcrypt 
             ssn = json_obj['ssn']
             citizenship = json_obj['citizenship']
             DOB = json_obj['DOB']
@@ -382,19 +384,19 @@ def Verification():
             print(user.id)
             pass_id = user.id
             if submit == 'Verification':
-                print("hello?")
-                
-                print("hello?")
+
                 # db.session.add(dbVerify)
                 # db.session.commit()
-                Verify(
+                verification = Verify(
                 user_id=user.id,
                 username=username_pass, 
                 ssn=ssn, 
                 dob=DOB, 
                 citizenship=citizenship)
-
+                db.session.add(verification)
+                
                 try:
+                    # db.session.commit()
                     db.session.commit()
                     print('Verification has been created! You are now able to log in', 'success')
                     response_pay_load = { 
@@ -402,7 +404,14 @@ def Verification():
                         "message":"Verification, You are now able to log in",
                         "username":username_pass,
                         }
-                    
+
+                    # update Checkpoint
+                    VerificationStatus = Checkpoint.query.filter_by(username=username_pass).first()
+                    VerificationStatus.userVerify = True
+                    db.session.add(VerificationStatus)
+                    db.session.commit()
+
+
                     return jsonify(response_pay_load), 200
                 
                 except:
@@ -420,6 +429,90 @@ def Verification():
                     }
                 return jsonify(response_pay_load), 200
 
+# After user logins its automatically checks VerificationStatus
+@bp.route('/verificationcheck', methods=['POST','GET'])
+def VerificationCheck(): 
+    json_obj = request.json
+    print(request.json)
+    token_id = json_obj['token_id']
+    username_pass = json_obj['username']
+    user = UserReact.query.filter_by(username=username_pass).first()
+    if username_pass == 'null':
+
+        return 'no verification check'
+
+    ## does user exist alread?
+    # Contact infocheck
+
+    if request.method == 'POST':
+        token = check_csrf_token(token_id, True)
+        if json_obj['csrf_token'] == token:
+            print("Tokens Match approved")
+            print(request.json)
+
+            #VerificationStatus
+            # 1 checkpoint table 
+            CheckTable = Checkpoint.query.filter_by(username=username_pass).first()
+            print("userMade Status?", CheckTable.userMade)
+            print("userContactInfo Status?", CheckTable.userContactInfo)
+            print("userVerify Status?", CheckTable.userVerify)
+
+            
+            userMade = CheckTable.userMade
+            
+            
+            # do have ContactInfo no? redirect user to ContactInfoPage
+            userContactInfo = CheckTable.userContactInfo
+            
+            # do we have VerificationID no? redirect user to IDVerification
+            userVerify = CheckTable.userVerify
+
+            
+            
+            #do we have userconset?
+            
+            #Great now lets get UserAccessCode from Authanticing.com
+            if(userMade == True and userContactInfo == True and userVerify == True):
+                ## we create access code for user
+                msg, value = CreateAccessCode(username_pass, False)
+                #we insert accessCode into the data table 
+                print(value)
+                #we capture userconsent here we need UserAccessCode
+
+
+
+
+            # check do we have all checkpoint table TRUE and UserAccessCodeTrue?
+                # redirect to test upload Passport
+                # if all Sign up completes send redirect back to user to upload ID or Passport 
+
+            try:
+                print('Verification Status You are now able to log in', 'success')
+                
+                response_pay_load = { 
+                    "message":"Verification Check Succes",
+                    "username":username_pass,
+                    "userMade":userMade,
+                    "userContactInfo":userContactInfo,
+                    "userVerify":userVerify
+                    }
+
+                
+                # VerificationStatus = Checkpoint.query.filter_by(username=username_pass).first()
+                # VerificationStatus.userVerify = True
+                # db.session.add(VerificationStatus)
+                # db.session.commit()
+                return jsonify(response_pay_load), 200
+            
+            except:
+                print("Verification Status return failed")
+                response_pay_load = { 
+                    "message":"Failed Verification Check"
+                    }
+                return jsonify(response_pay_load), 200
+
+            # Check the Verifcaiton table 
+
 
 # Plaid intergration 
 ## for our user we buy Candrano for them 
@@ -429,6 +522,27 @@ def Verification():
 ## For development for now we allow users to buy Candrano and keep it in their account
 @bp.route('/PlaidEntryPoint', methods=['POST','GET'])
 def PlaidEntryPoint(): 
+
+    json_obj = request.json
+    print(request.json)
+    token_id = json_obj['token_id']
+    username_pass = json_obj['username']
+    if username_pass == 'null':
+
+        return 'no verification check'
+
+    if request.method == 'POST':
+        # redis
+        token = check_csrf_token(token_id, True)
+        if json_obj['csrf_token'] == token:
+            print("Tokens Match approved")
+            print(request.json)
+
+    # Plaid speical "Link Access Token Token"
+    # trigger another web request to plaid for the Link token 
+    # create_link_token_for_payment()
+    # CALL PLAID
+    # link return this has to be sent back to React 
 
     return 'pass'
 
@@ -565,6 +679,7 @@ def account():
             user = User.query.get(5)
             user.name = 'New Name'
             db.session.commit()
+
 
         ## did usuer change emaiL? 
         ## did user change username?

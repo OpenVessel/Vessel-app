@@ -1,7 +1,11 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import ProgressBar from '../components/ProgressBar'
 import Deposit from '../components/Deposit'
+import {Context} from "../appContext/UserContext"
 const EMF = () => {
+
+    
+    const{store, actions } = useContext(Context);   
     return (
         <div>
             <div className="row"> 

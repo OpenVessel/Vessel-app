@@ -48,6 +48,7 @@ class ContactInfo(db.Model, UserMixin):
     username = db.Column(db.String(30), unique=True, nullable=False )
     phonenumber = db.Column(db.String(120), unique=True, nullable=False)
     residentialaddress = db.Column(db.String(120), unique=False, nullable=False )
+    state = db.Column(db.String(120), unique=False, nullable=False )
     city = db.Column(db.String(120), unique=False, nullable=False )
     zipcode = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('UserReact.id'), nullable=False)
@@ -70,6 +71,34 @@ class Verify(db.Model, UserMixin):
 
     def __repr__(self):
         return f"Verify('{self.date_uploaded}')"
+
+
+class Checkpoint(db.Model):
+
+    __tablename__ = 'Checkpoint'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique=True, nullable=False )
+    userMade = db.Column(db.Boolean, default=False, nullable=False)
+    userContactInfo = db.Column(db.Boolean, default=False, nullable=False)
+    userVerify = db.Column(db.Boolean, default=False, nullable=False)
+    def __repr__(self):
+        return f"Checkpoint('{self.username}')"
+
+
+class AuthTable(db.Model):
+
+    __tablename__ = 'AuthTable'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique=True, nullable=False )
+    AccessCode = db.Column(db.Boolean, default=False, nullable=False)
+    userconsent = db.Column(db.Boolean, default=False, nullable=False)
+    ssnReal = db.Column(db.Boolean, default=False, nullable=False)
+    idReal = db.Column(db.Boolean, default=False, nullable=False)
+    passportReal = db.Column(db.Boolean, default=False, nullable=False)
+    def __repr__(self):
+        return f"AuthTable('{self.username}')"
 
 class DicomMetaData(db.Model):
 
@@ -119,6 +148,9 @@ class Dicom2(db.Model):
     
     def __repr__(self):
         return f"Dicom('{self.date_uploaded}')"
+
+
+
 
 class DicomFormData(db.Model):
     __tablename__ = 'DicomFormData'

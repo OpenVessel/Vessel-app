@@ -60,6 +60,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			username:null,
 			return_msg:null,
 			firstname:null,
+			plaidToken:null,
+			
+			VerificationStatus: [{
+				username:null,
+				userMade:null,
+				userContactInfo:null,
+				userVerify:null, 
+			}],
+
 			demo: [
 				{
 					title: "FIRST",
@@ -126,11 +135,103 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			},
 
+			VerificationCheck: async (token_id, csrf_token, username) => {
+				const opts = { 
+					method:'POST',
+					headers:{
+						"Content-Type":"application/json"
+					},
+					body: JSON.stringify({
+						"token_id":token_id,
+						"csrf_token":csrf_token,
+						"username":username,					
+						"submit":"VerificationCheck"
+					})
+				};
+				// basically allowing the react user to register via API 
+				try{
+					const resp = await fetch('http://127.0.0.1:5000/api/verificationcheck', opts)
+					if(resp.status !== 200){
+						alert("There has been some error");
+						return false;
+					}
+
+					const data = await resp.json();
+					console.log("this came from the backend", data);
+					sessionStorage.setItem("return_msg",data.return_msg)
+					sessionStorage.setItem("username",data.username)
+					sessionStorage.setItem("userMade",data.userMade)
+					sessionStorage.setItem("userContactInfo",data.userContactInfo)
+					sessionStorage.setItem("userVerify",data.userVerify)
+					// setStore({return_msg: data.message, firstname:data.firstname, username:data.username});
+					// setStore({VerificationStatus:[{
+					// 	username:data.username,
+					// 	userMade:data.userMade,
+					// 	userContactInfo:data.userContactInfo,
+					// 	userVerify:data.userVerify, 
+					// }]})
+					//setStore login view refresh its hooked to COntext
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with login");
+				}
+			},
+
+
+			PlaidEntryPoint: async (token_id, csrf_token, username) => {
+				// csrfTokenState set to default
+				const url = '/api/PlaidEntryPoint';
+				// const data = 'A$1;,BOimZ7i+_t**]Nq3El)!#bG|K'
+				let fetchGetResponse = await fetch(`${domainUrl}${url}`, {
+					method: 'POST',
+					headers: {
+						// Accept: "application/json",
+						"Content-Type": "application/json",
+						
+					},
+					credentials: "include",
+					referrerPolicy: 'no-referrer',
+					mode: 'cors',
+					body: JSON.stringify({
+						"token_id":token_id,
+						"csrf_token":csrf_token,					
+						"username":username
+					})
+				});
+				
+				try{
+					const data = await fetchGetResponse.json();
+					console.log("backend_csrf_token_for_single_user", data);
+					// setStore({csrf_token: data.csrf_token}); //setStore login view refresh its hooked to COntext
+					sessionStorage.setItem("plaidToken", data.plaidToken);
+					setStore({  plaidToken: data.token_id});
+					// console.log(csrf_token)
+					
+					// call this if statement after the token has been put into session
+					// if(csrf_token && csrf_token !== "" && csrf_token !== undefined) setStore({ csrf_token: data.data});
+					
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with PlaidEntryPoint");
+				}
+
+			},
+
 			
 			logout: () => {
 				sessionStorage.removeItem("token"); // takes token from session storage and stores it in the store
 				console.log("Logging Out")
 				setStore({ token:null });
+				sessionStorage.setItem("return_msg",null)
+				sessionStorage.setItem("username",null)
+				sessionStorage.setItem("userMade",null)
+				sessionStorage.setItem("userContactInfo",null)
+				sessionStorage.setItem("userVerify",null)
+
 				
 			},
 
@@ -162,7 +263,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					sessionStorage.setItem("token", data.access_token);
 					sessionStorage.setItem("username", data.username);
 					sessionStorage.setItem("email", data.email);
-					setStore({token: data.access_token, username: data.username, email: data.email }); //setStore login view refresh its hooked to COntext
+					setStore({token: data.access_token, username: data.username, email: data.email }); 
+					//setStore login view refresh its hooked to Context
 
 					return true;
 		

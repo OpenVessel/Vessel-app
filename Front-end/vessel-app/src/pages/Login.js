@@ -19,7 +19,7 @@ const Login = () => {
         console.log("loggin")
         actions.login(username, password);
     };
-    
+    // this is the redirect push to another webpage after login is successfull
     if (store.token && store.token !== "" && store.token !== undefined) history.push("/Account");
     return (
         <div>
@@ -30,6 +30,21 @@ const Login = () => {
             
             ):(
             <div className="flex-container"> 
+            <div className="flex-child card_login2"> 
+                <div className="flex-child rowLogin">
+                <div className="PositionImg"> 
+                <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />
+                </div>
+                <div className="flex-child TextBoxCenter"> 
+                    
+                    <h1> Get Started today. </h1>
+                    <p>Insurance is about spreading risk to the greater community 
+                    if it’s a business or if it’s someone’s Health, Blockchain has 
+                    a lot of spread and future growth but this doesn’t impact 
+                    our healthcare system or people’s lives</p> 
+                    </div>
+                </div>
+            </div>
             <div className="flex-child card_login"> 
                 <div className="row flex-child rowLogin"> 
                 {/* We have component controller component  */}
@@ -56,9 +71,7 @@ const Login = () => {
                     </Link>
                 </div>
             </div>
-                <div className="flex-child card_login2">
-                <p>Hello</p> 
-                </div>
+             
             </div>
             )}
         </div>

@@ -24,8 +24,4 @@ const Logout_Header = (props) => {
 }
 
 
-const headingStyle = { 
-    color:'red', backgroundColor: 'black',
-}
-
 export default Logout_Header

@@ -1,19 +1,22 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext} from 'react'
 import {Context} from "../appContext/UserContext"
 import useForm from '../formCode/useForm'
 import validate from '../validateInfo';
 import { Link } from 'react-router-dom';
+import SignUpBtn from '../components/SignUpButtton'
 const FormInput = ({submitForm}) => {
-    const {store, actions} = useContext(Context);
-
-    const { handleChange, handleSubmit, values, errors } = useForm(
+    const {store} = useContext(Context);
+    
+    const { handleChange, handleSubmit, values, errors, moveOn } = useForm(
         submitForm,
         validate
       );
-
+    
+    
+    
     return (
         <div>
-             <form action="" method="POST" name="register-form"  autocomplete="off" onSubmit={handleSubmit} noValidate>
+             <form action="" method="POST" name="register-form"  autoComplete="off" onSubmit={handleSubmit} noValidate>
                         {/* we can GET csrf from flask store local session */}
                         <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
                         <input id="csrf_token_passback" name="csrf_token_passback" type="hidden" value={store.csrf_token}/> 
@@ -50,7 +53,7 @@ const FormInput = ({submitForm}) => {
                                 <input 
                                 type="text" 
                                 name="username"
-                                autocomplete="new-password"
+                                autoComplete="new-password"
                                 placeholder="username"
                                 className="form-input" 
                                 value={values.username} 
@@ -103,9 +106,15 @@ const FormInput = ({submitForm}) => {
                             </div>
                             <div className="four columns"> 
                             
-                            <button className='btn-main form-input-btn' type='submit'>
-                            Sign up
+                            
+                            <button  className='btn-main form-input-btn' type='submit'>
+                            Sign Up
                             </button>
+
+                            {/* <SignUpBtn moveOn={errors.ValidateRequest} /> */}
+
+                            
+
                             <span className='form-input-login'>
                             Already have an account? Login <Link to="/Login">  here</Link>
                             </span>

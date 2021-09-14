@@ -21,6 +21,9 @@ import Buy from './pages/Buy'
 import Emf from './pages/EMF'
 import injectContext from './appContext/UserContext';
 
+import { HashRouter } from 'react-router-dom'
+import Settings from './components/settingsComponents/Settings'
+import SubNavBar from './components/settingsComponents/SubNavBar'
 import "./css/theme_skeleton.css"
 import "./css/normalize.css"
 
@@ -58,14 +61,28 @@ function App() {
           
           <Route path="/" exact component={Home}/>
           <Route path="/login" exact component={Login}/>
+          <Route path="/register" exact component={Register}/>
           <Route path="/EMF" exact component={Emf}/>
+
           <Route path="/getting_started" exact component={GettingStarted}/>
           <Route path="/upload" exact component={Upload}/>
           <Route path="/browser" exact component={Browser}/>
-          <Route path="/account" exact component={Account}/>
-          <Route path="/register" exact component={Register}/>
           <Route path="/ContactInfo" exact component={ContactInfo}/>
           <Route path="/IdVerification" exact component={IdVerification}/>
+          {/* <Route path="/account" exact component={Account}/> */}
+          <HashRouter basename="/"> 
+                {/* preferences
+                  security
+                  financials-services
+                  account_activity
+                  privacy rights
+                  Linked-accounts
+                  account-levels
+                  cryptoaddress */}
+                  
+                <Account/>
+                
+        </HashRouter>
 
           <Route path="/buy" exact component={Buy}/>          
 
