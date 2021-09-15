@@ -1,9 +1,8 @@
 import React, {useContext, useState} from 'react'
 import {Context} from "../appContext/UserContext"
-import { Link } from 'react-router-dom';
 import validateID from '../validationCode/validateIdVerification.js';
 import useFormIdVerification from '../formCode/useFormIdVerification.js';
-
+import { useHistory  } from 'react-router-dom';
 const FormInputIdVerification = ({submitForm}) => {
     
     const {store} = useContext(Context);
@@ -14,6 +13,11 @@ const FormInputIdVerification = ({submitForm}) => {
         submitForm,
         validateID
     );
+    let history = useHistory();
+    if(window.sessionStorage.getItem("return_msg") === 'Verification, You are now able to log in') { 
+        history.push('/IdVerification')
+        sessionStorage.setItem("return_msg", '') 
+    }
 
     return (
         <div>

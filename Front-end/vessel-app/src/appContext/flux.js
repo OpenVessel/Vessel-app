@@ -119,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// setStore({csrf_token: data.csrf_token}); //setStore login view refresh its hooked to COntext
 					sessionStorage.setItem("csrf_token", data.data);
 					sessionStorage.setItem("token_id", data.token_id);
-					sessionStorage.setItem("return_msg",null)
+					sessionStorage.setItem("return_msg",'')
 					setStore({ csrf_token: data.data, token_id: data.token_id});
 					// console.log(csrf_token)
 					

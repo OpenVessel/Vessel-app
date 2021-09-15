@@ -212,21 +212,47 @@ def register():
             confirmpassword = json_obj['confirm_password']
             submit = json_obj['submit']
             
+            # python dict to pass to validation code
+            ValidateDict = { 
+                "username": username,
+                "email":email,
+                "password": password,
+                "firstname": firstname,
+                "lastname": lastname,
+                "confirmpassword":confirmpassword,
+                "submit":submit,
+            }
 
             print("------",request.form)
             
             if request.method == 'POST':
                 ## hashed password
+
+                # Validation Section develop function
                 ## fails to check if passwords match!!!
                 user = UserReact.query.filter_by(username=username).first()
 
+            # Validation Code Server-side 
                 if user:
                     print("username already exist")
+                    response_pay_load = { 
+                        
+                        "message":"username already exist"
+                        }
+                
+                    return jsonify(response_pay_load), 200
+
 
                 user = UserReact.query.filter_by(email=email).first()
             
                 if user:
                     print("email already exist")
+                    response_pay_load = { 
+                        
+                        "message":"email already exist"
+                        }
+                
+                    return jsonify(response_pay_load), 200
 
                 hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') 
                 
@@ -284,9 +310,6 @@ def contactInfo():
     username_pass = json_obj['username']
     user = UserReact.query.filter_by(username=username_pass).first()
 
-    ## does user exist alread?
-    # Contact infocheck
-
     if request.method == 'POST':
         token = check_csrf_token(token_id, True)
         if json_obj['csrf_token'] == token:
@@ -304,16 +327,44 @@ def contactInfo():
             townName = json_obj['townName']
             zipcode = int(json_obj['zipcode'])
             submit = json_obj['submit']
-            print(phonenumber)
-            print(residentialaddress)
-            print(username_pass)
-            print(city)
-            print(zipcode)
-            print(user.id)
+
+            # Validation Code
+            validationDict = {
+                "phonenumber":phonenumber,
+                "residentialaddress":residentialaddress,
+                "city":city,
+                "state":state,
+                "stateName":stateName,
+                "routeName":routeName,
+                "countryName":countryName,
+                "townName":townName,
+                "zipcode":zipcode,
+                "submit":submit
+                }
 
         # phonenumber has to be unique errors need a return statement when errors
-        # if phonenumber == :
+            CheckContact = ContactInfo.query.filter_by(username=username_pass).first()
+            if CheckContact:
+                print("username already exist")
+                response_pay_load = { 
+                    
+                    "message":"Username already exist"
+                    }
+            
+                return jsonify(response_pay_load), 200
 
+            
+            
+            CheckContact = ContactInfo.query.filter_by(phonenumber=phonenumber).first()
+
+            if CheckContact:
+                print("phonenumber already exist")
+                response_pay_load = { 
+                    
+                    "message":"Phone Number  already exist"
+                    }
+            
+                return jsonify(response_pay_load), 200
 
             if submit == 'ContactInfo':
                 print("hello?")
@@ -383,8 +434,20 @@ def Verification():
             print("DOB",DOB)
             print(user.id)
             pass_id = user.id
+            
+            CheckVerify = Verify.query.filter_by(username=username_pass).first()
+
+            if CheckVerify:
+                print("username already exist")
+                response_pay_load = { 
+                    
+                    "message":"Username already provided Verification"
+                    }
+            return jsonify(response_pay_load), 200
+            
             if submit == 'Verification':
 
+                
                 # db.session.add(dbVerify)
                 # db.session.commit()
                 verification = Verify(
@@ -394,7 +457,7 @@ def Verification():
                 dob=DOB, 
                 citizenship=citizenship)
                 db.session.add(verification)
-                
+
                 try:
                     # db.session.commit()
                     db.session.commit()

@@ -13,14 +13,15 @@ import DropZone from '../components/DropZone.js';
 // Upload images
 
 const Upload = () => {
+    
+    const fileSelectedHandler = event => { 
+        console.log(event);
+    }
+    
     return (
         <div>
-        <p className="title"> Drag and Drop DICOM, files, HL7, XML, Patient Medical data</p>
-        <div className="content"> 
-        {/* dropzone component */}
-        <DropZone />
-        </div>
-            
+        <p className="title"> Drag & Drop Medical bills </p>
+        <input type="file" onChange={fileSelectedHandler}/>
         </div>
     )
 }

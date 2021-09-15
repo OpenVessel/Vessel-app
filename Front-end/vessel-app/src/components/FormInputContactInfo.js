@@ -4,7 +4,7 @@ import PlacesAutocomplete, {geocodeByAddress,} from "react-places-autocomplete";
 import validateGoogleAPI from '../validationCode/validateGoogleAPI.js';
 import useFormContactInfo from '../formCode/useFormContactInfo.js'
 import $ from 'jquery';
-
+import { useHistory  } from 'react-router-dom';
 const FormInputContactInfo = ({submitForm}) => {
     
     const {store} = useContext(Context);
@@ -24,6 +24,7 @@ const FormInputContactInfo = ({submitForm}) => {
     const[userNamePass, setNamePass] = useState("");
     
     const handleSelect = async value => {
+        
         const results = await geocodeByAddress(value);
         
         // debug
@@ -35,12 +36,13 @@ const FormInputContactInfo = ({submitForm}) => {
         var components={}; 
         $.each(address_components, function(k,v1) {$.each(v1.types, function(k2, v2){components[v2]=v1.long_name});});
 
-        console.log(components.route)
-        console.log(components.administrative_area_level_1)
-        console.log(components.administrative_area_level_2)
-        console.log(components.administrative_area_level_3)
-        console.log(components.country)
-        console.log(components.postal_code)
+        // implement dev or debug
+        // console.log(components.route)
+        // console.log(components.administrative_area_level_1)
+        // console.log(components.administrative_area_level_2)
+        // console.log(components.administrative_area_level_3)
+        // console.log(components.country)
+        // console.log(components.postal_code)
         // javascript object has properties from objects, so 
         // its a destructuring assignment I guess I will take a wack sunday
         // Essential address compenents for validation
@@ -57,8 +59,11 @@ const FormInputContactInfo = ({submitForm}) => {
         let userName = window.sessionStorage.getItem("username")
         setNamePass(userName)
       };
-    
-
+      let history = useHistory();
+    if(window.sessionStorage.getItem("return_msg") === 'ContactInfo, You are now able to log in') { 
+        history.push('/IdVerification')
+        sessionStorage.setItem("return_msg", '') 
+    }
 
     return (
         <div>
@@ -172,19 +177,19 @@ const FormInputContactInfo = ({submitForm}) => {
                             value={values.zipcode=zipcode || zipcode}
                             onChange={handleChange} 
                             /> 
-                            {<p> {window.sessionStorage.getItem("return_msg")}</p>}
+                            {errors.zipcode && <p>{errors.zipcode}</p>}
                             </div>
 
                         </div>
                         {/* <Link to="/IdVerification">  */}
                         {/* fix the button */}
-                        {errors.zipcode && <p>{errors.zipcode}</p>}
+                        
                         <div className="four columns"> 
                             <button className='btn-main form-input-btn' type='submit'>
                             Continue 
                             </button>
                         </div>
-
+                        {<p> {window.sessionStorage.getItem("return_msg")}</p>}
 
                         </form>
         </div>

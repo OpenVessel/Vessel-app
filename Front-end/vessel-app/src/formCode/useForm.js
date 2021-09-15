@@ -51,14 +51,6 @@ const useForm = (callback, validate) => {
     //   console.log
     // 
     // }
-    const moveOn = false
-    console.log(errors.ValidateRequest)
-    if(errors.ValidateRequest === true) {
-            console.log("hello movOn Trigger")
-            if(window.sessionStorage.getItem("return_msg") === 'Your account has been created! You are now able to log in') { 
-                const moveOn = true
-            }
-          }  
   
             
     }

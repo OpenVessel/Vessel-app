@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import {Context} from "../appContext/UserContext"
 import useForm from '../formCode/useForm'
 import validate from '../validateInfo';
-import { Link } from 'react-router-dom';
+import { Link, useHistory  } from 'react-router-dom';
 import SignUpBtn from '../components/SignUpButtton'
 const FormInput = ({submitForm}) => {
     const {store} = useContext(Context);
@@ -12,8 +12,12 @@ const FormInput = ({submitForm}) => {
         validate
       );
     
-    
-    
+    let history = useHistory();
+    if(window.sessionStorage.getItem("return_msg") === 'Your account has been created! You are now able to log in') { 
+        history.push('/contactInfo')
+        sessionStorage.setItem("return_msg", '') 
+    }
+
     return (
         <div>
              <form action="" method="POST" name="register-form"  autoComplete="off" onSubmit={handleSubmit} noValidate>
@@ -110,7 +114,7 @@ const FormInput = ({submitForm}) => {
                             <button  className='btn-main form-input-btn' type='submit'>
                             Sign Up
                             </button>
-
+                            {<p> {window.sessionStorage.getItem("return_msg")}</p>}
                             {/* <SignUpBtn moveOn={errors.ValidateRequest} /> */}
 
                             
