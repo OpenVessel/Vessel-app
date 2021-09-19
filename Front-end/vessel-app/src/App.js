@@ -22,32 +22,11 @@ import Emf from './pages/EMF'
 import injectContext from './appContext/UserContext';
 
 import { HashRouter } from 'react-router-dom'
-import Settings from './components/settingsComponents/Settings'
-import SubNavBar from './components/settingsComponents/SubNavBar'
 import "./css/theme_skeleton.css"
 import "./css/normalize.css"
 
 // JSX javascript exetension
 function App() {
-
-// useState example through useContext passing
-// const [user_value, setValue] = useState('hello from context')
-// // useMemo obverse state changes
-// const providerValue = useMemo(() => ({user_value, setValue}), [user_value, setValue]);
-// console.log(providerValue)
-
-
-// we defined react routes below
-//implementation of react router
-//https://reactrouter.com/web/guides/primary-components
-//https://www.youtube.com/watch?v=o__czqXJtqk&ab_channel=PedroTech
-//https://medium.com/javascript-scene/the-missing-introduction-to-react-62837cb2fd76
-
-// initalize used state, state is something inside of compoenent 
-// state is used when a user has done a action and then causes the application to rerender
-
-//isLoggedIn is default false // we check inside the layout if
-
 
   return (
     <div className="App">
@@ -96,3 +75,21 @@ function App() {
 }
 
 export default injectContext(App);
+
+// useState example through useContext passing
+// const [user_value, setValue] = useState('hello from context')
+// // useMemo obverse state changes
+// const providerValue = useMemo(() => ({user_value, setValue}), [user_value, setValue]);
+// console.log(providerValue)
+
+
+// we defined react routes below
+//implementation of react router
+//https://reactrouter.com/web/guides/primary-components
+//https://www.youtube.com/watch?v=o__czqXJtqk&ab_channel=PedroTech
+//https://medium.com/javascript-scene/the-missing-introduction-to-react-62837cb2fd76
+
+// initalize used state, state is something inside of compoenent 
+// state is used when a user has done a action and then causes the application to rerender
+
+//isLoggedIn is default false // we check inside the layout if

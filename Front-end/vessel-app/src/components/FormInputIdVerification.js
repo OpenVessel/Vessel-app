@@ -83,7 +83,7 @@ const FormInputIdVerification = ({submitForm}) => {
             <button className="btn-main form-input-btn" 
             type='submit'> 
             Continue </button>
-
+            {<p> {window.sessionStorage.getItem("return_msg")}</p>}
         </form>
                         
         </div>

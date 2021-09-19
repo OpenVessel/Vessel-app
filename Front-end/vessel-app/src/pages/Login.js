@@ -52,23 +52,46 @@ const Login = () => {
                 
                 <div className="headerleft" > 
                 <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />
+                
+                <div className="minibox">
                     <b> <h2 className="headerleft">Log In</h2> </b> 
                     </div>
                     <p> Pay off medical debt, make emergrency funds with return on interest woth OpenVessel. </p>
                     <br></br>
-                    <div className="five column"> 
-                    <input type="text" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                </div>
+                    <div className="minibox">
+                        <label className="custom-field"> 
+                            <div className="spacing">
+                            {/* Username input */}
+                            <p> Username </p> 
+                            <input type="text" 
+                            placeholder="username" 
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)} />
+                            </div>
+                            <div className="spacing">
+                            {/* Password */}
+                            <p>Password</p>
+                            <input type="password" 
+                            placeholder="password" 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)}  /> 
+                            <p> Forget Password? </p>
+                            </div>
+                            
+                        </label>
+                        
+                        <label className="custom-field"> 
+                        <div className="spacing">
+                        <button className="btn-main" onClick={handleClick}> Login </button>
+                        <h1> {store.return_msg}</h1>
+                        
+                        <Link to="/Register"> 
+                        <p id="undertag"> Don't have an account?</p>
+                        </Link>
+                        </div>
+                        </label>
                     </div>
-                    <div className="five column"> 
-                    <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}  /> 
-                    </div>
-                    <button className="btn-main" onClick={handleClick}> Login </button>
-                    <h1> {store.return_msg}</h1>
-                    
-                    
-                    <Link to="/Register"> 
-                    <p> Don't have an account?</p>
-                    </Link>
                 </div>
             </div>
              

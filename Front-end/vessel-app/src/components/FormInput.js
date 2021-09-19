@@ -85,7 +85,7 @@ const FormInput = ({submitForm}) => {
                                 <input id="password"
                                 placeholder="password" 
                                 required type="password" 
-                                autocomplete="new-password"
+                                autoComplete="new-password"
                                 name="password"
                                 className="form-input"
                                 value={values.password} 

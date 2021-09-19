@@ -12,15 +12,15 @@ const Settings = () => {
 
   const [image, setImage] = useState({ preview: profileImg, raw: "" });
 
-  const handleChange = e => {
-    console.log(e.target.files[0]);
-    if (e.target.files.length) {
-      setImage({
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0]
-      });
-    }
-  };
+  // const handleChange = e => {
+  //   console.log(e.target.files[0]);
+  //   if (e.target.files.length) {
+  //     setImage({
+  //       preview: URL.createObjectURL(e.target.files[0]),
+  //       raw: e.target.files[0]
+  //     });
+  //   }
+  // };
 
 
     const handleClick = () => { 
@@ -43,63 +43,68 @@ const Settings = () => {
         <div>
             {/* <!-- ACCOUNT HEADER --> */}
         <div className="account-section">
+        <div className="minibox"> 
+        <label className="custom-field-settings"> 
         <h2> My Profile </h2> 
-        <form> 
-        <p> Display name </p> 
-        <input 
-          type="text"
-          id="changeName"
-          onChange={handleChange}
-          />
+          <form> 
+          <p> Display name </p> 
+          <input 
+            type="text"
+            id="changeName"
+            onChange={handleClick}
+            />
 
-          <p> Email address</p>
+            <p> Email address</p>
+            <input
+            type="text"
+            id="changeName"
+            onChange={handleClick}
+            />
+
           <input
-          type="text"
-          id="changeName"
-          onChange={handleChange}
+              type="file"
+              id="upload-button"
+              style={{ display: "none" }}
+              onChange={handleClick}
           />
 
-        <input
-            type="file"
-            id="upload-button"
-            style={{ display: "none" }}
-            onChange={handleChange}
-        />
-
-      {/* We need component to send saved data to backend */}
-      <button> Save </button>
-      </form>
-
-        <h2> Personal Detials </h2>
-        <form> 
-        <p> Legal name</p>
-        <input
-        type="text"
-
-        /> 
-        
-        <p> Date of Birth </p> 
-        {/* https://bootsnipp.com/snippets/MaKa3 */}
-        <p> Scrollable Dropdown Menu </p> 
-
-        <p> Street Address </p>
-        <input/>
-
-        <p> Unit#</p>
-        <input/>
-
-        <p> City/town </p> <p> State</p>
-        <input/>
-        <input/>
-
-        <p> Postal Code </p> <p> Country </p>
-        <input/>
-        <input/>
         {/* We need component to send saved data to backend */}
-        <button> Save </button>
+        <button className="btn-main"> Save </button>
         </form>
+        </label>
+      </div>
 
-        
+    
+      <div className="minibox"> 
+        <label className="custom-field-settings"> 
+            <h2> Personal Detials </h2>
+            <form> 
+            <p> Legal name</p>
+            <input
+            type="text"
+            /> 
+            <p> Date of Birth </p> 
+            {/* https://bootsnipp.com/snippets/MaKa3 */}
+            <p> Scrollable Dropdown Menu </p> 
+            <p> Street Address </p>
+            <input/>
+
+            <p> Unit#</p>
+            <input/>
+
+            <p> City/town </p> <p> State</p>
+            <input/>
+            <input/>
+
+            <p> Postal Code </p> <p> Country </p>
+            <input/>
+            <input/>
+            {/* We need component to send saved data to backend */}
+            <button> Save </button>
+            </form>
+
+            </label>
+          </div>
         </div>
     </div>
        

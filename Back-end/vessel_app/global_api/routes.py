@@ -131,8 +131,19 @@ def create_token():
 
 
 # 127.0.0.1/api/upload
-@bp.route('/upload_call', methods=['POST'])
-def upload_call(): 
+@bp.route('/uploadCall', methods=['POST'])
+def uploadCall(): 
+    print("test request", request.method)
+    json_obj = request.json
+    if request.method == 'POST':
+        print("someone is registering checking csrf cache")
+        token_id = json_obj['token_id']
+        token = check_csrf_token(token_id, True)
+        
+        if json_obj['csrf_token'] == token:
+            print("Tokens Match approved")
+            print(request.json)
+
     return jsonify(), 200
 
 
@@ -256,6 +267,7 @@ def register():
 
                 hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') 
                 
+                # insert database
                 user = UserReact(
                     username=username, 
                     email=email, 
@@ -443,7 +455,7 @@ def Verification():
                     
                     "message":"Username already provided Verification"
                     }
-            return jsonify(response_pay_load), 200
+                return jsonify(response_pay_load), 200
             
             if submit == 'Verification':
 

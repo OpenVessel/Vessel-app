@@ -14,11 +14,6 @@ const Header = (props) => {
       return <UserLoggedOut props />;
     }
 
-const headingStyle = { 
-    color:'red', backgroundColor: 'black',
-}
-
-
 // rafce 
 // apply conditional Rendering
 // 6/7/2021
@@ -33,7 +28,7 @@ function UserIsLoggedIN(props) {
     console.log("User Logged In")
     return (
         <header className='header'>
-            <h1 style ={headingStyle}>{props.title} </h1>
+            
             {/* if user is authenticated */}
             <Link to="/"> Home </Link>
             <Button onClick={onClick} text='Browser'> </Button>

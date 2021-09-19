@@ -16,8 +16,9 @@ class NavBar extends Component{
     render() { 
     return( 
         <nav className="NavbarItems">
-        <Link to="/"> <h1 className="navbar-logo">{this.props.title} </h1> </Link>
-
+        <Link to="/"> <img src={process.env.PUBLIC_URL + '/images/LogoButtton.PNG'} alt="OpenVessel Logo"/> </Link>
+        {/* D:\L_pipe\vessel_app_celery\Vessel-app\Front-end\vessel-app\src\images\LogoButtton.PNG */}
+        
         <div className="menu-icon" onClick={this.handleClick}> 
         <i className={this.state.clicked ? 'fas  fa-times' : 'fas fa-bars'}></i>            
         </div>
@@ -27,7 +28,7 @@ class NavBar extends Component{
         <li className="nav-links"> <Link to="/Browser"> Coverage </Link> </li>
         <li className="nav-links"> <Link to="/Account"> Account </Link> </li>
         <li className="nav-links"> <Link to="/Buy"> Buy </Link> </li>
-        <button id="logout" className="btn"> Logout </button> 
+        <button id="logout" className="btn-main"> Logout </button> 
         </ul>
         </nav>
 

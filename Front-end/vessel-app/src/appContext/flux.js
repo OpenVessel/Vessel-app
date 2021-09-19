@@ -61,6 +61,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			return_msg:null,
 			firstname:null,
 			plaidToken:null,
+			images:null,
 			
 			VerificationStatus: [{
 				username:null,
@@ -197,7 +198,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({
 						"token_id":token_id,
 						"csrf_token":csrf_token,					
-						"username":username
+						"username":username,
 					})
 				});
 				
@@ -221,7 +222,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			},
 
-			
+			UploadImages: async (token_id, csrf_token, username, images) => {
+				// csrfTokenState set to default
+				const url = '/api/uploadCall';
+				// const data = 'A$1;,BOimZ7i+_t**]Nq3El)!#bG|K'
+				let fetchGetResponse = await fetch(`${domainUrl}${url}`, {
+					method: 'POST',
+					headers: {
+						// Accept: "application/json",
+						"Content-Type": "application/json",
+						
+					},
+					credentials: "include",
+					referrerPolicy: 'no-referrer',
+					mode: 'cors',
+					body: JSON.stringify({
+						"token_id":token_id,
+						"csrf_token":csrf_token,					
+						"username":username,
+						"images":images
+					})
+				});
+				
+				try{
+					const data = await fetchGetResponse.json();
+					console.log("Upload Images", data);
+					// setStore({csrf_token: data.csrf_token}); //setStore login view refresh its hooked to COntext
+					sessionStorage.setItem("return_msg", data.message);
+					// setStore({  plaidToken: data.token_id});
+					// console.log(csrf_token)
+					
+					// call this if statement after the token has been put into session
+					// if(csrf_token && csrf_token !== "" && csrf_token !== undefined) setStore({ csrf_token: data.data});
+					
+					return true;
+		
+				}
+				catch(error){
+					console.error("There has been an error with UploadCall");
+				}
+
+			},
+
+
+
 			logout: () => {
 				sessionStorage.removeItem("token"); // takes token from session storage and stores it in the store
 				console.log("Logging Out")
