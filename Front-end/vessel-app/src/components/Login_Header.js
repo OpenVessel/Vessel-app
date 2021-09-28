@@ -15,7 +15,7 @@ const Login_Header = (props) => {
 
 
         console.log(store.userContactInfo)
-        if(store.userContactInfo == false || store.userContactInfo == null){
+        if(store.userContactInfo === false || store.userContactInfo === null){
             console.log(store.username)
             console.log(store.VerificationStatus)
             setTimeout(() => {
@@ -28,7 +28,6 @@ const Login_Header = (props) => {
             
         }
 
-   
 
     const handleClick = () => { 
         actions.logout();
