@@ -201,6 +201,21 @@
     width: 129px;
 }
 
+.login-form-forgot-password {
+    margin-top: 25px;
+}
+
+.login-form-forgot-password a {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #373C48 !important;
+}
+
+.login-form-forgot-password a:hover {
+    color: #1B78E5 !important;
+}
+
 @media all and (max-width: 1100px) {
     .login-banner-content,
     .login-banner-bottom-content {
@@ -216,6 +231,9 @@
 @media all and (max-width: 992px) {
     .login-container {
         flex-wrap: wrap;
+    }
+
+    .register-container {
         flex-direction: column-reverse;
     }
 

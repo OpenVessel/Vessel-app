@@ -30,7 +30,7 @@ const Register = () => {
     console.log(store.csrf_token)
     return (
         <div>
-            <div className="container login-container">
+            <div className="container login-container register-container">
                 <div className="login-form">
                     <div className="login-form-content">
                         <img src={process.env.PUBLIC_URL + '/images/logo-black.png'} alt="Logo" />
@@ -109,6 +109,42 @@ const Register = () => {
                     </div>
                 </div>
             </div>
+            {/*<div className="container card_registeration">*/}
+            {/*<title>Register</title>*/}
+            {/*<div className="registration">*/}
+            {/*    <div className="row outer-row ">*/}
+            {/*    /!* We have component controller component  *!/*/}
+            {/*    /!* <div className="one column">hello</div> *!/*/}
+            {/*        <div className="eight columns card_registeration">*/}
+
+            {/*        <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />*/}
+            {/*            <h3> <b>Cover any out-pocket cost! </b> </h3>*/}
+            {/*            <h6> OpenVessel let's you pay any medical bill for $100 a month as <b> invested*/}
+            {/*            premium </b> that can be taken out in 6 months for the total of $600. </h6>*/}
+
+            {/*            <b><p>Please enter your full legal name. Your legal name should match any form of government ID.</p></b>*/}
+
+            {/*            {!isSubmitted ? <FormInput submitForm={submitForm}/> : <FormSuccess/> }*/}
+            {/*            /!* well fix the button is simply not connected *!/*/}
+            {/*            /!* <Link to="/contactInfo">  *!/*/}
+            {/*            /!* </Link> *!/*/}
+
+            {/*        </div>*/}
+            {/*        <div className="four columns">*/}
+            {/*        <SideBar title={title}> </SideBar>*/}
+            {/*        </div>*/}
+            {/*    </div> /!*   parent row *!/*/}
+            {/*</div>*/}
+
+            {/*    </div>*/}
+            {/*    <div className="row row_background">*/}
+            {/*    <p>*/}
+            {/*    All paid premiums will be deposited into OpenVessel Financials LLC uitilize in a finanical instrustment collective collateral pool,*/}
+            {/*    which is the finanical intrustment uitilized to pay your medical bill through the power of the blockchain*/}
+
+            {/*    Emergency Medical Funds are not collateralized in the public pool or what's known as "collective premium collateral pool".*/}
+            {/*    </p>*/}
+            {/*    </div>*/}
         </div>
     );
 }
