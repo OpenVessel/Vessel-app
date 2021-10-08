@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react'
 import {Context} from "../appContext/UserContext"
-import "../css/login.css"
+import "../css/page_form.css"
 //import {Link} from "react-router-dom";
 import { Link } from "react-router-dom";
 import SideBar from "../components/SideBar.js";
@@ -30,18 +30,18 @@ const Register = () => {
     console.log(store.csrf_token)
     return (
         <div>
-            <div className="container login-container register-container">
-                <div className="login-form">
-                    <div className="login-form-content">
+            <div className="container page-form-container register-container">
+                <div className="page-form">
+                    <div className="page-form-content">
                         <img src={process.env.PUBLIC_URL + '/images/logo-black.png'} alt="Logo" />
-                        <h1 className="login-form-title">Create an account.</h1>
-                        <p className="login-form-subtitle">Please enter your full legal name, matching your government ID.</p>
-                        <div className="login-form-divider" />
+                        <h1 className="page-form-title">Create an account.</h1>
+                        <p className="page-form-subtitle">Please enter your full legal name, matching your government ID.</p>
+                        <div className="page-form-divider" />
                         <form>
-                            <div className="login-form-controls">
-                                <div className="login-form-control-input-container">
-                                    <input className="login-form-control-input" type="text" id="fullName" placeholder="Full Name" />
-                                    <label className="login-form-control-label" htmlFor="fullName">Full Name</label>
+                            <div className="page-form-controls">
+                                <div className="page-form-control-input-container">
+                                    <input className="page-form-control-input" type="text" id="fullName" placeholder="Full Name" />
+                                    <label className="page-form-control-label" htmlFor="fullName">Full Name</label>
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.5">
                                             <path d="M17.7083 22.1355H7.29159C3.4895 22.1355 1.302 19.948 1.302 16.1459V8.85423C1.302 5.05215 3.4895 2.86465 7.29159 2.86465H17.7083C21.5103 2.86465 23.6978 5.05215 23.6978 8.85423V16.1459C23.6978 19.948 21.5103 22.1355 17.7083 22.1355ZM7.29159 4.42715C4.31242 4.42715 2.8645 5.87506 2.8645 8.85423V16.1459C2.8645 19.1251 4.31242 20.573 7.29159 20.573H17.7083C20.6874 20.573 22.1353 19.1251 22.1353 16.1459V8.85423C22.1353 5.87506 20.6874 4.42715 17.7083 4.42715H7.29159Z" fill="#414859"/>
@@ -51,10 +51,10 @@ const Register = () => {
                                 </div>
                             </div>
 
-                            <div className="login-form-controls">
-                                <div className="login-form-control-input-container">
-                                    <input className="login-form-control-input" type="text" id="emailAddress" placeholder="Enter email address" />
-                                    <label className="login-form-control-label" htmlFor="emailAddress">Email address</label>
+                            <div className="page-form-controls">
+                                <div className="page-form-control-input-container">
+                                    <input className="page-form-control-input" type="text" id="emailAddress" placeholder="Enter email address" />
+                                    <label className="page-form-control-label" htmlFor="emailAddress">Email address</label>
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.5">
                                             <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
@@ -65,10 +65,10 @@ const Register = () => {
                                 </div>
                             </div>
 
-                            <div className="login-form-controls">
-                                <div className="login-form-control-input-container">
-                                    <input className="login-form-control-input" type="text" id="password" aria-labelledby="password" placeholder="Enter Password" />
-                                    <label className="login-form-control-label" id="password">Password</label>
+                            <div className="page-form-controls">
+                                <div className="page-form-control-input-container">
+                                    <input className="page-form-control-input" type="text" id="password" aria-labelledby="password" placeholder="Enter Password" />
+                                    <label className="page-form-control-label" id="password">Password</label>
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.5">
                                             <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
@@ -77,8 +77,8 @@ const Register = () => {
                                         </g>
                                     </svg>
                                 </div>
-                                <div className="login-form-control-input-container">
-                                    <input className="login-form-control-input" type="text" id="confirmPassword" aria-labelledby="password" placeholder="Confirm Password" style={{marginTop: "15px"}} />
+                                <div className="page-form-control-input-container">
+                                    <input className="page-form-control-input" type="text" id="confirmPassword" aria-labelledby="password" placeholder="Confirm Password" style={{marginTop: "15px"}} />
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" style={{transform: "translate(0, -20%)"}}>
                                         <g opacity="0.5">
                                             <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
@@ -89,22 +89,22 @@ const Register = () => {
                                 </div>
                             </div>
 
-                            <div className="login-form-button">Sign Up</div>
+                            <div className="page-form-button">Sign Up</div>
                         </form>
 
-                        <div className="login-form-link">
+                        <div className="page-form-link">
                             Already have an account? <Link to="/Login">Log in!</Link>
                         </div>
                     </div>
                 </div>
 
-                <div className="login-banner" style={{backgroundImage: "url(" + process.env.PUBLIC_URL + '/images/login-banner.png' + ")"}}>
-                    <div className="login-banner-content">
+                <div className="page-form-banner" style={{backgroundImage: "url(" + process.env.PUBLIC_URL + '/images/login-banner.png' + ")"}}>
+                    <div className="page-form-banner-content">
                         <img src={process.env.PUBLIC_URL + '/images/logo-white.png'} alt="Logo"/>
                         <h1>Out-of-Pocket<br /> Insurance Premium.</h1>
                         <p>Make monthly payments of low-end $150 to pay off medical bills with small to large ducbuitles debt. To high-end premium of $300.</p>
                     </div>
-                    <div className="login-banner-bottom-content">
+                    <div className="page-form-banner-bottom-content">
                         <img src={process.env.PUBLIC_URL + '/images/login-rectangle.png'} alt="Rectangle"/>
                     </div>
                 </div>

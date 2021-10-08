@@ -1,0 +1,346 @@
+.page-form-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.page-form {
+    width: 50%;
+    background: #ffffff;
+    padding-top: 100px;
+}
+
+.page-form-content {
+    margin: 0 auto;
+    width: 450px;
+}
+
+.page-form img {
+    width: 205px;
+    height: auto;
+}
+
+.page-form .page-form-title {
+    font-family: "Lora";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 46px;
+    color: #414859;
+    margin-top: 65px;
+}
+
+.page-form .page-form-subtitle {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 19px;
+    color: rgba(55, 60, 72, 0.75);
+}
+
+.page-form .page-form-divider {
+    width: 450px;
+    background-color: rgba(65, 72, 89, 0.15);
+    margin: 50px 0;
+    height: 1px;
+}
+
+.page-form .page-form-control-label {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    color: #414859;
+}
+
+.page-form-control-input-container {
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+    width: 450px;
+}
+
+.page-form-control-input-container svg {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+}
+
+.page-form-control-input-container .autocss {
+    transform: translate(0, 100%);
+    position: absolute;
+    z-index: 1;
+}
+
+.page-form .page-form-control-input:focus ~ svg path {
+    fill: #1B78E5;
+}
+
+.page-form .page-form-control-input:focus ~ svg g {
+    opacity: 1;
+}
+
+.page-form .page-form-controls {
+    margin-top: 35px;
+}
+
+.page-form .page-form-control-input:focus + .page-form-control-label {
+    color: #1B78E5;
+}
+
+.page-form-control-error p {
+    color: #FF0000;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.page-form .page-form-control-input {
+    padding-left: 25px;
+    width: 450px;
+    height: 59px;
+    border: 1px solid rgba(65, 72, 89, 0.2);
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: #414859;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.page-form .page-form-control-input:focus {
+    border: 2px solid #1B78E5;
+    outline: none;
+    box-shadow: none;
+}
+
+.page-form .page-form-control-input::placeholder {
+    color: rgba(65, 72, 89, 0.5);
+    opacity: 1;
+}
+
+.page-form .page-form-control-input:-ms-input-placeholder {
+    color: rgba(65, 72, 89, 0.5);
+    opacity: 1;
+}
+
+.page-form .page-form-control-input::-ms-input-placeholder {
+    color: rgba(65, 72, 89, 0.5);
+    opacity: 1;
+}
+
+.page-form .page-form-control-date-input:before {
+    content: attr(placeholder) !important;
+    color: rgba(65, 72, 89, 0.5);
+}
+
+.page-form .page-form-control-date-input::-webkit-datetime-edit-text,
+.page-form .page-form-control-date-input::-webkit-datetime-edit-month-field,
+.page-form .page-form-control-date-input::-webkit-datetime-edit-day-field,
+.page-form .page-form-control-date-input::-webkit-datetime-edit-year-field {
+    color: rgba(65, 72, 89, 0.5);
+}
+
+.page-form .page-form-control-date-input:-ms-datetime-edit-text,
+.page-form .page-form-control-date-input:-ms-datetime-edit-month-field,
+.page-form .page-form-control-date-input:-ms-datetime-edit-day-field,
+.page-form .page-form-control-date-input:-ms-datetime-edit-year-field {
+    color: rgba(65, 72, 89, 0.5);
+}
+
+.page-form .page-form-control-date-input::-ms-datetime-edit-text,
+.page-form .page-form-control-date-input::-ms-datetime-edit-month-field,
+.page-form .page-form-control-date-input::-ms-datetime-edit-day-field,
+.page-form .page-form-control-date-input::-ms-datetime-edit-year-field {
+    color: rgba(65, 72, 89, 0.5);
+}
+
+.page-form .page-form-control-date-input::-webkit-calendar-picker-indicator {
+    color: rgba(65, 72, 89, 0.5);
+    padding-right: 20px;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24"><path fill="%23bbbbbb" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>');
+}
+
+.page-form .page-form-button {
+    color: #ffffff;
+    background: #1B78E5;
+    border-radius: 5px;
+    width: 450px;
+    height: 59px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    margin-top: 50px;
+    cursor: pointer;
+}
+
+.page-form .page-form-button:hover {
+    background-color: #06007A;
+}
+
+.page-form .page-form-link,
+.page-form .page-form-link a {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+    color: #373C48;
+    margin-top: 20px;
+    margin-bottom: 90px;
+}
+
+.page-form .page-form-link a {
+    color: #1B78E5!important;
+    font-weight: bold;
+}
+
+.page-form .page-form-link a:hover {
+    color: #06007A!important;
+}
+
+.page-form-banner {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 50%;
+    position: relative;
+}
+
+.page-form-banner-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 510px;
+}
+
+.page-form-banner-content h1 {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 48px;
+    line-height: 61px;
+    font-family: "Lora";
+}
+
+.page-form-banner-content p {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 30px;
+    color: #ffffff;
+}
+
+.page-form-banner-content img {
+    width: 177px;
+}
+
+.page-form-banner-bottom-content {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 510px;
+}
+
+.page-form-banner-bottom-content img {
+    width: 129px;
+}
+
+.page-form-forgot-password {
+    margin-top: 25px;
+}
+
+.page-form-forgot-password a {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #373C48 !important;
+}
+
+.page-form-forgot-password a:hover {
+    color: #1B78E5 !important;
+}
+
+@media all and (max-width: 1100px) {
+    .page-form-banner-content,
+    .page-form-banner-bottom-content {
+        width: 400px;
+    }
+
+    .page-form-banner-content h1 {
+        font-size: 35px;
+        line-height: 50px;
+    }
+}
+
+@media all and (max-width: 992px) {
+    .page-form-container {
+        flex-wrap: wrap;
+    }
+
+    .register-container {
+        flex-direction: column-reverse;
+    }
+
+    .page-form-banner {
+        width: 100%;
+        height: 500px;
+    }
+
+    .page-form {
+        width: 100%;
+    }
+
+    .page-form-banner-bottom-content {
+        bottom: 40px;
+    }
+
+    .page-form-banner-content,
+    .page-form-banner-bottom-content {
+        width: 450px;
+    }
+}
+
+@media all and (max-width: 600px) {
+    .container.page-form-container {
+        width: 100%;
+        padding: 0;
+    }
+
+    .page-form-banner-content h1 {
+        font-size: 30px;
+        line-height: 48px;
+    }
+
+    .page-form-banner {
+        height: 400px;
+    }
+
+    .page-form-banner-bottom-content {
+        bottom: 20px;
+    }
+
+    .page-form {
+        padding-top: 60px;
+    }
+
+    .page-form .page-form-title {
+        font-size: 30px;
+        line-height: 46px;
+        margin-top: 30px;
+    }
+
+    .page-form-content,
+    .page-form .page-form-divider,
+    .page-form .page-form-control-input,
+    .page-form .page-form-button,
+    .page-form-control-input-container,
+    .page-form-banner-content,
+    .page-form-banner-bottom-content {
+        width: 310px;
+    }
+}
