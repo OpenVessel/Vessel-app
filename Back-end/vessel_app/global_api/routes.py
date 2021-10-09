@@ -22,6 +22,8 @@ from vessel_app.models import UserReact, ContactInfo, Verify, Checkpoint, AuthTa
 from .connector_redis import save_csrf, check_csrf_token
 from .authAPI import CreateAccessCode, SubmitUserConsent
 ## routes are for your endpoints
+# Representational State Transfer 
+# Application Programmamrical interface
 
 ## Request notes
 # print(request.headers)
