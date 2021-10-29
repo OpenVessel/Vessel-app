@@ -31,7 +31,7 @@ from .vessel_pipeline_function import load_scan, get_pixels_hu, resample, sample
 from vessel_app import db, bcrypt, dropzone
 
 from . import bp
-
+# ssl encrpytion
 @bp.before_app_request
 def before_fun():
     internal_endpoints = [rule.endpoint for rule in current_app.url_map.iter_rules()]

@@ -9,12 +9,12 @@ export default function validateInfo(values) {
     //   errors.name = 'Enter a valid name';
     // }
     if (!values.firstname.trim()) {
-        errors.username = 'First Name required';
+        errors.firstname = 'First Name required';
         errors.ValidateRequest = false;
       }
 
     if (!values.lastname.trim()) {
-        errors.username = 'Last Name required';
+        errors.lastname = 'Last Name required';
         errors.ValidateRequest = false;
     }
 

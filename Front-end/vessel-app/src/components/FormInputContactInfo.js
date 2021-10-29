@@ -6,6 +6,7 @@ import useFormContactInfo from '../formCode/useFormContactInfo.js'
 import $ from 'jquery';
 import { useHistory  } from 'react-router-dom';
 import "../css/page_form.css";
+
 const FormInputContactInfo = ({submitForm}) => {
 
     const {store} = useContext(Context);
@@ -80,6 +81,7 @@ const FormInputContactInfo = ({submitForm}) => {
                  <input name="stateName" type="hidden" value={values.stateName = stateName}/>
                  <input name="countryName" type="hidden" value={values.countryName = CountryName}/>
 
+                {/* example of Input and CSS */}
                  <div className="page-form-controls">
                       <div className="page-form-control-input-container">
                            <input

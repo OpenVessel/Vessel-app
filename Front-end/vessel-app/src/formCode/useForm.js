@@ -3,9 +3,9 @@ import {Context} from "../appContext/UserContext"
 
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({
-    username: '',
     firstname:'',
     lastname:'',
+    username: '',
     email: '',
     password: '',
     confirmpassword: '',

@@ -2,6 +2,15 @@ version: "3.7"
 
 services:
 
+  react:
+    build: ./Front-end/vessel-app
+    container_name: vessel-app
+    restart: always
+    environment:
+      - PORT=3000
+    expose: 
+      - 3000
+
   ubuntu:
     build: ./Back-end
     container_name: vessel_app
@@ -13,17 +22,19 @@ services:
       - 8080
 
   nginx:
-    build: ./nginx
-    container_name: nginx
+    build: ./LoadBalancer
+    container_name: LoadBalancer
     restart: always
     ## ports maps ports on the host machine to the container itself host:contianer
     ports:
       - "80:80"
 
   redis:
-    build: ./redis
+    build: ./Redis-end
     container_name: redis_celery
     restart: always
     # redis port for internal use only for celery broker
     ports: 
       - 6379:6379
+
+  # docker run -e CHOKIDAR_USEPOLLING=true -v D:\L_pipe\vessel_app_celery\Vessel-app\Front-end\vessel-app:/app -it -p 3000:3000  182f6ab9ba3a

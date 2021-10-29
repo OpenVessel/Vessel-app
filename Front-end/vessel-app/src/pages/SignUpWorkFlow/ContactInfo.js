@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import FormSuccess from '../components/FormSuccess';
-import FormInputContactInfo from '../components/FormInputContactInfo';
-import "../css/page_form.css";
+import FormSuccess from '../../components/FormSuccess';
+import FormInputContactInfo from '../../components/FormInputContactInfo';
+import "../../css/page_form.css";
 
 const ContactInfo = () => {
     const Name = window.sessionStorage.getItem("firstname")

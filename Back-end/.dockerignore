@@ -3,3 +3,10 @@ __pycache__/
 env/
 migrations/
 profile/
+
+node_modules
+Dockerfile
+.git
+.gitignore
+.dockerignore
+.env

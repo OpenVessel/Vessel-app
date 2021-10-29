@@ -1,9 +1,9 @@
 import React, {useContext} from 'react'
 import {Context} from "../appContext/UserContext"
 import useForm from '../formCode/useForm'
-import validate from '../validateInfo';
+import validate from '../validationCode/validateInfo';
 import { Link, useHistory  } from 'react-router-dom';
-import SignUpBtn from '../components/SignUpButtton'
+
 const FormInput = ({submitForm}) => {
     const {store} = useContext(Context);
     
@@ -18,117 +18,183 @@ const FormInput = ({submitForm}) => {
         sessionStorage.setItem("return_msg", '') 
     }
 
+    console.log("first name",errors.firstname)
+    console.log("password call",errors.password)
     return (
-        <div>
-             <form action="" method="POST" name="register-form"  autoComplete="off" onSubmit={handleSubmit} noValidate>
-                        {/* we can GET csrf from flask store local session */}
-                        <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
-                        <input id="csrf_token_passback" name="csrf_token_passback" type="hidden" value={store.csrf_token}/> 
-                        <div className="row inner-row ">
-                            <div className="four columns"> 
-                                
-                                {/* First Name Section */}
-                                <input
-                                type="text" 
-                                name="firstname"
-                                placeholder="First Name" 
-                                className="form-input"
-                                value={values.firstname} 
-                                onChange={handleChange} 
-                                />
-                                {errors.firstname && <p>{errors.firstname}</p>}
-                            </div>
-                            <div className="four columns"> 
-                                {/* Last Name */}
-                                <input 
-                                type="text" 
-                                name="lastname"
-                                className="form-input"
-                                placeholder="Last Name" 
-                                value={values.lastname} 
-                                onChange={handleChange} />
-                                {errors.lastname && <p>{errors.lastname}</p>}
-                            </div>
+<div>
+        <form action="" method="POST" name="register-form"  autoComplete="off" onSubmit={handleSubmit} noValidate>
+                {/* we can GET csrf from flask store local session */}
+                <input id="token_id_passback" name="token_id_passback" type="hidden" value={store.token_id}/> 
+                <input id="csrf_token_passback" name="csrf_token_passback" type="hidden" value={store.csrf_token}/> 
+                
+                <div className="page-form-controls">
+                    <div className="page-form-control-input-container"> 
+                        
+                        {/* First Name Section */}
+                        <input
+                        type="text" 
+                        name="firstname"
+                        placeholder="First Name" 
+                        className="page-form-control-input"
+                        value={values.firstname} 
+                        onChange={handleChange} 
+                        />
+                        <label className="page-form-control-label" htmlFor="fullName">Full Name</label>
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g opacity="0.5">
+                                    <path d="M17.7083 22.1355H7.29159C3.4895 22.1355 1.302 19.948 1.302 16.1459V8.85423C1.302 5.05215 3.4895 2.86465 7.29159 2.86465H17.7083C21.5103 2.86465 23.6978 5.05215 23.6978 8.85423V16.1459C23.6978 19.948 21.5103 22.1355 17.7083 22.1355ZM7.29159 4.42715C4.31242 4.42715 2.8645 5.87506 2.8645 8.85423V16.1459C2.8645 19.1251 4.31242 20.573 7.29159 20.573H17.7083C20.6874 20.573 22.1353 19.1251 22.1353 16.1459V8.85423C22.1353 5.87506 20.6874 4.42715 17.7083 4.42715H7.29159Z" fill="#414859"/>
+                                    <path d="M12.4997 13.4063C11.6247 13.4063 10.7393 13.1354 10.0622 12.5834L6.80181 9.9792C6.46848 9.70836 6.40598 9.21878 6.67682 8.88545C6.94765 8.55211 7.43723 8.48962 7.77057 8.76045L11.031 11.3646C11.8226 12 13.1664 12 13.9581 11.3646L17.2185 8.76045C17.5518 8.48962 18.0518 8.5417 18.3122 8.88545C18.5831 9.21878 18.531 9.71878 18.1872 9.9792L14.9268 12.5834C14.2601 13.1354 13.3747 13.4063 12.4997 13.4063Z" fill="#414859"/>
+                                </g>
+                            </svg>
+                        
+                    </div>
+                    <div className="page-form-control-error">
+                        {errors.firstname && <p>{errors.firstname}</p>}
                         </div>
+                </div>
 
-                        <div className="row inner-row">
-                            <div className="four columns"> 
-                                {/* username input */}
-                                <input 
-                                type="text" 
-                                name="username"
-                                autoComplete="new-password"
-                                placeholder="username"
-                                className="form-input" 
-                                value={values.username} 
-                                onChange={handleChange} 
-                                />
-                                {errors.username && <p>{errors.username}</p>}
+                <div className="page-form-controls">
+                    <div className="page-form-control-input-container"> 
+                        {/* Last Name */}
+                        <input 
+                        type="text" 
+                        name="lastname"
+                        className="page-form-control-input"
+                        placeholder="Last Name" 
+                        value={values.lastname} 
+                        onChange={handleChange} />
+                        <label className="page-form-control-label" htmlFor="emailAddress">Last Name</label>
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g opacity="0.5">
+                                    <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
+                                    <path d="M9.57292 21.3959C9.375 21.3959 9.17708 21.323 9.02083 21.1667L6.625 18.7709C6.32292 18.4688 6.32292 17.9688 6.625 17.6667C6.92708 17.3646 7.42708 17.3646 7.72917 17.6667L10.125 20.0626C10.4271 20.3646 10.4271 20.8646 10.125 21.1667C9.96875 21.323 9.77083 21.3959 9.57292 21.3959Z" fill="#414859"/>
+                                    <path d="M15.1042 12.2396C13.8126 12.2396 12.7605 11.1876 12.7605 9.89589C12.7605 8.60422 13.8126 7.55214 15.1042 7.55214C16.3959 7.55214 17.448 8.60422 17.448 9.89589C17.448 11.1876 16.3959 12.2396 15.1042 12.2396ZM15.1042 9.11464C14.6772 9.11464 14.323 9.46881 14.323 9.89589C14.323 10.323 14.6772 10.6771 15.1042 10.6771C15.5313 10.6771 15.8855 10.323 15.8855 9.89589C15.8855 9.46881 15.5313 9.11464 15.1042 9.11464Z" fill="#414859"/>
+                                </g>
+                            </svg>
                             </div>
-                            <div className="four columns"> 
-                                {/* Email Input */}
-                                <input 
-                                type="text" 
-                                name="email"
-                                placeholder="email" 
-                                className="form-input"
-                                value={values.email} 
-                                onChange={handleChange}
-                                />
-                                {errors.email && <p>{errors.email}</p>}
-                            </div>
+                        <div className="page-form-control-error">
+                        {errors.lastname && <p>{errors.lastname}</p>}
                         </div>
+                    </div>
 
-                        <div className="row inner-row">
-                            <div className="four columns"> 
-                            {/* password input */}
-                                <input id="password"
-                                placeholder="password" 
-                                required type="password" 
-                                autoComplete="new-password"
-                                name="password"
-                                className="form-input"
-                                value={values.password} 
-                                onChange={handleChange} 
-                                /> 
-                                {errors.password && <p>{errors.password}</p>}
-                            </div>
-
-                            <div className="four columns"> 
-                            
-                            {/* Confirm Input */}
-                            <input 
-                            id="confirm_password" 
-                            name="confirmpassword" 
-                            required type="password" 
-                            className="form-input"
-                            placeholder="Confirm Password" 
-                            value={values.confirmpassword} 
-                            onChange={handleChange}/>
-
-                            {errors.confirmpassword && <p>{errors.confirmpassword}</p>}
-                            </div>
-                            <div className="four columns"> 
-                            
-                            
-                            <button  className='btn-main form-input-btn' type='submit'>
-                            Sign Up
-                            </button>
-                            {<p> {window.sessionStorage.getItem("return_msg")}</p>}
-                            {/* <SignUpBtn moveOn={errors.ValidateRequest} /> */}
-
-                            
-
-                            <span className='form-input-login'>
-                            Already have an account? Login <Link to="/Login">  here</Link>
-                            </span>
-
-
-                            </div>
-                           
+                    <div className="page-form-controls">
+                    <div className="page-form-control-input-container"> 
+                        {/* username input */}
+                        <input 
+                        type="text" 
+                        name="username"
+                        autoComplete="new-password"
+                        placeholder="username"
+                        className="page-form-control-input"
+                        value={values.username} 
+                        onChange={handleChange} 
+                        />
+                        <label className="page-form-control-label" id="password">Username</label>
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g opacity="0.5">
+                                    <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
+                                    <path d="M9.57292 21.3959C9.375 21.3959 9.17708 21.323 9.02083 21.1667L6.625 18.7709C6.32292 18.4688 6.32292 17.9688 6.625 17.6667C6.92708 17.3646 7.42708 17.3646 7.72917 17.6667L10.125 20.0626C10.4271 20.3646 10.4271 20.8646 10.125 21.1667C9.96875 21.323 9.77083 21.3959 9.57292 21.3959Z" fill="#414859"/>
+                                    <path d="M15.1042 12.2396C13.8126 12.2396 12.7605 11.1876 12.7605 9.89589C12.7605 8.60422 13.8126 7.55214 15.1042 7.55214C16.3959 7.55214 17.448 8.60422 17.448 9.89589C17.448 11.1876 16.3959 12.2396 15.1042 12.2396ZM15.1042 9.11464C14.6772 9.11464 14.323 9.46881 14.323 9.89589C14.323 10.323 14.6772 10.6771 15.1042 10.6771C15.5313 10.6771 15.8855 10.323 15.8855 9.89589C15.8855 9.46881 15.5313 9.11464 15.1042 9.11464Z" fill="#414859"/>
+                                </g>
+                            </svg>
                         </div>
+                        <div className="page-form-control-error">
+                        {errors.username && <p>{errors.username}</p>}
+                    </div>
+                </div>
+
+                <div className="page-form-controls">
+                    <div className="page-form-control-input-container"> 
+                        {/* Email Input */}
+                        <input 
+                        className="page-form-control-input"
+                        id="emailAddress"
+                        type="text" 
+                        name="email"
+                        placeholder="E-mail" 
+                        value={values.email} 
+                        onChange={handleChange}
+                        />
+                        <label className="page-form-control-label" id="password">Email</label>
+                        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" style={{transform: "translate(0, -20%)"}}>
+                                <g opacity="0.5">
+                                    <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
+                                    <path d="M9.57292 21.3959C9.375 21.3959 9.17708 21.323 9.02083 21.1667L6.625 18.7709C6.32292 18.4688 6.32292 17.9688 6.625 17.6667C6.92708 17.3646 7.42708 17.3646 7.72917 17.6667L10.125 20.0626C10.4271 20.3646 10.4271 20.8646 10.125 21.1667C9.96875 21.323 9.77083 21.3959 9.57292 21.3959Z" fill="#414859"/>
+                                    <path d="M15.1042 12.2396C13.8126 12.2396 12.7605 11.1876 12.7605 9.89589C12.7605 8.60422 13.8126 7.55214 15.1042 7.55214C16.3959 7.55214 17.448 8.60422 17.448 9.89589C17.448 11.1876 16.3959 12.2396 15.1042 12.2396ZM15.1042 9.11464C14.6772 9.11464 14.323 9.46881 14.323 9.89589C14.323 10.323 14.6772 10.6771 15.1042 10.6771C15.5313 10.6771 15.8855 10.323 15.8855 9.89589C15.8855 9.46881 15.5313 9.11464 15.1042 9.11464Z" fill="#414859"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <div className="page-form-control-error">
+                        {errors.email && <p>{errors.email}</p>}
+                        </div>
+                </div>
+
+
+                <div className="page-form-controls">
+                    <div className="page-form-control-input-container"> 
+                    {/* password input */}
+                        <input id="password"
+                        placeholder="password" 
+                        required type="password" 
+                        autoComplete="new-password"
+                        name="password"
+                        className="page-form-control-input"
+                        value={values.password} 
+                        onChange={handleChange} 
+                        /> 
+                                <label className="page-form-control-label" id="password">Password</label>
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g opacity="0.5">
+                                    <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
+                                    <path d="M9.57292 21.3959C9.375 21.3959 9.17708 21.323 9.02083 21.1667L6.625 18.7709C6.32292 18.4688 6.32292 17.9688 6.625 17.6667C6.92708 17.3646 7.42708 17.3646 7.72917 17.6667L10.125 20.0626C10.4271 20.3646 10.4271 20.8646 10.125 21.1667C9.96875 21.323 9.77083 21.3959 9.57292 21.3959Z" fill="#414859"/>
+                                    <path d="M15.1042 12.2396C13.8126 12.2396 12.7605 11.1876 12.7605 9.89589C12.7605 8.60422 13.8126 7.55214 15.1042 7.55214C16.3959 7.55214 17.448 8.60422 17.448 9.89589C17.448 11.1876 16.3959 12.2396 15.1042 12.2396ZM15.1042 9.11464C14.6772 9.11464 14.323 9.46881 14.323 9.89589C14.323 10.323 14.6772 10.6771 15.1042 10.6771C15.5313 10.6771 15.8855 10.323 15.8855 9.89589C15.8855 9.46881 15.5313 9.11464 15.1042 9.11464Z" fill="#414859"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <div className="page-form-control-error">
+                        {errors.password && <p>{errors.password}</p>}
+                        
+                        </div>
+                    </div>
+
+
+                <div className="page-form-controls">
+                    <div className="page-form-control-input-container"> 
+                    {/* Confirm Input */}
+                    <input 
+                    id="confirm_password" 
+                    name="confirmpassword" 
+                    required type="password" 
+                    className="page-form-control-input"
+                    placeholder="Confirm Password" 
+                    value={values.confirmpassword} 
+                    onChange={handleChange}/>
+                    <label className="page-form-control-label" htmlFor="emailAddress">Confirm Password</label>
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g opacity="0.5">
+                                    <path d="M6.43752 23.698C6.33335 23.698 6.21877 23.6876 6.12502 23.6772L3.8646 23.3647C2.78127 23.2188 1.8021 22.2501 1.63544 21.1459L1.32294 18.8647C1.21877 18.1355 1.53127 17.1876 2.0521 16.6563L6.62502 12.0834C5.88544 9.12508 6.7396 6.00008 8.91669 3.84383C12.2917 0.479244 17.7813 0.468828 21.1667 3.84383C22.8021 5.47924 23.6979 7.65633 23.6979 9.96883C23.6979 12.2813 22.8021 14.4584 21.1667 16.0938C18.9792 18.2605 15.8646 19.1147 12.9271 18.3647L8.34377 22.9376C7.90627 23.3959 7.12502 23.698 6.43752 23.698ZM15.0313 2.87508C13.2084 2.87508 11.3959 3.56258 10.0104 4.94799C8.13544 6.81258 7.45835 9.54175 8.2396 12.0834C8.32294 12.3647 8.25002 12.6563 8.04169 12.8647L3.14585 17.7605C2.96877 17.9376 2.82294 18.3959 2.85419 18.6355L3.16669 20.9167C3.22919 21.3126 3.65627 21.7605 4.0521 21.8126L6.32294 22.1251C6.57294 22.1667 7.03127 22.0209 7.20835 21.8438L12.125 16.9376C12.3334 16.7292 12.6354 16.6667 12.9063 16.7501C15.4167 17.5417 18.1563 16.8647 20.0313 14.9897C21.3646 13.6563 22.1042 11.8647 22.1042 9.96883C22.1042 8.06258 21.3646 6.28133 20.0313 4.94799C18.6771 3.57299 16.8542 2.87508 15.0313 2.87508Z" fill="#414859"/>
+                                    <path d="M9.57292 21.3959C9.375 21.3959 9.17708 21.323 9.02083 21.1667L6.625 18.7709C6.32292 18.4688 6.32292 17.9688 6.625 17.6667C6.92708 17.3646 7.42708 17.3646 7.72917 17.6667L10.125 20.0626C10.4271 20.3646 10.4271 20.8646 10.125 21.1667C9.96875 21.323 9.77083 21.3959 9.57292 21.3959Z" fill="#414859"/>
+                                    <path d="M15.1042 12.2396C13.8126 12.2396 12.7605 11.1876 12.7605 9.89589C12.7605 8.60422 13.8126 7.55214 15.1042 7.55214C16.3959 7.55214 17.448 8.60422 17.448 9.89589C17.448 11.1876 16.3959 12.2396 15.1042 12.2396ZM15.1042 9.11464C14.6772 9.11464 14.323 9.46881 14.323 9.89589C14.323 10.323 14.6772 10.6771 15.1042 10.6771C15.5313 10.6771 15.8855 10.323 15.8855 9.89589C15.8855 9.46881 15.5313 9.11464 15.1042 9.11464Z" fill="#414859"/>
+                                </g>
+                            </svg>
+                    </div>
+                    <div className="page-form-control-error">
+                        {errors.confirmpassword && <p>{errors.confirmpassword}</p>}
+                    </div>
+                </div>
+                    
+                    
+                    <button   className="page-form-button"  type='submit'>
+                        Sign Up
+                    </button>
+                    {<p> {window.sessionStorage.getItem("return_msg")}</p>}
+                    <div className="page-form-link" />
+                
                         </form>
-        </div>
+                        <div className="page-form-link">
+                            Already have an account? <Link to="/Login">Log in!</Link>
+                        </div>
+    </div>
     )
 }
 

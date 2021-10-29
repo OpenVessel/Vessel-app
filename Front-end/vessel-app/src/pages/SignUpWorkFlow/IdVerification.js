@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import "../css/page_form.css";
-import FormInputIdVerification from '../components/FormInputIdVerification.js';
+import "../../css/page_form.css";
+import FormInputIdVerification from '../../components/FormInputIdVerification.js';
 
 
 const IdVerification = () => {
