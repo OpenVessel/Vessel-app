@@ -10,6 +10,8 @@ def load_user(user_id):
 
 #https://www.youtube.com/watch?v=44PvX0Yv368&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=5
 ## User class has attributes 
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False )
@@ -17,9 +19,12 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.LargeBinary, nullable=True)
     password = db.Column(db.String(60), nullable=False)
     dicom = db.relationship('Dicom', backref='author', lazy=True)
+    userAddress = db.Column(db.String(32), unique=True, nullable=False )
+    account_total = db.Column(db.Integer, unique=False, nullable=False )
+    latest_month = db.Column(db.Integer, unique=False, nullable=False)
 
     def __repr__(self):
-        return f"User('{self.username}','{self.email}', '{self.image_file}')"
+        return f"User('{self.username}','{self.email}', '{self.image_file}', '{self.userAddress}','{self.account_total}', '{self.latest_month}')"
 
 
 class UserReact(db.Model, UserMixin):
@@ -120,10 +125,18 @@ class DicomMetaData(db.Model):
     def __repr__(self):
         return f"DicomMetaData('{self.date_uploaded}', '{self.study_id}', '{self.study_date}', '{self.study_date}'  )"
 
+
+# In postgresql all foreign keys must reference a unique key in the parent table, so in your bar table you must have a unique (name) index.
+# Finally, we should mention that a foreign key must reference columns that either are a primary key or form a unique constraint.
 class Dicom(db.Model):
     
     __tablename__ = 'dicom'
     ## data unqine id 
+    __table_args__ = (
+        # this can be db.PrimaryKeyConstraint if you want it to be a primary key
+        db.UniqueConstraint('session_id'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)  
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -132,9 +145,9 @@ class Dicom(db.Model):
     thumbnail = db.Column(db.LargeBinary, nullable=False)
     file_count = db.Column(db.Integer, nullable=True) 
     session_id = db.Column(db.String(200), nullable=False)
-    formData = db.relationship('DicomFormData', uselist=True, backref='author', lazy=True) #uselist one to one relationship
-    
-
+     #uselist one to one relationship
+    formData = db.relationship('DicomFormData', uselist=True, backref='author', lazy=True)
+  
     def __repr__(self):
         return f"Dicom('{self.date_uploaded}')"
 
@@ -149,21 +162,28 @@ class Dicom2(db.Model):
     def __repr__(self):
         return f"Dicom('{self.date_uploaded}')"
 
-
-
-
 class DicomFormData(db.Model):
-    __tablename__ = 'DicomFormData'
+
     id = db.Column(db.Integer, primary_key=True)  
-    session_id = db.Column(db.String(200), db.ForeignKey('dicom.session_id'), nullable=False)
     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
     study_name = db.Column(db.String(300), nullable=False) 
     description = db.Column(db.String(1000), nullable=False)
-    
-    # metadata_id = db.Column(db.Integer, db.ForeignKey(DicomMetaData.id), nullable=False)
-    # session_id = db.Column(db.String(200), db.ForeignKey('DicomMetaData.session_id'), nullable=False)
+    session_id = db.Column(db.String(200), db.ForeignKey('dicom.session_id'), nullable=False)
+
     def __repr__(self):
-        return f"DicomFormData('{self.study_name}', '{self.description}')"
+        return f"DicomFormData('{self.study_name}')"
+
+
+# class DicomFormData(db.Model):
+#     __tablename__ = 'DicomFormData'
+#     id = db.Column(db.Integer, primary_key=True)  
+#     session_id = db.Column(db.String(200), db.ForeignKey('dicom.session_id'), nullable=False)
+#     date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+#     study_name = db.Column(db.String(300), nullable=False) 
+#     description = db.Column(db.String(1000), nullable=False)
+    
+#     def __repr__(self):
+#         return f"DicomFormData('{self.study_name}', '{self.description}')"
 
 
 class FalseForm(db.Model):
@@ -234,3 +254,93 @@ class Cidtable(db.Model):
 #         return f"save_csrf_token('{self.date_uploaded}')"
 
     __str__ = __repr__
+
+
+# 
+#  Backend API
+# 
+# UserDepoist needs to be renamed to UsersRecords
+# rename deposit to account total
+class UserDepoist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userAddress = db.Column(db.String(32), unique=True, nullable=False)
+    txn_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    deposit = db.Column(db.Integer, unique=False, nullable=False )
+
+    def __repr__(self):
+        return f"UserDepoist('{self.userAddress}','{self.deposit}', {self.txn_date})"
+
+class UserTxnGraph(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userAddress = db.Column(db.String(32), unique=False, nullable=False)
+    txn_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    txnAmount = db.Column(db.Integer, unique=False, nullable=False )
+
+    def __repr__(self):
+        return f"UserTxnGraph('{self.userAddress}','{self.txnAmount}', {self.txn_date})"
+
+class PhotosTable(db.Model):
+    __tablename__ = 'PhotosTable'
+    id = db.Column(db.Integer, primary_key=True)  
+    date_uploaded = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    userAddress = db.Column(db.String(32), unique=True, nullable=False)
+    photo = db.Column(db.LargeBinary, nullable=False)
+    thumbnail = db.Column(db.LargeBinary, nullable=False)
+
+    def __repr__(self):
+        return f"PhotosTable('{self.date_uploaded}')"
+
+class UserClaimDepoist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userAddress = db.Column(db.String(32), unique=True, nullable=False)
+    txn_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    account_total = db.Column(db.Integer, unique=False, nullable=False )
+
+    def __repr__(self):
+        return f"UserClaimDepoist('{self.userAddress}','{self.deposit}', {self.txn_date})"
+
+# tracking User's accessbility
+class ContractTruthTable(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userAddress = db.Column(db.String(32), unique=True, nullable=False)
+    SmartContractInitialized = db.Column(db.Boolean, default=False, nullable=False) # When contract is insitailized set to True
+    MonthlyPaymentMade = db.Column(db.Boolean, default=False, nullable=False) # Internal function checks when contract was initilized sets to False if payment was missied 
+    WithdrawAcess = db.Column(db.Boolean, default=False, nullable=False) #Only unlocks (all payments/End of Life Contract)
+    SubmitClaim = db.Column(db.Boolean, default=False, nullable=False) # True When Initial payment is made/ if not missed payments for 60 days
+
+    def __repr__(self):
+        return f"ContractTruthTable('{self.userAddress}')"
+
+# User Insurance Transcation Record - Records every TXN 
+class UserClaimTxnGraph(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userAddress = db.Column(db.String(32), unique=False, nullable=False)
+    txn_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) 
+    txnAmount = db.Column(db.Integer, unique=False, nullable=False )
+
+    def __repr__(self):
+        return f"UserClaimTxnGraph('{self.userAddress}','{self.txnAmount}', {self.txn_date})"
+
+# insrance How long does this insurance live for?
+# the number of seconds since 1970/01/01 00:00:00 UTC
+class Timeline(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userAddress = db.Column(db.String(32), unique=False, nullable=False)
+    Month = db.Column(db.String(32), unique=False, nullable=False)
+    WasPaid = db.Column(db.Boolean, default=False, nullable=False) #set true
+    MonthlyPayment = db.Column(db.Integer, unique=False, nullable=False )
+    JSONData = db.Column(db.LargeBinary, nullable=False) # seralize de-seralize for timeline.js
+    START_DATE = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    END_DATE = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"Timeline('{self.userAddress}')"
+
+# Tracking the size of the Insurance Pool
+class InsuranceFloat(db.Model): 
+    id = db.Column(db.Integer, primary_key=True)
+    InsuranceFloatAddress = db.Column(db.String(32), unique=True, nullable=False)
+    InsuranceFloatTotal = db.Column(db.Float, unique=False, nullable=False )
+
+    def __repr__(self):
+        return f"InsuranceFloat('{self.InsuranceFloatAddress}')"

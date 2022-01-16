@@ -19,6 +19,40 @@
     height: auto;
 }
 
+/* Contactpage Gradient 
+#show_bg_2 {
+    background-image:
+    linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(117, 19, 93, 0.73)),
+
+    width: 80%;
+    height: 400px;
+    background-size: cover;
+    color: white;
+    padding: 20px;
+} */
+
+.respCss p {
+    margin-top: 20px;
+    font-family:  "Montserrat", sans-serif !important;
+    color:red;
+    font-size: 25px;
+}
+
+.smalltext a {
+    padding: 0px !important;
+    font-family:  "Montserrat", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 25px !important;
+    color:#1B78E5 !important;
+    text-decoration: none !important;
+}
+
+.smalltext p {
+    color:black;
+    font-size: 25px;
+    font-weight: 0 !important;
+}
+
 .page-form .page-form-title {
     font-family: "Lora";
     font-style: normal;
@@ -35,6 +69,17 @@
     font-size: 14px;
     line-height: 19px;
     color: rgba(55, 60, 72, 0.75);
+}
+
+
+.page-form .page-form-bold {
+    font-family: "Lora";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 46px;
+    color: #414859;
+    margin-top: 15px;
 }
 
 .page-form .page-form-divider {
@@ -194,7 +239,7 @@
 
 
 .page-form .page-form-button {
-    color: #ffffff;
+    color: #ffffff !important;
     background: #1B78E5;
     border-radius: 5px;
     width: 450px;

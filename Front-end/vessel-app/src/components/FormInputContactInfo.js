@@ -6,7 +6,7 @@ import useFormContactInfo from '../formCode/useFormContactInfo.js'
 import $ from 'jquery';
 import { useHistory  } from 'react-router-dom';
 import "../css/page_form.css";
-
+import { Link } from 'react-router-dom';
 const FormInputContactInfo = ({submitForm}) => {
 
     const {store} = useContext(Context);
@@ -66,6 +66,11 @@ const FormInputContactInfo = ({submitForm}) => {
         history.push('/IdVerification')
         sessionStorage.setItem("return_msg", '')
     }
+
+    // life cycle reset setItems to defaults
+    React.useEffect(() => {
+        sessionStorage.setItem("nextpageoffer", 'false') 
+    }, []);
 
     return (
         <div>
@@ -229,7 +234,17 @@ const FormInputContactInfo = ({submitForm}) => {
                  {/* fix the button */}
 
                  <button className="page-form-button" type="submit">Continue</button>
-                 {<p> {window.sessionStorage.getItem("return_msg")}</p>}
+                
+                 {window.sessionStorage.getItem("nextpageoffer") === 'true' &&
+                    <div>
+                        <div className='respCss'> 
+                        <p> {window.sessionStorage.getItem("return_msg")} </p>
+                        </div>
+                        <div cassName='smalltext'> <p>Check out  <Link to="/contactInfo"> Contact  Info </Link> </p>  
+                        </div> 
+                    </div> 
+                    }
+
                  <div className="page-form-link" />
              </form>
         </div>

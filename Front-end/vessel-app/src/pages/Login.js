@@ -14,7 +14,7 @@ const Login = () => {
 
     const token = sessionStorage.getItem("token");
     console.log("this is your token", store.token)
-
+    console.log("check return msg from API", store.return_msg)
     // async and react? // so when actions.login returns with true we redirect to account page
     const handleClick = () => {
         console.log("loggin")
@@ -43,10 +43,21 @@ const Login = () => {
                         <p className="page-form-subtitle">Log in to your account to access variable x and variable y!</p>
                         <div className="page-form-divider" />
                         <form>
+
                             <div className="page-form-controls">
                                 <div className="page-form-control-input-container">
-                                    <input className="page-form-control-input" type="text" id="emailAddress"/>
-                                    <label className="page-form-control-label" htmlFor="emailAddress">Email address</label>
+                                {/* Emali address input */}
+                                    {/* <input className="page-form-control-input"
+                                     type="text"
+                                      id="emailAddress"/> */}
+                                        <input 
+                                        className="page-form-control-input"
+                                        type="text"
+                                        id="username"
+                                        placeholder="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)} />
+                                    <label className="page-form-control-label" htmlFor="emailAddress">Username</label>
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.5">
                                             <path d="M17.7083 22.1355H7.29159C3.4895 22.1355 1.302 19.948 1.302 16.1459V8.85423C1.302 5.05215 3.4895 2.86465 7.29159 2.86465H17.7083C21.5103 2.86465 23.6978 5.05215 23.6978 8.85423V16.1459C23.6978 19.948 21.5103 22.1355 17.7083 22.1355ZM7.29159 4.42715C4.31242 4.42715 2.8645 5.87506 2.8645 8.85423V16.1459C2.8645 19.1251 4.31242 20.573 7.29159 20.573H17.7083C20.6874 20.573 22.1353 19.1251 22.1353 16.1459V8.85423C22.1353 5.87506 20.6874 4.42715 17.7083 4.42715H7.29159Z" fill="#414859"/>
@@ -58,7 +69,18 @@ const Login = () => {
 
                             <div className="page-form-controls">
                                 <div className="page-form-control-input-container">
-                                    <input className="page-form-control-input" type="text" id="password" aria-labelledby="password"/>
+                                    {/* <input className="page-form-control-input"
+                                     type="text" 
+                                     id="password" 
+                                     aria-labelledby="password"/> */}
+                                    
+                                    <input 
+                                    className="page-form-control-input"
+                                    type="password"
+                                    placeholder="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}  />
+
                                     <label className="page-form-control-label" id="password">Password</label>
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.5">
@@ -70,11 +92,17 @@ const Login = () => {
                                 </div>
                             </div>
 
+                            {/* We need Forgot password logic */}
                             <div className="page-form-forgot-password">
                                 <Link to="/">Forgot Password?</Link>
                             </div>
 
-                            <div className="page-form-button">Log In</div>
+                            <button 
+                            className="page-form-button" 
+                            onClick={handleClick} 
+                            type="submit">Log In</button>
+                             {<p> {window.sessionStorage.getItem("return_msg")}</p>}
+                             <p> {store.return_msg} </p>
                         </form>
 
                         <div className="page-form-link">
@@ -89,74 +117,9 @@ const Login = () => {
             {/*    "You are logged in with this token " + store.token*/}
 
             {/*):(*/}
-            {/*<div className="flex-container">*/}
-            {/*<div className="flex-child card_login2">*/}
-            {/*    <div className="flex-child rowLogin">*/}
-            {/*    <div className="PositionImg">*/}
-            {/*    <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />*/}
-            {/*    </div>*/}
-            {/*    <div className="flex-child TextBoxCenter">*/}
 
-            {/*        <h1> Get Started today. </h1>*/}
-            {/*        <p>Insurance is about spreading risk to the greater community*/}
-            {/*        if it’s a business or if it’s someone’s Health, Blockchain has*/}
-            {/*        a lot of spread and future growth but this doesn’t impact*/}
-            {/*        our healthcare system or people’s lives</p>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-            {/*<div className="flex-child card_login">*/}
-            {/*    <div className="row flex-child rowLogin">*/}
-            {/*    /!* We have component controller component  *!/*/}
-            {/*    /!* src\images\OV_Logo_Black.svg *!/*/}
-
-            {/*    <div className="headerleft" >*/}
-            {/*    <img src={process.env.PUBLIC_URL + '/images/OVLogoBlack.svg'} alt="OpenVessel Logo" />*/}
-
-            {/*    <div className="minibox">*/}
-            {/*        <b> <h2 className="headerleft">Log In</h2> </b>*/}
-            {/*        </div>*/}
             {/*        <p> Pay off medical debt, make emergrency funds with return on interest woth OpenVessel. </p>*/}
-            {/*        <br></br>*/}
-            {/*    </div>*/}
-            {/*        <div className="minibox">*/}
-            {/*            <label className="custom-field">*/}
-            {/*                <div className="spacing">*/}
-            {/*                /!* Username input *!/*/}
-            {/*                <p> Username </p>*/}
-            {/*                <input type="text"*/}
-            {/*                placeholder="username"*/}
-            {/*                value={username}*/}
-            {/*                onChange={(e) => setUsername(e.target.value)} />*/}
-            {/*                </div>*/}
-            {/*                <div className="spacing">*/}
-            {/*                /!* Password *!/*/}
-            {/*                <p>Password</p>*/}
-            {/*                <input type="password"*/}
-            {/*                placeholder="password"*/}
-            {/*                value={password}*/}
-            {/*                onChange={(e) => setPassword(e.target.value)}  />*/}
-            {/*                <p> Forget Password? </p>*/}
-            {/*                </div>*/}
 
-            {/*            </label>*/}
-
-            {/*            <label className="custom-field">*/}
-            {/*            <div className="spacing">*/}
-            {/*            <button className="btn-main" onClick={handleClick}> Login </button>*/}
-            {/*            <h1> {store.return_msg}</h1>*/}
-
-            {/*            <Link to="/Register">*/}
-            {/*            <p id="undertag"> Don't have an account?</p>*/}
-            {/*            </Link>*/}
-            {/*            </div>*/}
-            {/*            </label>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
-            {/*</div>*/}
-            {/*)}*/}
         </div>
     )
 }

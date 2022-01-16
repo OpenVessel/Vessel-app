@@ -2,17 +2,17 @@
 FROM python:3.7.12-buster
 
 # Set the working directory to /app
-WORKDIR /back-end
+WORKDIR /plaid-back-end
 
 # Copy the current directory contents into the container at /app 
-ADD . /back-end
+ADD . /plaid-back-end
 
 # Install the dependencies
 RUN pip install -r requirements.txt
 
 
 # run the command to start uWSGI
-EXPOSE 5001 
+EXPOSE 5002 
 # ENTRYPOINT [ "python" ] 
 # CMD [ "wsgi.py" ]
 # docker-entrypoint.sh is requried to 

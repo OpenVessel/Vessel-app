@@ -16,7 +16,7 @@ const FormInputIdVerification = ({submitForm}) => {
     );
     let history = useHistory();
     if(window.sessionStorage.getItem("return_msg") === 'Verification, You are now able to log in') {
-        history.push('/IdVerification')
+        history.push('/login')
         sessionStorage.setItem("return_msg", '')
     }
 

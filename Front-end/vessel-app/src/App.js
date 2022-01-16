@@ -25,6 +25,11 @@ import { HashRouter } from 'react-router-dom'
 import "./css/theme_skeleton.css"
 import "./css/normalize.css"
 
+// Public Pages
+import About from './pages/PublicPages/About';
+import Compliance from './pages/PublicPages/Compliance';
+import Delegates from './pages/PublicPages/Delegates';
+import Investors from './pages/PublicPages/Investors';
 // JSX javascript exetension
 function App() {
 
@@ -37,12 +42,16 @@ function App() {
         <Layout title='OpenVessel' /> 
         
           <Switch> 
-          
+          {/* Public Pages */}
           <Route path="/" exact component={Home}/>
           <Route path="/login" exact component={Login}/>
           <Route path="/register" exact component={Register}/>
-          <Route path="/EMF" exact component={Emf}/>
+          <Route path="/about" exact component={About}/>
+          <Route path="/compliance" exact component={Compliance}/>
+          <Route path="/delegates" exact component={Delegates}/>
+          <Route path="/investors" exact component={Investors}/>
 
+          <Route path="/EMF" exact component={Emf}/>
           <Route path="/getting_started" exact component={GettingStarted}/>
           <Route path="/upload" exact component={Upload}/>
           <Route path="/browser" exact component={Browser}/>
@@ -50,9 +59,7 @@ function App() {
           <Route path="/IdVerification" exact component={IdVerification}/>
           {/* <Route path="/account" exact component={Account}/> */}
           <HashRouter basename="/"> 
-                {/* preferences
-                  security
-                  financials-services
+                {/* preferences security financials-services
                   account_activity
                   privacy rights
                   Linked-accounts

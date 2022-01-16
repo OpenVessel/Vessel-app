@@ -31,7 +31,7 @@ const IdVerification = () => {
                     <div className="page-form-content">
                         <img src={process.env.PUBLIC_URL + '/images/logo-black.png'} alt="Logo" />
                         <h1 className="page-form-title">Verify Your Identity.</h1>
-                        <p className="page-form-subtitle">Please Provide Contact Information.<br />All Social Secuirty Numbers are verified via authenticating.com SentiLink Corp. and Plaid</p>
+                        <p className="page-form-subtitle">Please Provide Contact Information.<br />All Social Secuirty Numbers are verified via authenticating.com SentiLink Corp. and Plaid.</p>
                         <div className="page-form-divider" />
                         <FormInputIdVerification />
                     </div>

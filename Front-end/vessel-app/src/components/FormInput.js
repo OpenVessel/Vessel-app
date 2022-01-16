@@ -6,7 +6,7 @@ import { Link, useHistory  } from 'react-router-dom';
 
 const FormInput = ({submitForm}) => {
     const {store} = useContext(Context);
-    
+    // sessionStorage.setItem("nextpageoffer",'false')
     const { handleChange, handleSubmit, values, errors, moveOn } = useForm(
         submitForm,
         validate
@@ -18,8 +18,11 @@ const FormInput = ({submitForm}) => {
         sessionStorage.setItem("return_msg", '') 
     }
 
-    console.log("first name",errors.firstname)
-    console.log("password call",errors.password)
+    // life cycle reset setItems to defaults
+    React.useEffect(() => {
+        sessionStorage.setItem("nextpageoffer", 'false') 
+    }, []);
+
     return (
 <div>
         <form action="" method="POST" name="register-form"  autoComplete="off" onSubmit={handleSubmit} noValidate>
@@ -39,7 +42,7 @@ const FormInput = ({submitForm}) => {
                         value={values.firstname} 
                         onChange={handleChange} 
                         />
-                        <label className="page-form-control-label" htmlFor="fullName">Full Name</label>
+                        <label className="page-form-control-label" htmlFor="fullName">First Name</label>
                             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g opacity="0.5">
                                     <path d="M17.7083 22.1355H7.29159C3.4895 22.1355 1.302 19.948 1.302 16.1459V8.85423C1.302 5.05215 3.4895 2.86465 7.29159 2.86465H17.7083C21.5103 2.86465 23.6978 5.05215 23.6978 8.85423V16.1459C23.6978 19.948 21.5103 22.1355 17.7083 22.1355ZM7.29159 4.42715C4.31242 4.42715 2.8645 5.87506 2.8645 8.85423V16.1459C2.8645 19.1251 4.31242 20.573 7.29159 20.573H17.7083C20.6874 20.573 22.1353 19.1251 22.1353 16.1459V8.85423C22.1353 5.87506 20.6874 4.42715 17.7083 4.42715H7.29159Z" fill="#414859"/>
@@ -187,7 +190,18 @@ const FormInput = ({submitForm}) => {
                     <button   className="page-form-button"  type='submit'>
                         Sign Up
                     </button>
-                    {<p> {window.sessionStorage.getItem("return_msg")}</p>}
+                    {/* return message if statement unfortantly it doesnt
+                     convert a true type its only string returns */}
+                    {window.sessionStorage.getItem("nextpageoffer") === 'true' &&
+                    <div>
+                        <div className='respCss'> 
+                        <p> {window.sessionStorage.getItem("return_msg")} </p>
+                        </div>
+                        <div className='smalltext'> <p>Check out  <Link to="/contactInfo"> Contact  Info </Link> </p>  
+                        </div> 
+                    </div> 
+                    }
+
                     <div className="page-form-link" />
                 
                         </form>

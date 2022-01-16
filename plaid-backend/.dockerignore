@@ -1,0 +1,15 @@
+vessel_env/
+__pycache__/
+env/
+migrations/
+profile/
+
+node_modules
+Dockerfile
+.git
+.gitignore
+.dockerignore
+.env
+one.db
+site.db
+two.db

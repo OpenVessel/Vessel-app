@@ -43,7 +43,9 @@ class Config:
     SECRET_KEY = 'ffb3986d5d75c04081caa3d7fb94c205'
 
     ###### DATABASE PATHING  ###########
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
+    # Database access
+    SQLALCHEMY_DATABASE_URI = environ.get("DEV_DATABASE_URL")
+    # SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(os.getcwd(), "site.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False # we set this to false because flask-migrate will take care of this.
     SQLALCHEMY_BINDS = {
     'one': "sqlite:///" + os.getcwd() + r"\one.db",

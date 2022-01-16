@@ -1,11 +1,7 @@
 import React, {useContext, useState} from 'react'
 import {Context} from "../../appContext/UserContext"
 import "../../css/page_form.css"
-//import {Link} from "react-router-dom";
-import { Link } from "react-router-dom";
-import  { Redirect} from 'react-router-dom'
 import FormSuccess from '../../components/FormSuccess';
-import { ErrorSharp } from '@material-ui/icons';
 import FormInput from '../../components/FormInput';
 
 const Register = () => {
@@ -18,8 +14,6 @@ const Register = () => {
     }
     const [isSubmitted, setIsSubmitted] = useState(false)
 
-
-    console.log(store.csrf_token)
     return (
         <div>
             <div className="container page-form-container register-container">
@@ -29,7 +23,7 @@ const Register = () => {
                         <h1 className="page-form-title">Create an account.</h1>
                         <p className="page-form-subtitle">Please enter your full legal name, matching your government ID.</p>
                         <div className="page-form-divider" />
-                       
+                       {/* FormInput is founded in Components folder */}
                         {!isSubmitted ? <FormInput submitForm={submitForm}/> : <FormSuccess/> }
                        
                     </div>

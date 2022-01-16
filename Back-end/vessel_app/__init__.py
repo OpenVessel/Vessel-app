@@ -9,7 +9,7 @@ from datetime import datetime as dt
 from celery import Celery
 # flask app extensions
 from flask_dropzone import Dropzone
-from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 import os
 
 from flask_sqlalchemy import SQLAlchemy
@@ -20,6 +20,7 @@ from vessel_app.config import Config
 
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -28,6 +29,7 @@ dropzone = Dropzone()
 login_manager = LoginManager()
 jwt = JWTManager()
 cors = CORS()
+api = Api()
 # logs = LogSetup()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
@@ -45,6 +47,7 @@ def create_app(config_class=Config):
     app = Flask(__name__, instance_path = instance_path) ## Global Flask instance application Factory???
     app.config.from_object(Config) # reference to config.py
     db.init_app(app)
+    api.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     dropzone.init_app(app)
@@ -60,7 +63,7 @@ def create_app(config_class=Config):
     # profile uploads settings (Deprecate)
     photos = UploadSet('photos', IMAGES)
     configure_uploads(app, photos)
-    patch = patch_request_class(app) 
+    
     
     with app.app_context():
         # blueprint registrations
@@ -82,6 +85,7 @@ def create_app(config_class=Config):
         app.register_blueprint(conversion_code_bp)
         from .global_api import bp as global_api_bp
         app.register_blueprint(global_api_bp, url_prefix='/api')
+
         # flask + react # Last resort
         # https://www.youtube.com/watch?v=YW8VG_U-m48
 
